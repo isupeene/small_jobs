@@ -1,2 +1,3 @@
 # database
-Contains database-related code.
+Contains code for setting up the database.
+
