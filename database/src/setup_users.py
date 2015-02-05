@@ -1,4 +1,4 @@
-from database.ops.connect import get_postgres_connection
+from src.connect import get_postgres_connection
 from config import db
 from getpass import getpass
 

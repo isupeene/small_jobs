@@ -1,5 +1,5 @@
-from database.ops.connect import get_postgres_connection
-from database.ops.utils import ignore_errors
+from src.connect import get_postgres_connection
+from src.utils import ignore_errors
 from config import db
 
 def remove_users(cursor):

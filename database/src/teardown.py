@@ -3,9 +3,9 @@
 from getpass import getpass
 from psycopg2 import connect
 from config import db
-from database.ops.connect import get_admin_connection
-from database.ops.password import get_admin_password
-from database.ops.utils import ignore_errors
+from src.connect import get_admin_connection
+from src.password import get_admin_password
+from src.utils import ignore_errors
 
 def teardown_database(cursor):
 	for table in [

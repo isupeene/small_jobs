@@ -2,8 +2,8 @@
 
 from sys import argv
 from getpass import getpass
-from database.ops.connect import get_admin_connection
-from database.ops.password import get_admin_password
+from src.connect import get_admin_connection
+from src.password import get_admin_password
 
 def create_database(cursor):
 
