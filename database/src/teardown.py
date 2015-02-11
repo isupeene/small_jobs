@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from src.schema import Base
+from shared.src.schema import Base
 from src.connect import get_admin_engine
 from src.password import get_admin_password
 
