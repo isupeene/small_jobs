@@ -1,13 +1,25 @@
+from sqlalchemy import create_engine
 from psycopg2 import connect
 from config import db
 
-def get_admin_connection(password):
-	return connect(
-		database=db.name,
-		user=db.admin,
-		password=password,
-		port=db.port
-	)
+
+_engine = None
+
+def get_admin_engine(password):
+	global _engine
+
+	if not _engine:
+			_engine = create_engine("{}+{}://{}:{}@{}:{}/{}".format(
+				"postgresql",
+				"psycopg2",
+				db.admin,
+				password,
+				db.hostname,
+				db.port,
+				db.name
+			))
+
+	return _engine
 
 def get_postgres_connection():
 	return connect(
