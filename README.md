@@ -11,4 +11,3 @@ This folder contains all the code relating to the REST API used by both the Job 
 This folder contains all the code relating to the Job Posting App, including all the code for the web page, and scripts for its deployment.
 ## job-seeking
 This folder contains all the code for the Android Job Seeking App.
-
