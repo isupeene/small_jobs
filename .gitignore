@@ -52,3 +52,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Shared Source
+database/shared/
+server/shared/
