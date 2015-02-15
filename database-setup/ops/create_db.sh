@@ -1,12 +1,12 @@
-# Sets up the admin and the user account for the small jobs database.
-# The user will be required to choose and confirm the passwords
-# for both accounts.  This script also creates the database, but
+# Sets up the user account for the small jobs database.
+# The user will be required to choose and confirm the password
+# for the account.  This script also creates the database, but
 # with no tables.
 #
 # This script must be run as either root, or postgres.
 
 cd $(dirname $0)/..
-COMMAND="python -m src.setup_users"
+COMMAND="python -m src.create"
 
 if [ "$(whoami)" = 'root' ]
 then

@@ -1,5 +1,0 @@
-cd $(dirname $0)/../..
-
-cp -r shared/ database/
-cp -r shared/ server/
-
