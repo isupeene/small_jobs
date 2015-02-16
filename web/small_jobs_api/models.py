@@ -34,11 +34,17 @@ class JobPoster(Model):
 	email = NullableTextField()
 	phone_number = NullableTextField()
 
+	def __unicode__(self):
+		return self.name
+
 class Contractor(Model):
 	name = TextField()
 	description = NullableTextField()
 	email = NullableTextField()
 	phone_number = NullableTextField()
+
+	def __unicode__(self):
+		return self.name
 
 class JobPosting(Model):
 	poster = ForeignKey(JobPoster)
@@ -56,6 +62,9 @@ class JobPosting(Model):
 	marked_completed_by_contractor = BooleanField(default=False)
 	date_completed = NullableDateTimeField()
 
+	def __unicode__(self):
+		return self.short_description
+
 class Bid(Model):
 	job = ForeignKey(JobPosting)
 	contractor = ForeignKey(Contractor)
@@ -66,6 +75,9 @@ class Bid(Model):
 	class Meta:
 		unique_together = (('job', 'contractor'),)
 
+	def __unicode__(self):
+		return "{} | {}".format(self.job.short_description, self.contractor.name)
+
 class JobSkill(Model):
 	job = ForeignKey(JobPosting)
 	skill = TextField(db_index=True)
@@ -73,12 +85,18 @@ class JobSkill(Model):
 	class Meta:
 		unique_together = (('job', 'skill'),)
 
+	def __unicode__(self):
+		return self.skill
+
 class ContractorSkill(Model):
 	contractor = ForeignKey(Contractor)
 	skill = TextField(db_index=True)
 
 	class Meta:
 		unique_together = (('contractor', 'skill'),)
+
+	def __unicode__(self):
+		return self.skill
 
 class JobPosterRating(Model):
 	poster = ForeignKey(JobPoster)
@@ -88,6 +106,9 @@ class JobPosterRating(Model):
 	class Meta:
 		unique_together = (('poster', 'contractor'),)
 
+	def __unicode__(self):
+		return "{}: {}".format(self.contractor.name, self.rating)
+
 class ContractorRating(Model):
 	contractor = ForeignKey(Contractor)
 	poster = ForeignKey(JobPoster)
@@ -95,4 +116,7 @@ class ContractorRating(Model):
 
 	class Meta:
 		unique_together = (('contractor', 'poster'),)
+
+	def __unicode__(self):
+		return "{}: {}".format(self.poster.name, self.rating)
 
