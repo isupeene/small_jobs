@@ -1,6 +1,7 @@
 from django.db.models import (
 	Model,
-	TextField, DateTimeField, DecimalField, BooleanField, IntegerField,
+	TextField, DateTimeField, DecimalField,
+	BooleanField, IntegerField, CharField,
 	ForeignKey
 )
 from django.utils.timezone import now
@@ -10,6 +11,12 @@ class MoneyField(DecimalField):
 	def __init__(self, *args, **kwargs):
 		super(MoneyField, self).__init__(
 			*args, max_digits=20, decimal_places=2, **kwargs
+		)
+
+class ShortCharField(CharField):
+	def __init__(self, *args, **kwargs):
+		super(ShortCharField, self).__init__(
+			*args, max_length=100, **kwargs
 		)
 
 
@@ -24,24 +31,25 @@ def nullable(field_class):
 
 NullableMoneyField = nullable(MoneyField)
 NullableTextField = nullable(TextField)
+NullableShortCharField = nullable(ShortCharField)
 NullableDateTimeField = nullable(DateTimeField)
 NullableForeignKey = nullable(ForeignKey)
 
 
 class JobPoster(Model):
-	name = TextField()
+	name = ShortCharField()
 	description = NullableTextField()
-	email = NullableTextField()
-	phone_number = NullableTextField()
+	email = NullableShortCharField()
+	phone_number = NullableShortCharField()
 
 	def __unicode__(self):
 		return self.name
 
 class Contractor(Model):
-	name = TextField()
+	name = ShortCharField()
 	description = NullableTextField()
-	email = NullableTextField()
-	phone_number = NullableTextField()
+	email = NullableShortCharField()
+	phone_number = NullableShortCharField()
 
 	def __unicode__(self):
 		return self.name
@@ -50,7 +58,7 @@ class JobPosting(Model):
 	poster = ForeignKey(JobPoster)
 	contractor = NullableForeignKey(Contractor)
 	creation_date = DateTimeField(default=now)
-	short_description = TextField()
+	short_description = ShortCharField()
 	description = TextField()
 	bidding_deadline = DateTimeField()
 	bidding_confirmation_deadline = DateTimeField()
@@ -80,7 +88,7 @@ class Bid(Model):
 
 class JobSkill(Model):
 	job = ForeignKey(JobPosting)
-	skill = TextField(db_index=True)
+	skill = ShortCharField(db_index=True)
 
 	class Meta:
 		unique_together = (('job', 'skill'),)
@@ -90,7 +98,7 @@ class JobSkill(Model):
 
 class ContractorSkill(Model):
 	contractor = ForeignKey(Contractor)
-	skill = TextField(db_index=True)
+	skill = ShortCharField(db_index=True)
 
 	class Meta:
 		unique_together = (('contractor', 'skill'),)
