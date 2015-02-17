@@ -115,7 +115,9 @@ class JobPosterRating(Model):
 		unique_together = (('poster', 'contractor'),)
 
 	def __unicode__(self):
-		return "{}: {}".format(self.contractor.name, self.rating)
+		return "{} -> {} | {}".format(
+			self.contractor.name, self.poster.name, self.rating
+		)
 
 class ContractorRating(Model):
 	contractor = ForeignKey(Contractor)
@@ -126,5 +128,7 @@ class ContractorRating(Model):
 		unique_together = (('contractor', 'poster'),)
 
 	def __unicode__(self):
-		return "{}: {}".format(self.poster.name, self.rating)
+		return "{} -> {} | {}".format(
+			self.poster.name, self.contractor.name, self.rating
+		)
 
