@@ -53,6 +53,13 @@ ROOT_URLCONF = 'small_jobs.urls'
 
 WSGI_APPLICATION = 'small_jobs.wsgi.application'
 
+# The default serializer can't serialize YadisServiceManager objects,
+# which python-openid stores in the session.
+# Note that for signed-cookie based session backends, this means that
+# a leak of the SECRET_KEY allows an attacker to execute arbitrary
+# code on the server.  However, we are using the database backend,
+# so this isn't an issue for us.
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases

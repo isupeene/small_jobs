@@ -37,6 +37,7 @@ NullableForeignKey = nullable(ForeignKey)
 
 
 class JobPoster(Model):
+	openid = ShortCharField(unique=True)
 	name = ShortCharField()
 	description = NullableTextField()
 	email = NullableShortCharField()
