@@ -8,6 +8,7 @@ from oauth2_provider.decorators import protected_resource
 from small_jobs_api.decorators import require_login
 
 
+# A sample view requiring OpenID authentication.
 @require_login
 def protected(request):
 	return HttpResponse("Hello, World!")
