@@ -1,6 +1,6 @@
 from django.db.models import (
 	Model,
-	TextField, DateTimeField, DecimalField,
+	TextField as _TextField, DateTimeField, DecimalField,
 	BooleanField, IntegerField, CharField,
 	ForeignKey
 )
@@ -13,10 +13,21 @@ class MoneyField(DecimalField):
 			*args, max_digits=20, decimal_places=2, **kwargs
 		)
 
+# We set the default value to None for ShortCharField and TextField
+# so that the database will give us an error if the field is left out.
+# Otherwise, the default value is an empty string, and the error can
+# only be caught in Django forms.
+
 class ShortCharField(CharField):
 	def __init__(self, *args, **kwargs):
 		super(ShortCharField, self).__init__(
-			*args, max_length=100, **kwargs
+			*args, max_length=100, default=None, **kwargs
+		)
+
+class TextField(_TextField):
+	def __init__(self, *args, **kwargs):
+		super(TextField, self).__init__(
+			*args, default=None, **kwargs
 		)
 
 
@@ -60,7 +71,7 @@ class JobPosting(Model):
 	contractor = NullableForeignKey(Contractor)
 	creation_date = DateTimeField(default=now)
 	short_description = ShortCharField()
-	description = TextField()
+	description = TextField(blank=False)
 	bidding_deadline = DateTimeField()
 	bidding_confirmation_deadline = DateTimeField()
 	compensation_amount = NullableMoneyField()
