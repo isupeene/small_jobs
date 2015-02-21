@@ -13,6 +13,11 @@ class MoneyField(DecimalField):
 			*args, max_digits=20, decimal_places=2, **kwargs
 		)
 
+# We set the default value to None for ShortCharField and TextField
+# so that the database will give us an error if the field is left out.
+# Otherwise, the default value is an empty string, and the error can
+# only be caught in Django forms.
+
 class ShortCharField(CharField):
 	def __init__(self, *args, **kwargs):
 		super(ShortCharField, self).__init__(
