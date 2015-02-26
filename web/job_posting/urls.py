@@ -4,6 +4,7 @@ from job_posting import views
 
 urlpatterns = patterns('',
 	url(r'^protected/$', views.protected, name='protected'),
+<<<<<<< HEAD
 	url(r'^homepage/$', views.homepage, name='homepage'),
 	url(r'^mainpage/$', views.mainpage, name='mainpage'),
 	url(r'^edit_profile/$', views.edit_profile, name='edit_profile'),
@@ -14,7 +15,6 @@ urlpatterns = patterns('',
 	url(r'^newjob/$', views.new_job, name='new job'),
 	url(r'^create_job/post_a_job', views.post_new_job, name='post_a_job'),
 	url(r'^edit_profile/edit_my_profile_form', views.edit_my_profile_form, name='edit_my_profile_form'),
-
 )
 
 
