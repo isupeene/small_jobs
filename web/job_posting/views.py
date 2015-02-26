@@ -8,6 +8,7 @@ from datetime import timedelta
 
 
 
+
 from small_jobs_api.decorators import require_login
 from small_jobs_api.models import (
 	JobPoster, JobPosting
