@@ -14,7 +14,6 @@ urlpatterns = patterns('',
 	url(r'^newjob/$', views.new_job, name='new job'),
 	url(r'^create_job/post_a_job', views.post_new_job, name='post_a_job'),
 	url(r'^edit_profile/edit_my_profile_form', views.edit_my_profile_form, name='edit_my_profile_form'),
-
 )
 
 
