@@ -1,9 +1,10 @@
 package com.smalljobs.jobseeker;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,9 +12,10 @@ import android.widget.ListView;
 
 public class BrowseActivity extends Activity {
 
-	private DataManager dataManager;
+	private Context context=this;
 	private ListView postingsList;
-	private ArrayList<JobPosting> jobs;
+	private PostingsList jobs;
+	private PostingsListController plc;
 	private PostingsListAdapter postingsViewAdapter;
 	
 	@Override
@@ -21,7 +23,6 @@ public class BrowseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_browse);
 		
-		dataManager = new DataManager();
 		postingsList = (ListView) findViewById(R.id.MainListView);
 	}
 
@@ -48,14 +49,36 @@ public class BrowseActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 
-		try {
-			jobs = dataManager.loadPostings();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		plc = new PostingsListController(jobs);
+		AsyncGet getTask=new AsyncGet();
+		getTask.execute(new PostingsListController[] {plc});
+		
+		//System.out.println(jobs.size());
+		
+	}
+	
+	private class AsyncGet extends AsyncTask<PostingsListController, Void, Void> {
+
+		@Override
+		protected Void doInBackground(PostingsListController... params) {
+			for (PostingsListController plc:params) {
+				try {
+					plc.refreshPostings();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return null;
 		}
-		postingsViewAdapter = new PostingsListAdapter(this,
-				R.layout.main_row_layout, jobs);
-		postingsList.setAdapter(postingsViewAdapter);
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			postingsViewAdapter = new PostingsListAdapter(context,
+					R.layout.main_row_layout, jobs.getJobs());
+			postingsList.setAdapter(postingsViewAdapter);
+			postingsViewAdapter.notifyDataSetChanged();
+		}
+		
 	}
 }
