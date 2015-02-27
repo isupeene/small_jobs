@@ -9,6 +9,7 @@ public class PostingsListController {
 	public PostingsListController(PostingsList pl) {
 		super();
 		this.pl = pl;
+		dm = new DataManager();
 	}
 	
 	public void refreshPostings() throws IOException {
