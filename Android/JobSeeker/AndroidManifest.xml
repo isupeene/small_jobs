@@ -16,6 +16,10 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".BrowseActivity"
+            android:label="@string/title_activity_browse" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
