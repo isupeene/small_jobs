@@ -22,7 +22,6 @@ from small_jobs_api.api import (
 def protected(request):
 	return HttpResponse("Hello, World!")
 
-<<<<<<< HEAD
 #@require_login
 def homepage(request):
 	return render(request,'job_posting/homepage.html')
@@ -51,17 +50,11 @@ def new_job(request):
 
 # form stuff
 =======
-def new_job(request):
-	context =  {'superman': "I'm super!"}
-	return render(request,'job_posting/index.html', context)
-
->>>>>>> simple form made , but doesnt do anything
 def post_new_job(request):
 	description = request.POST['description']
 	short_description = request.POST['short_description']
 	# bidding_deadline = request.POST['bidding_deadline']
 	# compensation_amount = request.POST['compensation_amount']
-<<<<<<< HEAD
 	# TODO change all of this hardcoded stuff! 
 	dave = JobPoster.objects.get(name="Dave")
 	email = "bob@cableguy.com"
@@ -70,12 +63,6 @@ def post_new_job(request):
 	dave.openid = 5
 	dave.description = "Every group needs a Dave"
 	dave.phonenumber = "123456789"
-=======
-	# TODO open id stuff ; did login work?? for protected
-	# then create some of this stuff 
-	# JobPoster(name="Bob", openid="0").save()
-	# JobPoster(name="Frank", openid="1").save()
->>>>>>> simple form made , but doesnt do anything
 	myPosting = JobPosting(
 			description=description,
 			short_description=short_description,
@@ -83,7 +70,6 @@ def post_new_job(request):
 			bidding_confirmation_deadline=now() + timedelta(days=15),
 			bid_includes_compensation_amount = False,
 			bid_includes_completion_date = False,
-<<<<<<< HEAD
 		)
 	create_job_posting(dave, myPosting)
 	return render(request, 'job_posting/jobs.html')
@@ -96,9 +82,4 @@ def edit_my_profile_form(request):
 	dave.phonenumber = request.POST['phone_number']
 	update_job_poster(dave)
 	return HttpResponse(serialize("json", JobPoster.objects.all()))
-=======
-			**kwargs
-		)
-	# create_job_posting(myUser, myPosting)
-	return HttpResponse(short_description)
->>>>>>> simple form made , but doesnt do anything
+
