@@ -14,7 +14,7 @@ public class DataManager {
 	private String URL;
 	
 	public DataManager() {
-		this.URL="http://127.0.0.1:8000/job_seeking/jobs/";
+		this.URL="http://192.168.1.75:8000/job_seeking/jobs/";
 	}
 	
 	public ArrayList<JobPosting> loadPostings() throws IOException {

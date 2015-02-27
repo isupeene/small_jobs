@@ -1,20 +1,28 @@
 package com.smalljobs.jobseeker;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 public class BrowseActivity extends Activity {
 
+	private DataManager dataManager;
+	private ListView postingsList;
 	private ArrayList<JobPosting> jobs;
+	private PostingsListAdapter postingsViewAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_browse);
+		
+		dataManager = new DataManager();
+		postingsList = (ListView) findViewById(R.id.MainListView);
 	}
 
 	@Override
@@ -34,5 +42,20 @@ public class BrowseActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		try {
+			jobs = dataManager.loadPostings();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		postingsViewAdapter = new PostingsListAdapter(this,
+				R.layout.main_row_layout, jobs);
+		postingsList.setAdapter(postingsViewAdapter);
 	}
 }
