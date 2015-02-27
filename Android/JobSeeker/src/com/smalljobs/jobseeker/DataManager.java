@@ -38,6 +38,7 @@ public class DataManager {
 //		  }
 //		  rd.close();
 
+		  System.out.println("aaaahh");
 		  conn.disconnect();
 		  return postings;
 	}

@@ -14,7 +14,7 @@ public class BrowseActivity extends Activity {
 
 	private Context context=this;
 	private ListView postingsList;
-	private PostingsList jobs;
+	private PostingsList jobs=new PostingsList();
 	private PostingsListController plc;
 	private PostingsListAdapter postingsViewAdapter;
 	
