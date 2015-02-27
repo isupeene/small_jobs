@@ -22,15 +22,14 @@ def new_job(request):
 	context =  {'superman': "I'm super!"}
 	return render(request,'job_posting/index.html', context)
 
+@require_login
 def post_new_job(request):
 	description = request.POST['description']
 	short_description = request.POST['short_description']
 	# bidding_deadline = request.POST['bidding_deadline']
 	# compensation_amount = request.POST['compensation_amount']
-	# TODO open id stuff ; did login work?? for protected
-	# then create some of this stuff 
-	# JobPoster(name="Bob", openid="0").save()
-	# JobPoster(name="Frank", openid="1").save()
+	# TODO need to ge the id prob 
+	JobPoster(name="Bob", openid="0")
 	myPosting = JobPosting(
 			description=description,
 			short_description=short_description,
@@ -40,5 +39,5 @@ def post_new_job(request):
 			bid_includes_completion_date = False,
 			**kwargs
 		)
-	# create_job_posting(myUser, myPosting)
+	create_job_posting(myUser, myPosting)
 	return HttpResponse(short_description)
