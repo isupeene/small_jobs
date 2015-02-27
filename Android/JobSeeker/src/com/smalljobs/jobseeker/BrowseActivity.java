@@ -74,6 +74,7 @@ public class BrowseActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute(Void result) {
+			System.out.println(jobs.getJobs().size());
 			postingsViewAdapter = new PostingsListAdapter(context,
 					R.layout.main_row_layout, jobs.getJobs());
 			postingsList.setAdapter(postingsViewAdapter);

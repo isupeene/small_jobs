@@ -18,29 +18,30 @@ public class DataManager {
 	}
 	
 	public ArrayList<JobPosting> loadPostings() throws IOException {
-		  URL url = new URL(URL);
-		  HttpURLConnection conn =
-		      (HttpURLConnection) url.openConnection();
+		System.out.println("aaaahh2");
+		URL url = new URL(URL);
+		HttpURLConnection conn =
+				(HttpURLConnection) url.openConnection();
 
-		  if (conn.getResponseCode() != 200) {
-		    throw new IOException(conn.getResponseMessage());
-		  }
+		if (conn.getResponseCode() != 200) {
+			throw new IOException(conn.getResponseMessage());
+		}
 
-		  // Buffer the result into a string
-		  //BufferedReader rd = new BufferedReader(
-		  //    new InputStreamReader(conn.getInputStream()));
-		  
-		  ArrayList<JobPosting> postings = readJsonStream(conn.getInputStream());
-//		  StringBuilder sb = new StringBuilder();
-//		  String line;
-//		  while ((line = rd.readLine()) != null) {
-//		    sb.append(line);
-//		  }
-//		  rd.close();
+		// Buffer the result into a string
+		//BufferedReader rd = new BufferedReader(
+		//    new InputStreamReader(conn.getInputStream()));
 
-		  System.out.println("aaaahh");
-		  conn.disconnect();
-		  return postings;
+		ArrayList<JobPosting> postings = readJsonStream(conn.getInputStream());
+		//		  StringBuilder sb = new StringBuilder();
+		//		  String line;
+		//		  while ((line = rd.readLine()) != null) {
+		//		    sb.append(line);
+		//		  }
+		//		  rd.close();
+
+		System.out.println("aaaahh");
+		conn.disconnect();
+		return postings;
 	}
 
 	public ArrayList<JobPosting> readJsonStream(InputStream in) throws IOException {
