@@ -54,7 +54,6 @@ def new_job(request):
 
 
 # form stuff
-
 def post_new_job(request):
 	description = request.POST['description']
 	short_description = request.POST['short_description']
