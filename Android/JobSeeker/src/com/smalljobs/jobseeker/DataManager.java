@@ -23,6 +23,7 @@ public class DataManager {
 	public ArrayList<JobPosting> loadPostings() {
 		HttpURLConnection conn = null;
 		StringBuilder sb = null;
+		ArrayList<JobPosting> postings = null;
 		try {
 			System.out.println("aaaahh2");
 			URL url = new URL(URL);
@@ -37,23 +38,22 @@ public class DataManager {
 			BufferedReader rd = new BufferedReader(
 			    new InputStreamReader(conn.getInputStream()));
 			System.out.println("aaaahh5");
-			//ArrayList<JobPosting> postings = readJsonStream(conn.getInputStream());
+			postings = readJsonStream(conn.getInputStream());
 			
-					  sb = new StringBuilder();
-					  String line;
-					  while ((line = rd.readLine()) != null) {
-					    sb.append(line);
-					  }
-					  rd.close();
+//			sb = new StringBuilder();
+//			String line;
+//			while ((line = rd.readLine()) != null) {
+//				sb.append(line);
+//			}
+//			rd.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally {
 			conn.disconnect();
-			System.out.println(sb);
 		}
-		return null;
+		return postings;
 	}
 
 	public ArrayList<JobPosting> readJsonStream(InputStream in) throws IOException {
