@@ -18,7 +18,7 @@ public class DataManager {
 	private String URL;
 	
 	public DataManager() {
-		this.URL="http://162.157.47.189:8000/job_seeking/jobs/";
+		this.URL="http://172.28.90.237:8000/job_seeking/jobs/";
 	}
 	
 	public ArrayList<JobPosting> loadPostings() {
@@ -54,9 +54,6 @@ public class DataManager {
 			conn.disconnect();
 			System.out.println(sb);
 		}
-
-		
-		
 		return null;
 	}
 
