@@ -2,6 +2,8 @@ package com.smalljobs.jobseeker;
 
 import java.util.ArrayList;
 
+import com.smalljobs.jobseeker.models.JobPosting;
+
 
 public class PostingsList {
 	private ArrayList<JobPosting> jobs;

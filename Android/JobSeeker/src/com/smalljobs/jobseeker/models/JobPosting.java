@@ -1,11 +1,12 @@
-package com.smalljobs.jobseeker;
+package com.smalljobs.jobseeker.models;
+
 
 public class JobPosting {
 
 	private long id;
 	private String title;
 	private String description;
-	private Poster poster;
+	private JobPoster poster;
 	
 	public JobPosting(long id2, String title2, String description2) {
 		// TODO Auto-generated constructor stub
@@ -31,10 +32,10 @@ public class JobPosting {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Poster getPoster() {
+	public JobPoster getPoster() {
 		return poster;
 	}
-	public void setPoster(Poster poster) {
+	public void setPoster(JobPoster poster) {
 		this.poster = poster;
 	}
 	

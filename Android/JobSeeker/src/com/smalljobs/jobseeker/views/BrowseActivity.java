@@ -1,6 +1,14 @@
-package com.smalljobs.jobseeker;
+package com.smalljobs.jobseeker.views;
 
 import java.io.IOException;
+
+import com.smalljobs.jobseeker.PostingsList;
+import com.smalljobs.jobseeker.PostingsListAdapter;
+import com.smalljobs.jobseeker.PostingsListController;
+import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.R.id;
+import com.smalljobs.jobseeker.R.layout;
+import com.smalljobs.jobseeker.R.menu;
 
 import android.app.Activity;
 import android.content.Context;

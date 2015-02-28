@@ -1,4 +1,10 @@
-package com.smalljobs.jobseeker;
+package com.smalljobs.jobseeker.views;
+
+import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.R.drawable;
+import com.smalljobs.jobseeker.R.id;
+import com.smalljobs.jobseeker.R.layout;
+import com.smalljobs.jobseeker.R.string;
 
 import android.app.Activity;
 import android.app.ActionBar;

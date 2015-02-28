@@ -3,6 +3,8 @@ package com.smalljobs.jobseeker;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import com.smalljobs.jobseeker.models.JobPosting;
+
 import android.content.Context;
 import android.provider.SyncStateContract.Constants;
 import android.view.LayoutInflater;

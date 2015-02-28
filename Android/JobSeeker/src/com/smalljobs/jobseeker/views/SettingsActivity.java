@@ -1,4 +1,4 @@
-package com.smalljobs.jobseeker;
+package com.smalljobs.jobseeker.views;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -20,6 +20,10 @@ import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
 import java.util.List;
+
+import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.R.string;
+import com.smalljobs.jobseeker.R.xml;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
