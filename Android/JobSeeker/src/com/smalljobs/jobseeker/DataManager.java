@@ -17,7 +17,7 @@ public class DataManager {
 	private String URL;
 	
 	public DataManager() {
-		this.URL="http://172.28.90.237:8000/job_seeking/jobs/";
+		this.URL="http://172.28.94.193:8000/job_seeking/jobs/";
 	}
 	
 	public ArrayList<JobPosting> loadPostings() {
