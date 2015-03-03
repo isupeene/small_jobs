@@ -22,7 +22,6 @@ from small_jobs_api.api import (
 def protected(request):
 	return HttpResponse("Hello, World!")
 
-
 #@require_login
 def homepage(request):
 	return render(request,'job_posting/homepage.html')
