@@ -8,7 +8,6 @@ from datetime import timedelta
 
 
 
-
 from small_jobs_api.decorators import require_login
 from small_jobs_api.models import (
 	JobPoster, JobPosting
@@ -45,6 +44,7 @@ def jobs(request):
 	jobList = JobPosting.objects.all
 	context = {'jobList': jobList}
 	return render(request,'job_posting/jobs.html',context)
+
 
 def view_profile(request):
 	return render(request,'job_posting/view_profile.html')
