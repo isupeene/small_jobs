@@ -1,0 +1,21 @@
+<h1>Profile</h1>
+Theres something I would like to change about my profile..
+<br>
+Look at all these things I can change!
+
+<form action="edit_my_profile_form/" method="post">
+{% csrf_token %}
+	Name:
+    <input type="text" name="name" id="name"  />
+    <br />
+	Description:
+    <input type="text" name="description" id="description"  />
+    <br />
+    email:
+    <input type="text" name="email" id="email"  />
+    <br />
+    Phone Number:
+    <input type="text" name="phone_number" id="phone_number"  />
+    <br />
+<input type="submit" value="edit_profile" />
+<br>
