@@ -10,8 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.smalljobs.jobseeker.R;
 
@@ -33,7 +33,7 @@ public class BaseActivity extends Activity {
     public void setContentView(final int layoutResID) {
         DrawerLayout fullLayout= (DrawerLayout) getLayoutInflater()
                 .inflate(R.layout.activity_base, null);
-        LinearLayout actContent= (LinearLayout) fullLayout.findViewById(R.id.content);
+        RelativeLayout actContent= (RelativeLayout) fullLayout.findViewById(R.id.content);
 
         mDrawerLayout = (DrawerLayout) fullLayout.findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) fullLayout.findViewById(R.id.nav_drawer);
