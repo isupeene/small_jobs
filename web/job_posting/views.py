@@ -6,8 +6,6 @@ from django.utils.timezone import now
 from django.core.serializers import serialize
 from datetime import timedelta
 
-
-
 from small_jobs_api.decorators import require_login
 from small_jobs_api.models import (
 	JobPoster, JobPosting
@@ -88,4 +86,3 @@ def edit_my_profile_form(request):
 	dave.phonenumber = request.POST['phone_number']
 	update_job_poster(dave)
 	return HttpResponse(serialize("json", JobPoster.objects.all()))
-
