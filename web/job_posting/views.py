@@ -43,7 +43,6 @@ def jobs(request):
 	context = {'jobList': jobList}
 	return render(request,'job_posting/jobs.html',context)
 
-
 def view_profile(request):
 	return render(request,'job_posting/view_profile.html')
 
