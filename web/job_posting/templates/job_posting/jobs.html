@@ -4,7 +4,48 @@ I can look at my requested jobs, wow look how many there are ! <br>
 Hey look I can click over there to even filter them! <br>
 Or click on each job to see more detailed information!  <br>
 <a href="http://127.0.0.1:8000/job_seeking/jobs/">Hmmm what would a job seeker see? aka all jobs</a> <br>
-<a href="http://127.0.0.1:8000/job_posting/job_details">job details!</a> <br>
+<br>
+<br>
+Job Table:
+<head>
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+}
+</style>
+</head>
+
+
+<table style="width:100%">
+  <tr>
+    <th>Poster</th>
+    <th>Create Date</th>		
+    <th>Short Description</th>
+    <th>Bidding Deadline</th>
+    <th>Bidding Confirm Date</th>
+    <th>Contractor</th>
+  </tr>
+  {% if jobList %}
+  	  {% for job in jobList %}
+  	  <tr>
+  	  	<td>{{job.poster}}</td>
+  	  	<td>{{job.creation_date}}</td>
+  	  	<td>{{job.short_description}}</td>
+  	  	<td>{{job.bidding_deadline}}</td>
+  	  	<td>{{job.confirmation_deadline}}</td>
+  	  	<td>{{job.contractor}}</td>
+  	  {% endfor %}
+  {% else %}
+    <p>No jobs?</p>	
+  {% endif %}
+</table>
+
+
+<a href="http://127.0.0.1:8000/job_posting/job_details">job details if you were to click on one of those above</a> <br>
 Lets make one! <a href="http://127.0.0.1:8000/job_posting/create_job">Create my Job!</a> <br> 
 and delete them! by clicking over there! <br>
 Maybe somebody also finsihed my job and i can mark them as complete <br>
