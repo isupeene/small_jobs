@@ -38,7 +38,10 @@ def job_details(request):
 	return render(request,'job_posting/job_details.html')
 
 def jobs(request):
-	return render(request,'job_posting/jobs.html')
+	# TODO get the actual persons id
+	jobList = JobPosting.objects.all
+	context = {'jobList': jobList}
+	return render(request,'job_posting/jobs.html',context)
 
 def view_profile(request):
 	return render(request,'job_posting/view_profile.html')
