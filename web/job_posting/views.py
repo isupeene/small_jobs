@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.utils.timezone import now
@@ -73,7 +74,9 @@ def post_new_job(request):
 			bid_includes_completion_date = False,
 		)
 	create_job_posting(dave, myPosting)
-	return render(request, 'job_posting/jobs.html')
+	# return redirect('job_posting/jobs.html')
+	return HttpResponse("Job has been posted!")
+	# return render(request, 'job_posting/jobs.html')
 
 def edit_my_profile_form(request):
 	# name = request.POST['name']
