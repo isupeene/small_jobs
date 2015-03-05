@@ -11,7 +11,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_browse">BrowseActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Hello </string>
     <string name="title_activity_base">BaseActivity</string>
 
 </resources>

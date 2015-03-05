@@ -12,7 +12,7 @@ public class PostingsListController {
 		dm = new DataManager();
 	}
 	
-	public void refreshPostings() throws IOException {
-		pl.setJobs(dm.loadPostings());
-	}
+//	public void refreshPostings() throws IOException {
+//		pl.setJobs(dm.loadPostings());
+//	}
 }

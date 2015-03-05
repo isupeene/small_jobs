@@ -1,27 +1,27 @@
 package com.smalljobs.jobseeker.views;
 
-import java.io.IOException;
-
-import com.smalljobs.jobseeker.PostingsList;
-import com.smalljobs.jobseeker.PostingsListAdapter;
-import com.smalljobs.jobseeker.PostingsListController;
-import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.R.id;
-import com.smalljobs.jobseeker.R.layout;
-import com.smalljobs.jobseeker.R.menu;
-
-import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.JobsGetRequest;
+import com.smalljobs.jobseeker.PostingsList;
+import com.smalljobs.jobseeker.PostingsListAdapter;
+import com.smalljobs.jobseeker.PostingsListController;
+import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.models.JobsListing;
 
 public class BrowseActivity extends BaseActivity {
 
 	private Context context=this;
 	private ListView postingsList;
+	private JobsGetRequest jobsRequest;
 	private PostingsList jobs=new PostingsList();
 	private PostingsListController plc;
 	private PostingsListAdapter postingsViewAdapter;
@@ -32,6 +32,8 @@ public class BrowseActivity extends BaseActivity {
 		setContentView(R.layout.activity_browse);
 		
 		postingsList = (ListView) findViewById(R.id.MainListView);
+		
+		jobsRequest = new JobsGetRequest();
 	}
 
 	@Override
@@ -57,36 +59,33 @@ public class BrowseActivity extends BaseActivity {
 	protected void onStart() {
 		super.onStart();
 
-		plc = new PostingsListController(jobs);
-		AsyncGet getTask=new AsyncGet();
-		getTask.execute(new PostingsListController[] {plc});
-		
+        setProgressBarIndeterminate( false );
+        setProgressBarVisibility( true );
+
+        getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
 		//System.out.println(jobs.size());
 		
 	}
 	
-	private class AsyncGet extends AsyncTask<PostingsListController, Void, Void> {
+	// ============================================================================================
+    // INNER CLASSES
+    // ============================================================================================
 
-		@Override
-		protected Void doInBackground(PostingsListController... params) {
-			for (PostingsListController plc:params) {
-				try {
-					plc.refreshPostings();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void result) {
-			postingsViewAdapter = new PostingsListAdapter(context,
-					R.layout.main_row_layout, jobs.getJobs());
+    public final class ProfileRequestListener implements RequestListener< JobsListing > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+            Toast.makeText( BrowseActivity.this, "failure", Toast.LENGTH_SHORT ).show();
+        }
+
+        @Override
+        public void onRequestSuccess( final JobsListing result ) {
+            Toast.makeText( BrowseActivity.this, "success", Toast.LENGTH_SHORT ).show();
+            postingsViewAdapter = new PostingsListAdapter(context,
+					R.layout.main_row_layout, result);
 			postingsList.setAdapter(postingsViewAdapter);
 			postingsViewAdapter.notifyDataSetChanged();
-		}
-		
-	}
+        }
+    }
+	
 }

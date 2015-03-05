@@ -3,28 +3,35 @@ package com.smalljobs.jobseeker.models;
 
 public class JobPosting {
 
-	private long id;
-	private String title;
+	private String poster;
+	private String contractor;
+	private String creation_date;
+	private String short_description;
 	private String description;
-	private JobPoster poster;
+	private String bidding_deadline;
+	private String bidding_confirmation_deadline;
+	private String compensation_amount;
+	private String completion_date;
+	private String bid_includes_compensation_amount;
+	private String bid_includes_completion_date;
+	private String completed;
+	private String marked_completed_by_contractor;
+	private String date_completed;
 	
-	public JobPosting(long id2, String title2, String description2) {
+	public JobPosting() {
 		// TODO Auto-generated constructor stub
-		this.id=id2;
-		this.title=title2;
-		this.description=description2;
 	}
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
+//	public long getId() {
+//		return id;
+//	}
+//	public void setId(long id) {
+//		this.id = id;
+//	}
 	public String getTitle() {
-		return title;
+		return short_description;
 	}
 	public void setTitle(String title) {
-		this.title = title;
+		this.short_description = title;
 	}
 	public String getDescription() {
 		return description;
@@ -32,10 +39,10 @@ public class JobPosting {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public JobPoster getPoster() {
+	public String getPoster() {
 		return poster;
 	}
-	public void setPoster(JobPoster poster) {
+	public void setPoster(String poster) {
 		this.poster = poster;
 	}
 	

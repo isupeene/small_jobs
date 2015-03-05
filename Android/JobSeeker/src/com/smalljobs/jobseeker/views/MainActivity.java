@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity {
         public void onRequestSuccess( final JobPoster result ) {
             Toast.makeText( MainActivity.this, "success", Toast.LENGTH_SHORT ).show();
             String originalText = getString( R.string.hello_world );
-            mLoremTextView.setText( originalText + result.getName() );
+            mLoremTextView.setText( originalText + " " + result );
         }
     }
 }

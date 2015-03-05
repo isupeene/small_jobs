@@ -14,18 +14,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 import com.smalljobs.jobseeker.models.JobPoster;
+import com.smalljobs.jobseeker.models.JobPosting;
+import com.smalljobs.jobseeker.models.JobsListing;
 
-public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoster > {
+public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > {
 
     private String baseUrl;
 
-    public PosterProfileRequest( ) {
-        super( JobPoster.class );
-        this.baseUrl = "http://172.28.93.50:8000/job_seeking/job_poster/1/";
+    public JobsGetRequest( ) {
+        super( JobsListing.class );
+        this.baseUrl = "http://172.28.93.50:8000/job_seeking/jobs";
     }
 
     @Override
-    public JobPoster loadDataFromNetwork() throws IOException {
+    public JobsListing loadDataFromNetwork() throws IOException {
         Ln.d( "Call web service " + baseUrl );
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
@@ -36,17 +38,17 @@ public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoste
         JsonParser parser = new JsonParser();
         JsonArray jArray = parser.parse(result).getAsJsonArray();
         
-        ArrayList<JobPoster> posters = new ArrayList<JobPoster>();
+        JobsListing postings = new JobsListing();
         
         for(JsonElement obj : jArray )
         {
         	JsonObject o = obj.getAsJsonObject();
         	obj = o.get("fields");
-            JobPoster poster = gson.fromJson( obj , JobPoster.class);
-            posters.add(poster);
+            JobPosting posting = gson.fromJson( obj , JobPosting.class);
+            postings.add(posting);
         }
         
-        return posters.get(0);        
+        return postings;        
     }
     
     
