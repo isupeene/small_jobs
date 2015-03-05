@@ -1,13 +1,26 @@
 package com.smalljobs.jobseeker.models;
 
+import com.google.api.client.util.Key;
+
 public class JobPoster {
 
-	
-	private String name;
+	@Key
+	private String fields;
 
-	public JobPoster(String username) {
-		// TODO Auto-generated constructor stub
-		this.name = username;
+	
+	public String getName() {
+		return fields;
 	}
+
+
+	public void setName(String name) {
+		this.fields = name;
+	}
+
+
+	@Override
+    public String toString() {
+        return "JobPoster [Name=" + fields + "]";
+    }
 
 }

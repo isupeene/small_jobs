@@ -9,7 +9,10 @@
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -39,8 +42,10 @@
         <activity
             android:name="com.smalljobs.jobseeker.views.BaseActivity"
             android:label="@string/title_activity_base" >
-            
         </activity>
+        <service
+            android:name="com.octo.android.robospice.JacksonGoogleHttpClientSpiceService"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
+import com.octo.android.robospice.SpiceManager;
 import com.smalljobs.jobseeker.R;
 
 public class BaseActivity extends Activity {
@@ -23,10 +25,18 @@ public class BaseActivity extends Activity {
     private String[] navOptions = new String[] {"Home", 
         "Browse", "Settings"};
 
+    private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+    
+    @Override
+    protected void onStart() {
+        spiceManager.start(this);
+        super.onStart();
     }
 
     @Override
@@ -121,5 +131,15 @@ public class BaseActivity extends Activity {
 			break;
 		}
 	}
+    
+    @Override
+    protected void onStop() {
+        spiceManager.shouldStop();
+        super.onStop();
+    }
+
+    protected SpiceManager getSpiceManager() {
+        return spiceManager;
+    }
 
 }
