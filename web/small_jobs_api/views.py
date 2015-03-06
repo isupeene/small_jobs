@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 
+from openid.extensions.sreg import SRegRequest, SRegResponse
+
 from small_jobs_api.qbo_openid import (
 	get_consumer, get_job_poster, get_base_url
 )
@@ -16,6 +18,10 @@ def begin_openid_login(request):
 	consumer = get_consumer(request)
 
 	auth_request = consumer.begin('https://openid.intuit.com/openid/xrds')
+	auth_request.addExtension(SRegRequest(
+		required=['fullname', 'email']
+	))
+
 	trust_root = get_base_url(request)
 	return_to = urljoin(get_base_url(request), request.path)
 
@@ -35,7 +41,8 @@ def finish_openid_login(request):
 	if response.status != "success":
 		raise PermissionDenied
 	else:
-		request.session["authenticated_user"] = get_job_poster(response)
+		sreg = SRegResponse.fromSuccessResponse(response)
+		request.session["authenticated_user"] = get_job_poster(response, sreg)
 		return HttpResponseRedirect(return_to)
 
 
