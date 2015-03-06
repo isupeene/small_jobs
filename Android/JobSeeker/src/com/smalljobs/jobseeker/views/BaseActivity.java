@@ -24,7 +24,7 @@ public class BaseActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private String[] navOptions = new String[] {"Home", 
-        "Browse", "Settings"};
+        "Browse", "My Jobs", "My Profile", "Settings"};
 
     private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
     
@@ -135,6 +135,26 @@ public class BaseActivity extends Activity {
 			}
 			break;			
 		case 2:
+			//My Jobs
+			intent = new Intent(this, BrowseActivity.class);
+			mDrawerLayout.closeDrawers();
+			startActivity(intent);
+			overridePendingTransition(0, 0);
+			if (this.getClass() != BrowseActivity.class) {
+				finish();
+			}
+			break;	
+		case 3:
+			//My Profile
+			intent = new Intent(this, BrowseActivity.class);
+			mDrawerLayout.closeDrawers();
+			startActivity(intent);
+			overridePendingTransition(0, 0);
+			if (this.getClass() != BrowseActivity.class) {
+				finish();
+			}
+			break;	
+		case 4:
 			//Settings
 			intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);

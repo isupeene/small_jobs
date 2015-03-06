@@ -50,8 +50,20 @@
             android:exported="false" />
 
         <activity
-            android:name="com.smalljobs.jobseeker.views.ViewPostingActivity"
+            android:name=".views.ViewPostingActivity"
             android:label="@string/title_activity_view_posting" >
+        </activity>
+        <activity
+            android:name=".views.MyProfileActivity"
+            android:label="@string/title_activity_my_profile" >
+        </activity>
+        <activity
+            android:name=".views.MyJobsActivity"
+            android:label="@string/title_activity_my_jobs" >
+        </activity>
+        <activity
+            android:name="com.smalljobs.jobseeker.views.PosterProfileActivity"
+            android:label="@string/title_activity_poster_profile" >
         </activity>
     </application>
 
