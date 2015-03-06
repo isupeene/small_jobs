@@ -17,6 +17,11 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        <service
+            android:name="com.octo.android.robospice.JacksonGoogleHttpClientSpiceService"
+            android:exported="false" />
+        
         <activity
             android:name=".views.MainActivity"
             android:label="@string/app_name"
@@ -44,22 +49,19 @@
             android:name=".views.BaseActivity"
             android:label="@string/title_activity_base" >
         </activity>
-
-        <service
-            android:name="com.octo.android.robospice.JacksonGoogleHttpClientSpiceService"
-            android:exported="false" />
-
         <activity
             android:name=".views.ViewPostingActivity"
             android:label="@string/title_activity_view_posting" >
         </activity>
         <activity
             android:name=".views.MyProfileActivity"
-            android:label="@string/title_activity_my_profile" >
+            android:label="@string/title_activity_my_profile"
+            android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name=".views.MyJobsActivity"
-            android:label="@string/title_activity_my_jobs" >
+            android:label="@string/title_activity_my_jobs"
+            android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name="com.smalljobs.jobseeker.views.PosterProfileActivity"

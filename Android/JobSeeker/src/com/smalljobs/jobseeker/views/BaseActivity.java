@@ -136,21 +136,21 @@ public class BaseActivity extends Activity {
 			break;			
 		case 2:
 			//My Jobs
-			intent = new Intent(this, BrowseActivity.class);
+			intent = new Intent(this, MyJobsActivity.class);
 			mDrawerLayout.closeDrawers();
 			startActivity(intent);
 			overridePendingTransition(0, 0);
-			if (this.getClass() != BrowseActivity.class) {
+			if (this.getClass() != MyJobsActivity.class) {
 				finish();
 			}
 			break;	
 		case 3:
 			//My Profile
-			intent = new Intent(this, BrowseActivity.class);
+			intent = new Intent(this, MyProfileActivity.class);
 			mDrawerLayout.closeDrawers();
 			startActivity(intent);
 			overridePendingTransition(0, 0);
-			if (this.getClass() != BrowseActivity.class) {
+			if (this.getClass() != MyProfileActivity.class) {
 				finish();
 			}
 			break;	
