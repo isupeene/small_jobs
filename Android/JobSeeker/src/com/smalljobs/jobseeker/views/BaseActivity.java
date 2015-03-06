@@ -12,13 +12,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.content.*;
 
 import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.smalljobs.jobseeker.R;
 
 public class BaseActivity extends Activity {
-
+	
 	private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -115,6 +116,13 @@ public class BaseActivity extends Activity {
     	switch (position) {
 		case 0:
 			//Home
+			intent = new Intent(this, MainActivity.class);
+			mDrawerLayout.closeDrawers();
+			startActivity(intent);
+			overridePendingTransition(0, 0);
+			if (this.getClass() != MainActivity.class) {
+				finish();
+			}
 			break;
 		case 1:
 			//Browse
@@ -122,7 +130,9 @@ public class BaseActivity extends Activity {
 			mDrawerLayout.closeDrawers();
 			startActivity(intent);
 			overridePendingTransition(0, 0);
-			finish();
+			if (this.getClass() != BrowseActivity.class) {
+				finish();
+			}
 			break;			
 		case 2:
 			//Settings

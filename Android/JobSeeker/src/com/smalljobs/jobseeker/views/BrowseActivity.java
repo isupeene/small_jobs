@@ -1,9 +1,11 @@
 package com.smalljobs.jobseeker.views;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -13,7 +15,6 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.smalljobs.jobseeker.JobsGetRequest;
 import com.smalljobs.jobseeker.PostingsList;
 import com.smalljobs.jobseeker.PostingsListAdapter;
-import com.smalljobs.jobseeker.PostingsListController;
 import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.models.JobsListing;
 
@@ -23,12 +24,12 @@ public class BrowseActivity extends BaseActivity {
 	private ListView postingsList;
 	private JobsGetRequest jobsRequest;
 	private PostingsList jobs=new PostingsList();
-	private PostingsListController plc;
 	private PostingsListAdapter postingsViewAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature( Window.FEATURE_PROGRESS );
 		setContentView(R.layout.activity_browse);
 		
 		postingsList = (ListView) findViewById(R.id.MainListView);
@@ -59,11 +60,10 @@ public class BrowseActivity extends BaseActivity {
 	protected void onStart() {
 		super.onStart();
 
-        setProgressBarIndeterminate( false );
+        setProgressBarIndeterminate( true );
         setProgressBarVisibility( true );
 
         getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
-		//System.out.println(jobs.size());
 		
 	}
 	
@@ -80,6 +80,7 @@ public class BrowseActivity extends BaseActivity {
 
         @Override
         public void onRequestSuccess( final JobsListing result ) {
+        	setProgressBarVisibility( false );
             Toast.makeText( BrowseActivity.this, "success", Toast.LENGTH_SHORT ).show();
             postingsViewAdapter = new PostingsListAdapter(context,
 					R.layout.main_row_layout, result);
