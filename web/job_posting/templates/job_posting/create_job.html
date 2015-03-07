@@ -1,11 +1,18 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %} Create A Job{% endblock %}
+
+{% block body_block %}
 <h1>Create/Edit job</h1>
 <!-- TODO see if its a create or an edit im pretty sure i can check this! -->
 <form action="post_a_job/" method="post">
 {% csrf_token %}
-	Description:
+    Description:
     <input type="text" name="description" id="description"  />
     <br />
-	Short Description:
+    Short Description:
     <input type="text" name="short_description" id="short_description"  />
     <br />
     <!-- TODO date types in forms only in html5 i think , firefox doesnt support , so probably do some kind of javascript thing -->
@@ -17,3 +24,6 @@
     <br />
 <input type="submit" value="Post!" />
 </form>
+{% endblock %}
+
+

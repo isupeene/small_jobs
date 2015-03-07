@@ -1,3 +1,10 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Jobs{% endblock %}
+
+{% block body_block %}
 <h1>Jobs man Jobs!</h1>
 Wow so many things to do! Whoa! Cool! <br>
 I can look at my requested jobs, wow look how many there are ! <br>
@@ -22,24 +29,24 @@ th, td {
 <table style="width:100%">
   <tr>
     <th>Poster</th>
-    <th>Create Date</th>		
+    <th>Create Date</th>    
     <th>Short Description</th>
     <th>Bidding Deadline</th>
     <th>Bidding Confirm Date</th>
     <th>Contractor</th>
   </tr>
   {% if jobList %}
-  	  {% for job in jobList %}
-  	  <tr>
-  	  	<td>{{job.poster}}</td>
-  	  	<td>{{job.creation_date}}</td>
-  	  	<td>{{job.short_description}}</td>
-  	  	<td>{{job.bidding_deadline}}</td>
-  	  	<td>{{job.confirmation_deadline}}</td>
-  	  	<td>{{job.contractor}}</td>
-  	  {% endfor %}
+      {% for job in jobList %}
+      <tr>
+        <td>{{job.poster}}</td>
+        <td>{{job.creation_date}}</td>
+        <td>{{job.short_description}}</td>
+        <td>{{job.bidding_deadline}}</td>
+        <td>{{job.confirmation_deadline}}</td>
+        <td>{{job.contractor}}</td>
+      {% endfor %}
   {% else %}
-    <p>No jobs?</p>	
+    <p>No jobs?</p> 
   {% endif %}
 </table>
 
@@ -52,3 +59,6 @@ Amazing!
 <br>
 Look at all these things I can change!
 <br>
+{% endblock %}
+
+
