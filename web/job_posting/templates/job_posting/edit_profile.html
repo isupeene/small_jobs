@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% load staticfiles %}
@@ -12,10 +13,10 @@ Look at all these things I can change!
 
 <form action="edit_my_profile_form/" method="post">
 {% csrf_token %}
-    Name:
+	Name:
     <input type="text" name="name" id="name"  />
     <br />
-    Description:
+	Description:
     <input type="text" name="description" id="description"  />
     <br />
     email:
@@ -27,4 +28,6 @@ Look at all these things I can change!
 <input type="submit" value="edit_profile" />
 <br>
 
+
 {% endblock %}
+
