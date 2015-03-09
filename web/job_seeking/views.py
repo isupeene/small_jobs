@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from small_jobs_api.job_seeking_api import *
 from small_jobs_api.models import *
 from small_jobs_api.serializers import *
-from small_jobs_api import basic_auth
+from small_jobs_api.basic_auth import *
 
 
 def deserialize_request(serializer_class, **skwargs):
@@ -31,29 +31,29 @@ def serialize_response(serializer_class, **skwargs):
 
 # Login and Identity
 
-class CreateAccount(APIView):
+class CreateAccountView(APIView):
 	permission_classes = (AllowAny,)
 
 	@deserialize_request(NewContractorSerializer)
 	def post(self, request, contractor):
-		basic_auth.create_account(request, contractor)
+		create_account(request, contractor)
 
 
 # TODO: Clean this up.
-class Login(APIView):
+class LoginView(APIView):
 	def get(self, request):
 		return Response("Welcome, {}!".format(
 			request.user.name
 		))
 
-class Logout(APIView):
+class LogoutView(APIView):
 	permission_classes = (AllowAny,)
 
 	def get(self, request):
-		basic_auth.logout(request)
+		logout(request)
 		return Response("Successfully logged out.")
 
-class Profile(APIView):
+class ProfileView(APIView):
 	def get(self, request):
 		contractor = request.user
 		return HttpResponse('name: {}; email: {}'.format(
@@ -61,14 +61,14 @@ class Profile(APIView):
 		))
 
 
-class Jobs(APIView):
+class JobsView(APIView):
 	@serialize_response(default_serializer(JobPosting), many=True)
 	def get(self, request):
 		return get_jobs(request.user)
 
 
 # TODO: Skills and region
-class JobPoster(APIView):
+class JobPosterView(APIView):
 	@serialize_response(SecureJobPosterSerializer)
 	def get(self, request, id):
 		return get_job_poster(request.user, id)
