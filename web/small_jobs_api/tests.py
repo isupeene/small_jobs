@@ -29,8 +29,8 @@ class JobPostingAPITest(TestCase):
 	def setUp(self):
 		JobPoster(name="Bob", openid="0").save()
 		JobPoster(name="Frank", openid="1").save()
-		Contractor(name="Emily").save()
-		Contractor(name="Joseph").save()
+		Contractor(name="Emily", email="emily95@gmail.com").save()
+		Contractor(name="Joseph", email="joseph86@gmail.com").save()
 
 	def test_update_job_poster(self):
 		bob = JobPoster.objects.get(name="Bob")
@@ -360,8 +360,8 @@ class JobSeekingAPITest(TestCase):
 	def setUp(self):
 		JobPoster(name="Bob", openid="0").save()
 		JobPoster(name="Frank", openid="1").save()
-		Contractor(name="Emily").save()
-		Contractor(name="Joseph").save()
+		Contractor(name="Emily", email="emily95@gmail.com").save()
+		Contractor(name="Joseph", email="joseph86@gmail.com").save()
 
 	def test_update_contractor(self):
 		emily = Contractor.objects.get(name="Emily")

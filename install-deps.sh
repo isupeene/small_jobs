@@ -1,6 +1,8 @@
 apt-get install postgresql
 apt-get install python-psycopg2
 apt-get install python-django
+apt-get install python-pip
+pip install djangorestframework
 
 cd $(dirname $0)/..
 

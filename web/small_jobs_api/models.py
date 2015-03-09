@@ -60,8 +60,11 @@ class JobPoster(Model):
 class Contractor(Model):
 	name = ShortCharField()
 	description = NullableTextField()
-	email = NullableShortCharField()
+	email = ShortCharField(unique=True)
 	phone_number = NullableShortCharField()
+
+	def is_authenticated(self):
+		return True
 
 	def __unicode__(self):
 		return self.name
