@@ -41,16 +41,17 @@ class CreateAccount(APIView):
 
 # TODO: Clean this up.
 class Login(APIView):
+	def get(self, request):
+		return Response("Welcome, {}!".format(
+			request.session['authenticated_contractor'].name
+		))
+
+class Logout(APIView):
 	permission_classes = (AllowAny,)
 
 	def get(self, request):
-		if 'authenticated_contractor' in request.session:
-			return Response("Welcome, {}!".format(
-				request.session['authenticated_contractor'].name
-			))
-		else:
-			return Response("Login Failed", status=401)
-
+		basic_auth.logout(request)
+		return Response("Successfully logged out.")
 
 class Profile(APIView):
 	def get(self, request):
