@@ -31,22 +31,25 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
 	'nested_inlines',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-	'small_jobs_api'
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'rest_framework',
+	'small_jobs_api',
+	'job_seeking',
+	'job_posting'
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'small_jobs.urls'
@@ -73,6 +76,11 @@ DATABASES = {
 		'HOST': 'localhost',
 		'PORT': 5432
     }
+}
+
+REST_FRAMEWORK = {
+	'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+	'DEFAULT_AUTHENTICATION_CLASSES': ('small_jobs_api.basic_auth.BasicAuthentication',)
 }
 
 # Internationalization
