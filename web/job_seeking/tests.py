@@ -4,6 +4,7 @@ from django.utils.timezone import now
 
 from base64 import b64encode
 from datetime import timedelta
+from json import loads
 
 from small_jobs_api.models import *
 from small_jobs_api.serializers import *
@@ -126,15 +127,37 @@ class JobSeekingAPITest(TestCase):
 		posting.save()
 
 		response = self.client.get(get_url("job_seeking:jobs"))
+		data = loads(response.content)
 
-		serializer = default_serializer(JobPosting)(data=response.content, many=True)
-
-		self.assertTrue(serializer.is_valid())
 		self.assertEquals(200, response.status_code)
+		self.assertEquals(1, len(data))
 		self.assertEquals(
-			posting,
-			serializer.get_instance()
+			posting.id,
+			data[0]['id']
 		)
 
+	def test_get_jobs_no_jobs(self):
+		response = self.client.get(get_url("job_seeking:jobs"))
+		data = loads(response.content)
+
+		self.assertEquals(0, len(data))
+
 	# TODO: Test skills and regions
+
+	def test_get_job_poster(self):
+		bob = JobPoster.objects.get(name="Bob")
+		response = self.client.get(
+			get_url("job_seeking:job_poster", kwargs={'id' : bob.id})
+		)
+		data = loads(response.content)
+
+		self.assertEquals(bob.id, data['id'])
+		self.assertEquals("Bob", data['name'])
+
+	def test_get_job_poster(self):
+		bob = JobPoster.objects.get(name="Bob")
+		response = self.client.get(
+			get_url("job_seeking:job_poster", kwargs={'id' : bob.id - 1})
+		)
+		self.assertEquals(404, response.status_code)
 
