@@ -43,7 +43,7 @@ class CreateAccount(APIView):
 class Login(APIView):
 	def get(self, request):
 		return Response("Welcome, {}!".format(
-			request.session['authenticated_contractor'].name
+			request.user.name
 		))
 
 class Logout(APIView):
