@@ -23,7 +23,7 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
 
     public JobsGetRequest( ) {
         super( JobsListing.class );
-        this.baseUrl = "http://192.168.1.75:8000/job_seeking/jobs";
+        this.baseUrl = "http://172.28.94.114:8000/job_seeking/jobs";
     }
 
     @Override

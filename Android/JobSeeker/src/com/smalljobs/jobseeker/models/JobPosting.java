@@ -1,7 +1,9 @@
 package com.smalljobs.jobseeker.models;
 
+import java.io.Serializable;
 
-public class JobPosting {
+
+public class JobPosting implements Serializable {
 
 	private String poster;
 	private String contractor;
