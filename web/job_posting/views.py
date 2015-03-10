@@ -12,7 +12,6 @@ from small_jobs_api.models import (
 )
 from small_jobs_api.api import *
 
-
 # A sample view requiring OpenID authentication.
 @require_login
 def protected(request):
@@ -37,7 +36,6 @@ def job_details(request):
 	return render(request,'job_posting/job_details.html')
 
 def jobs(request):
-
 	jobList = get_job_postings(_get_job_poster(request))
 	context = {'jobList': jobList}
 	return render(request,'job_posting/jobs.html',context)
@@ -65,9 +63,7 @@ def post_new_job(request):
 			bid_includes_completion_date = False,
 		)
 	create_job_posting(_get_job_poster(request), myPosting)
-	# return redirect('job_posting/jobs.html')
 	return jobs(request)
-	# return render(request, 'job_posting/jobs.html')
 
 def edit_my_profile_form(request):
 	# name = request.POST['name']

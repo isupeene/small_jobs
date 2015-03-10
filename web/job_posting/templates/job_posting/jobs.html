@@ -1,8 +1,10 @@
+
 {% extends 'base.html' %}
 
 {% load staticfiles %}
 
 {% block title %}Jobs{% endblock %}
+
 
 {% block side_block %}
   <li><a href="{% url 'job_posting:create_job' %}">Create Job</a></li>
@@ -23,7 +25,6 @@
         }
       </style>
     </head>
-
 
 <table style="width:100%">
   <tr>
