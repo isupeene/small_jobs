@@ -9,9 +9,6 @@
 <!-- TODO see if its a create or an edit im pretty sure i can check this! -->
 <form action="post_a_job/" method="post">
 {% csrf_token %}
-    Description:
-    <input type="text" name="description" id="description"  />
-    <br />
     Short Description:
     <input type="text" name="short_description" id="short_description"  />
     <br />
@@ -21,6 +18,10 @@
     <br />
     Compensation Amount:
     <input type="text" name="compensation_amount" id="compensation_amount"  />
+    <br />
+    Description: <br/>
+    <textarea rows="5" cols="100" name="description" id="description">
+    </textarea>
     <br />
 <input type="submit" value="Post!" />
 </form>
