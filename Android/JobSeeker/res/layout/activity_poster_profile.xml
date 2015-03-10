@@ -9,8 +9,32 @@
     tools:context="com.smalljobs.jobseeker.views.PosterProfileActivity" >
 
     <TextView
+        android:id="@+id/jobPoster"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:textSize="20sp"
+    	android:text="Title"
+    	android:layout_alignParentLeft="true">
+    </TextView>
+   
+    
+    <TextView
+        android:id="@+id/posterDescription"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:paddingTop="10sp"
+    	android:textSize="15sp"
+    	android:text="Description"
+    	android:textColor="@android:color/darker_gray"
+    	android:layout_below="@id/jobPoster"
+    	android:layout_alignParentLeft="true">
+    </TextView>
+
+    <TextView
+        android:id="@+id/phoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_below="@+id/posterDescription"
+        android:layout_marginTop="26dp" />
 
 </RelativeLayout>

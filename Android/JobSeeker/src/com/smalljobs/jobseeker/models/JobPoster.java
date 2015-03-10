@@ -1,17 +1,26 @@
 package com.smalljobs.jobseeker.models;
 
+import java.io.Serializable;
+
+import com.google.api.client.util.Key;
 import com.google.gson.annotations.SerializedName;
 
-public class JobPoster {
+public class JobPoster implements Serializable {
 
+	@Key
 	private int openid;
 	
+	@Key
 	private String name;
 	
+	@Key
 	private String email;
 
-	@SerializedName("phone_number")
-	private String phoneNumber;
+	@Key
+	private String phone_number;
+	
+	@Key
+	private String description;
 	
 	public int getOpenid() {
 		return openid;
@@ -34,12 +43,12 @@ public class JobPoster {
 
 
 	public String getPhoneNumber() {
-		return phoneNumber;
+		return phone_number;
 	}
 
 
 	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+		this.phone_number = phoneNumber;
 	}
 
 
@@ -51,9 +60,6 @@ public class JobPoster {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-
-	private String description;
 	
 	public String getName() {
 		return name;
@@ -67,7 +73,7 @@ public class JobPoster {
 
 	@Override
     public String toString() {
-        return "JobPoster [Name=" + name + "]";
+        return name;
     }
 
 }

@@ -1,26 +1,39 @@
 package com.smalljobs.jobseeker.views;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
+import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.PosterProfileRequest;
 import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.models.JobPoster;
 import com.smalljobs.jobseeker.models.JobPosting;
 
 public class ViewPostingActivity extends Activity {
 
 	private Context context=this;
-	
+	private PosterProfileRequest profileRequest;
 	private JobPosting job;
+	private JobPoster jobPoster;
+	
+	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +42,9 @@ public class ViewPostingActivity extends Activity {
 		
 		job = (JobPosting) getIntent().getSerializableExtra("job");
 		
-		displayJob();
+		profileRequest = new PosterProfileRequest(job.getPosterID());
+		
+		
 	}
 
 	@Override
@@ -70,19 +85,62 @@ public class ViewPostingActivity extends Activity {
 	    overridePendingTransition(0, 0);
 	}
 	
+    @Override
+    protected void onStop() {
+        spiceManager.shouldStop();
+        super.onStop();
+    }
+	
+	@Override
+    protected void onStart() {
+        super.onStart();
+
+        spiceManager.start(this);
+        
+        setProgressBarIndeterminate( true );
+        setProgressBarVisibility( true );
+
+        spiceManager.execute( profileRequest, "json", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
+    }
+	
 	public void displayJob() {
-		((TextView) findViewById(R.id.jobTitle))
-		.setText(job.getTitle());
-		TextView des =(TextView) findViewById(R.id.jobDescription);
-		des.setText(job.getDescription());
+		((TextView) findViewById(R.id.jobTitle)).setText(job.getTitle());
+		((TextView) findViewById(R.id.jobPoster)).setText(jobPoster.getName());
+		Date creationDate = null;
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		try {
+			creationDate = df1.parse(job.getCreationDate());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		((TextView) findViewById(R.id.jobDescription)).setText(job.getDescription());
 	}
 	
 	public void displayPoster(View v) {
-		
 		Intent intent = new Intent(this,
 				PosterProfileActivity.class);
+		intent.putExtra("poster", jobPoster);
 		startActivity(intent);
 	}
 	
-	
+	// ============================================================================================
+    // INNER CLASSES
+    // ============================================================================================
+
+    public final class ProfileRequestListener implements RequestListener< JobPoster > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+            Toast.makeText( ViewPostingActivity.this, "failure", Toast.LENGTH_SHORT ).show();
+        }
+
+        @Override
+        public void onRequestSuccess( final JobPoster result ) {
+        	setProgressBarVisibility( false );
+            Toast.makeText( ViewPostingActivity.this, "success", Toast.LENGTH_SHORT ).show();
+            jobPoster = result;
+            displayJob();
+        }
+    }
 }

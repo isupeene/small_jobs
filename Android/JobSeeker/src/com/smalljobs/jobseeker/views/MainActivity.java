@@ -15,7 +15,7 @@ import com.smalljobs.jobseeker.models.JobPoster;
 
 public class MainActivity extends BaseActivity {
 
-	private PosterProfileRequest profileRequest;
+	
 	
 	private TextView mLoremTextView;
 	
@@ -26,7 +26,7 @@ public class MainActivity extends BaseActivity {
 		
 		mLoremTextView = (TextView) findViewById( R.id.name );
 		
-		profileRequest = new PosterProfileRequest();
+		
 	}
 
 	@Override
@@ -48,32 +48,4 @@ public class MainActivity extends BaseActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	@Override
-    protected void onStart() {
-        super.onStart();
-
-        setProgressBarIndeterminate( false );
-        setProgressBarVisibility( true );
-
-        getSpiceManager().execute( profileRequest, "json", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
-    }
-
-	// ============================================================================================
-    // INNER CLASSES
-    // ============================================================================================
-
-    public final class ProfileRequestListener implements RequestListener< JobPoster > {
-
-        @Override
-        public void onRequestFailure( SpiceException spiceException ) {
-            Toast.makeText( MainActivity.this, "failure", Toast.LENGTH_SHORT ).show();
-        }
-
-        @Override
-        public void onRequestSuccess( final JobPoster result ) {
-            Toast.makeText( MainActivity.this, "success", Toast.LENGTH_SHORT ).show();
-            String originalText = getString( R.string.hello_world );
-            mLoremTextView.setText( originalText + " " + result );
-        }
-    }
 }
