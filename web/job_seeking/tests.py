@@ -9,6 +9,8 @@ from json import loads
 from small_jobs_api.models import *
 from small_jobs_api.serializers import *
 
+# TODO: Silence annoying errors from Django in the test output.
+
 
 # TODO: Maybe eliminate duplication between here and small_jobs_api tests.
 # Add more parameters if necessary.  Make sure not to call
@@ -115,6 +117,7 @@ class LoginTest(TestCase):
 class JobSeekingAPITest(TestCase):
 	def setUp(self):
 		JobPoster(name="Bob", openid="0").save()
+		Contractor(name="Joseph", email="joseph86@gmail.com").save()
 		# Create and login as Emily
 		self.client.post(
 			get_url("job_seeking:create_account"),
@@ -147,17 +150,307 @@ class JobSeekingAPITest(TestCase):
 	def test_get_job_poster(self):
 		bob = JobPoster.objects.get(name="Bob")
 		response = self.client.get(
-			get_url("job_seeking:job_poster", kwargs={'id' : bob.id})
+			get_url("job_seeking:job_poster", kwargs={'poster_id' : bob.id})
 		)
 		data = loads(response.content)
 
 		self.assertEquals(bob.id, data['id'])
 		self.assertEquals("Bob", data['name'])
 
-	def test_get_job_poster(self):
+	def test_get_job_poster_does_not_exist(self):
 		bob = JobPoster.objects.get(name="Bob")
 		response = self.client.get(
-			get_url("job_seeking:job_poster", kwargs={'id' : bob.id - 1})
+			get_url("job_seeking:job_poster", kwargs={'poster_id' : bob.id - 1})
 		)
 		self.assertEquals(404, response.status_code)
+
+	def test_place_bid(self):
+		bob = JobPoster.objects.get(name="Bob")
+		posting = new_job_posting(poster=bob)
+		posting.save()
+
+		# TODO: There is inconsistency between this test and the
+		# backend API test, since the backend API does not require
+		# the contractor.  For consistency, it may be better for the
+		# backend to require the contractor id to be part of the bid,
+		# and raise PermissionDenied if it does not match the current user.
+		emily = Contractor.objects.get(name="Emily")
+		bid_data = {"job" : posting.id, "contractor" : emily.id}
+
+		response = self.client.post(
+			get_url("job_seeking:bid"),
+			bid_data
+		)
+
+		self.assertEquals(201, response.status_code)
+		self.assertEquals(posting.id, emily.bid_set.get().job.id)
+
+	def test_place_bid_job_does_not_exist(self):
+		emily = Contractor.objects.get(name="Emily")
+		bid_data = {"job" : 0, "contractor" : emily.id}
+
+		response = self.client.post(
+			get_url("job_seeking:bid"),
+			bid_data
+		)
+		print(response.content)
+
+		# TODO: Here we have more inconsistency with the backend -
+		# The serializer validation will return a 400 before it gets to the
+		# backend, but the backend wants to throw a 404.
+		self.assertEquals(400, response.status_code)
+
+	def test_place_bid_invalid_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+		posting = new_job_posting(poster=bob)
+		posting.save()
+
+		emily = Contractor.objects.get(name="Emily")
+		bid_data = {
+			"job" : posting.id,
+			"contractor" : emily.id,
+			"compensation_amount" : "invalid"
+		}
+
+		response = self.client.post(
+			get_url("job_seeking:bid"),
+			bid_data
+		)
+
+		self.assertEquals(400, response.status_code)
+
+	def test_place_bid_invalid_completion_date(self):
+		bob = JobPoster.objects.get(name="Bob")
+		posting = new_job_posting(poster=bob)
+		posting.save()
+
+		emily = Contractor.objects.get(name="Emily")
+		bid_data = {
+			"job" : posting.id,
+			"contractor" : emily.id,
+			"completion_date" : "invalid"
+		}
+
+		response = self.client.post(
+			get_url("job_seeking:bid"),
+			bid_data
+		)
+
+		self.assertEquals(400, response.status_code)
+
+	def test_get_current_jobs(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(poster=bob)
+		prospective = new_job_posting(poster=bob)
+		current1 = new_job_posting(poster=bob, contractor=emily)
+		current2 = new_job_posting(poster=bob, contractor=emily)
+		completed1 = new_job_posting(
+			poster=bob,
+			contractor=emily,
+			completed=True
+		)
+		completed2 = new_job_posting(
+			poster=bob,
+			contractor=emily,
+			marked_completed_by_contractor=True
+		)
+
+		posting.save()
+		prospective.save()
+		current1.save()
+		current2.save()
+		completed1.save()
+		completed2.save()
+
+		Bid(job=prospective, contractor=emily).save()
+
+		response = self.client.get(get_url("job_seeking:current_jobs"))
+
+		self.assertEquals(200, response.status_code)
+		self.assertEquals(
+			{current1.id, current2.id},
+			{data['id'] for data in loads(response.content)}
+		)
+
+	def test_get_current_jobs_no_current_jobs(self):
+		emily = Contractor.objects.get(name="Emily")
+
+		response = self.client.get(get_url("job_seeking:current_jobs"))
+		self.assertEquals(200, response.status_code)
+		self.assertEquals(0, len(loads(response.content)))
+
+	def test_get_completed_jobs(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(poster=bob)
+		prospective = new_job_posting(poster=bob)
+		current = new_job_posting(poster=bob, contractor=emily)
+		completed1 = new_job_posting(
+			poster=bob,
+			contractor=emily,
+			completed=True
+		)
+		completed2 = new_job_posting(
+			poster=bob,
+			contractor=emily,
+			marked_completed_by_contractor=True
+		)
+
+		posting.save()
+		prospective.save()
+		current.save()
+		completed1.save()
+		completed2.save()
+
+		Bid(job=prospective, contractor=emily).save()
+
+		response = self.client.get(get_url("job_seeking:completed_jobs"))
+
+		self.assertEquals(200, response.status_code)
+		self.assertEquals(
+			{completed1.id, completed2.id},
+			{data['id'] for data in loads(response.content)}
+		)
+
+	def test_get_completed_jobs_no_completed_jobs(self):
+		emily = Contractor.objects.get(name="Emily")
+
+		response = self.client.get(get_url("job_seeking:completed_jobs"))
+		self.assertEquals(200, response.status_code)
+		self.assertEquals(0, len(loads(response.content)))
+
+	def test_get_prospective_jobs(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(poster=bob)
+		prospective1 = new_job_posting(poster=bob)
+		prospective2 = new_job_posting(poster=bob)
+		current = new_job_posting(poster=bob, contractor=emily)
+		completed1 = new_job_posting(
+			poster=bob,
+			contractor=emily,
+			completed=True
+		)
+		completed2 = new_job_posting(
+			poster=bob,
+			contractor=emily,
+			marked_completed_by_contractor=True
+		)
+
+		posting.save()
+		prospective1.save()
+		prospective2.save()
+		current.save()
+		completed1.save()
+		completed2.save()
+
+		Bid(job=prospective1, contractor=emily).save()
+		Bid(job=prospective2, contractor=emily).save()
+
+		response = self.client.get(get_url("job_seeking:prospective_jobs"))
+
+		self.assertEquals(200, response.status_code)
+		self.assertEquals(
+			{prospective1.id, prospective2.id},
+			{data['id'] for data in loads(response.content)}
+		)
+
+	def test_get_prospective_jobs_no_prospective_jobs(self):
+		emily = Contractor.objects.get(name="Emily")
+
+		response = self.client.get(get_url("job_seeking:completed_jobs"))
+		self.assertEquals(200, response.status_code)
+		self.assertEquals(0, len(loads(response.content)))
+
+	def test_rate_job_poster(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(
+			poster=bob,
+			contractor=emily,
+			completed=True
+		)
+		posting.save()
+
+		response = self.client.post(
+			get_url("job_seeking:rate_job_poster", kwargs={
+				"poster_id" : bob.id,
+				"rating" : 4
+			})
+		)
+
+		self.assertEquals(201, response.status_code)
+		self.assertEquals(bob.id, emily.jobposterrating_set.get().poster_id)
+
+	def test_rate_job_poster_does_not_exist(self):
+		response = self.client.post(
+			get_url("job_seeking:rate_job_poster", kwargs={
+				"poster_id" : 100,
+				"rating" : 4
+			})
+		)
+
+		# TODO: Consider if this should be 404
+		self.assertEquals(403, response.status_code)
+
+	def test_rate_job_poster_no_jobs(self):
+		bob = JobPoster.objects.get(name="Bob")
+
+		response = self.client.post(
+			get_url("job_seeking:rate_job_poster", kwargs={
+				"poster_id" : bob.id,
+				"rating" : 4
+			})
+		)
+
+		self.assertEquals(403, response.status_code)
+
+	def test_mark_complete(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(
+			poster=bob,
+			contractor=emily
+		)
+		posting.save()
+
+		response = self.client.post(
+			get_url("job_seeking:mark_complete", kwargs={
+				"posting_id" : posting.id
+			})
+		)
+
+		self.assertEquals(201, response.status_code)
+		self.assertTrue(emily.jobposting_set.get().marked_completed_by_contractor)
+
+	def test_mark_complete_no_such_job(self):
+		response = self.client.post(
+			get_url("job_seeking:mark_complete", kwargs={"posting_id" : 1})
+		)
+
+		self.assertEquals(404, response.status_code)
+
+	def test_mark_complete_permission_denied(self):
+		bob = JobPoster.objects.get(name="Bob")
+		joseph = Contractor.objects.get(name="Joseph")
+
+		posting = new_job_posting(
+			poster=bob,
+			contractor=joseph
+		)
+		posting.save()
+
+		response = self.client.post(
+			get_url("job_seeking:mark_complete", kwargs={
+				"posting_id" : posting.id
+			})
+		)
+
+		self.assertEquals(403, response.status_code)
 
