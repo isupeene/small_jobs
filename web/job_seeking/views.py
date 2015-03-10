@@ -70,6 +70,42 @@ class JobsView(APIView):
 # TODO: Skills and region
 class JobPosterView(APIView):
 	@serialize_response(SecureJobPosterSerializer)
-	def get(self, request, id):
-		return get_job_poster(request.user, id)
+	def get(self, request, poster_id):
+		return get_job_poster(request.user, int(poster_id))
+
+
+class BidView(APIView):
+	@deserialize_request(default_serializer(Bid))
+	def post(self, request, bid):
+		place_bid(request.user, bid)
+
+
+class CurrentJobsView(APIView):
+	@serialize_response(default_serializer(JobPosting), many=True)
+	def get(self, request):
+		return get_current_jobs(request.user)
+
+
+class CompletedJobsView(APIView):
+	@serialize_response(default_serializer(JobPosting), many=True)
+	def get(self, request):
+		return get_completed_jobs(request.user)
+
+
+class ProspectiveJobsView(APIView):
+	@serialize_response(default_serializer(JobPosting), many=True)
+	def get(self, request):
+		return get_prospective_jobs(request.user)
+
+
+class RateJobPosterView(APIView):
+	def post(self, request, poster_id, rating):
+		rate_job_poster(request.user, int(poster_id), int(rating))
+		return Response("OK", status=201)
+
+
+class MarkCompleteView(APIView):
+	def post(self, request, posting_id):
+		mark_complete(request.user, int(posting_id))
+		return Response("OK", status=201)
 
