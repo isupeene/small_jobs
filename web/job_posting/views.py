@@ -10,10 +10,7 @@ from small_jobs_api.decorators import require_login
 from small_jobs_api.models import (
 	JobPoster, JobPosting
 )
-from small_jobs_api.api import (
-	update_job_poster, 
-	create_job_posting
-)
+from small_jobs_api.api import *
 
 
 # A sample view requiring OpenID authentication.
@@ -21,15 +18,17 @@ from small_jobs_api.api import (
 def protected(request):
 	return HttpResponse("Hello, World!")
 
-#@require_login
 def homepage(request):
 	return render(request,'job_posting/homepage.html')
 
+@require_login
 def mainpage(request):
-	return render(request,'job_posting/mainpage.html')
+	context = {'userInfo': _get_job_poster(request)}
+	return render(request,'job_posting/mainpage.html', context)
 
 def edit_profile(request):
-	return render(request,'job_posting/edit_profile.html')
+	context = {'userInfo': _get_job_poster(request)}
+	return render(request,'job_posting/edit_profile.html',context)
 
 def create_job(request):
 	return render(request,'job_posting/create_job.html')
@@ -38,8 +37,8 @@ def job_details(request):
 	return render(request,'job_posting/job_details.html')
 
 def jobs(request):
-	# TODO get the actual persons id
-	jobList = JobPosting.objects.all
+
+	jobList = get_job_postings(_get_job_poster(request))
 	context = {'jobList': jobList}
 	return render(request,'job_posting/jobs.html',context)
 
@@ -54,16 +53,9 @@ def new_job(request):
 def post_new_job(request):
 	description = request.POST['description']
 	short_description = request.POST['short_description']
+	# TODO have to check these probably w/ js
 	# bidding_deadline = request.POST['bidding_deadline']
 	# compensation_amount = request.POST['compensation_amount']
-	# TODO change all of this hardcoded stuff! 
-	dave = JobPoster.objects.get(name="Dave")
-	email = "bob@cableguy.com"
-	dave.email = email
-	update_job_poster(dave)
-	dave.openid = 5
-	dave.description = "Every group needs a Dave"
-	dave.phonenumber = "123456789"
 	myPosting = JobPosting(
 			description=description,
 			short_description=short_description,
@@ -72,16 +64,23 @@ def post_new_job(request):
 			bid_includes_compensation_amount = False,
 			bid_includes_completion_date = False,
 		)
-	create_job_posting(dave, myPosting)
+	create_job_posting(_get_job_poster(request), myPosting)
 	# return redirect('job_posting/jobs.html')
-	return HttpResponse("Job has been posted!")
+	return jobs(request)
 	# return render(request, 'job_posting/jobs.html')
 
 def edit_my_profile_form(request):
 	# name = request.POST['name']
-	dave = JobPoster.objects.get(name="Dave")
-	dave.description = request.POST['description']
-	dave.email = request.POST['email']
-	dave.phonenumber = request.POST['phone_number']
-	update_job_poster(dave)
-	return HttpResponse(serialize("json", JobPoster.objects.all()))
+	openid = request.session["authenticated_user"].openid
+	jobposter = JobPoster.objects.get(openid=openid)
+	jobposter.description = request.POST['description']
+	jobposter.email = request.POST['email']
+	jobposter.phone_number = request.POST['phone_number']
+	update_job_poster(jobposter)
+	return mainpage(request)
+
+# Helper Functions
+def _get_job_poster(request):
+	openid = request.session["authenticated_user"].openid
+	jobposter = JobPoster.objects.get(openid=openid)
+	return jobposter

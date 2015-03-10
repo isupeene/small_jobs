@@ -4,26 +4,25 @@
 
 {% block title %}Jobs{% endblock %}
 
+{% block side_block %}
+  <li><a href="{% url 'job_posting:create_job' %}">Create Job</a></li>
+{% endblock %}
+
 {% block body_block %}
-<h1>Jobs man Jobs!</h1>
-Wow so many things to do! Whoa! Cool! <br>
-I can look at my requested jobs, wow look how many there are ! <br>
-Hey look I can click over there to even filter them! <br>
-Or click on each job to see more detailed information!  <br>
-<br>
-<br>
-Job Table:
-<head>
-<style>
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-th, td {
-    padding: 5px;
-}
-</style>
-</head>
+<h1>Jobs</h1>
+  {% if jobList %}
+    My Jobs Table:
+    <head>
+      <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 5px;
+        }
+      </style>
+    </head>
 
 
 <table style="width:100%">
@@ -35,7 +34,6 @@ th, td {
     <th>Bidding Confirm Date</th>
     <th>Contractor</th>
   </tr>
-  {% if jobList %}
       {% for job in jobList %}
       <tr>
         <td>{{job.poster}}</td>
@@ -46,19 +44,9 @@ th, td {
         <td>{{job.contractor}}</td>
       {% endfor %}
   {% else %}
-    <p>No jobs?</p> 
+    <p>You have never posted a Job!</p> 
   {% endif %}
 </table>
-
-
-<a href="http://127.0.0.1:8000/job_posting/job_details">job details if you were to click on one of those above</a> <br>
-Lets make one! <a href="http://127.0.0.1:8000/job_posting/create_job">Create my Job!</a> <br> 
-and delete them! by clicking over there! <br>
-Maybe somebody also finsihed my job and i can mark them as complete <br>
-Amazing!
-<br>
-Look at all these things I can change!
-<br>
 {% endblock %}
 
 
