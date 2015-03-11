@@ -12,8 +12,13 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 import com.smalljobs.jobseeker.models.Contractor;
+import com.smalljobs.jobseeker.models.JobPoster;
+import com.smalljobs.jobseeker.models.User;
 
 public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contractor > {
 
@@ -21,8 +26,6 @@ public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contract
     private Contractor contractor;
     private Context context;
     
-    public static final String MyPREFERENCES = "MyPrefs" ;
-    public static final String Auth = "authKey"; 
 
     public CreateAccountRequest(Context context, String email, String name) {
         super( Contractor.class );
@@ -40,21 +43,21 @@ public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contract
         CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
         CookieHandler.setDefault(cookieManager);
         
-        System.out.println("is it empty" + cookieManager.getCookieStore().getCookies().isEmpty());
         
         HttpRequest request = getHttpRequestFactory()//
                 .buildPostRequest( new GenericUrl( baseUrl ), content);
         
         HttpResponse response = request.execute();
         
-        //SharedPreferences sharedpreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        //Editor editor = sharedpreferences.edit();
-        //editor.putString(Auth, response.parseAsString());
-        //editor.commit();
-        System.out.println("is it empty" + cookieManager.getCookieStore().getCookies().isEmpty());
-        System.out.println(response.getHeaders().get("Set-cookie"));
+        String result = response.parseAsString();
+        
+        Gson gson = new Gson();
+        JsonParser parser = new JsonParser();
+        JsonObject obj = parser.parse(result).getAsJsonObject();
 
-        System.out.println(cookieManager.getCookieStore().getCookies().get(0).toString());
+        contractor = gson.fromJson( obj , Contractor.class);
+
+        User.getInstance().setContractor(contractor);
         
         return contractor;        
     }

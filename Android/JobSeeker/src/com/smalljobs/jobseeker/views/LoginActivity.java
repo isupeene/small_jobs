@@ -270,22 +270,22 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 		mEmailView.setAdapter(adapter);
 	}
 
-	public final class AuthenticationRequestListener implements RequestListener< Contractor > {
+	public final class AuthenticationRequestListener implements RequestListener< String > {
 
         @Override
         public void onRequestFailure( SpiceException spiceException ) {
             Toast.makeText( LoginActivity.this, "failure", Toast.LENGTH_SHORT ).show();
             showProgress(false);
             mEmailView
-			.setError(getString(R.string.error_id_exists));
+			.setError(getString(R.string.error_invalid_id));
             mEmailView.requestFocus();
             loginRequest = null;
         }
 
         @Override
-        public void onRequestSuccess( final Contractor result ) {
+        public void onRequestSuccess( final String result ) {
         	showProgress(false);
-            Toast.makeText( LoginActivity.this, "success", Toast.LENGTH_SHORT ).show();
+            Toast.makeText( LoginActivity.this, result, Toast.LENGTH_SHORT ).show();
             Intent intent = new Intent(context, MainActivity.class);
 			startActivity(intent);
 			overridePendingTransition(0, 0);

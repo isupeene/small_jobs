@@ -1,21 +1,18 @@
 package com.smalljobs.jobseeker.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.octo.android.robospice.persistence.DurationInMillis;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
-import com.smalljobs.jobseeker.PosterProfileRequest;
 import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.models.JobPoster;
 
 public class MainActivity extends BaseActivity {
 
 	private TextView mLoremTextView;
+	private int backButtonCount;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,5 +42,20 @@ public class MainActivity extends BaseActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
+	@Override
+	public void onBackPressed() {
+		if(backButtonCount >= 1)
+	    {
+	        Intent intent = new Intent(Intent.ACTION_MAIN);
+	        intent.addCategory(Intent.CATEGORY_HOME);
+	        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	        startActivity(intent);
+	    }
+	    else
+	    {
+	        Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
+	        backButtonCount++;
+	    }
+	}
 }

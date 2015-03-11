@@ -12,10 +12,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import android.content.*;
 
 import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.LogoutRequest;
 import com.smalljobs.jobseeker.R;
 
 public class BaseActivity extends Activity {
@@ -24,8 +28,10 @@ public class BaseActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private String[] navOptions = new String[] {"Home", 
-        "Browse", "My Jobs", "My Profile", "Settings"};
+        "Browse", "My Jobs", "My Profile", "Settings", "Logout"};
 
+    LogoutRequest logoutRequest;
+    
     private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
     
     @Override
@@ -159,6 +165,11 @@ public class BaseActivity extends Activity {
 			intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			break;
+		case 5:
+			//Logout
+			logoutRequest = new LogoutRequest();
+			spiceManager.execute(logoutRequest, new LogoutRequestListener());
+			break;
 		}
 	}
     
@@ -170,6 +181,22 @@ public class BaseActivity extends Activity {
 
     protected SpiceManager getSpiceManager() {
         return spiceManager;
+    }
+    
+	public final class LogoutRequestListener implements RequestListener< String > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+        }
+
+        @Override
+        public void onRequestSuccess( final String result ) {
+            Toast.makeText( BaseActivity.this, result, Toast.LENGTH_SHORT ).show();
+            Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+			startActivity(intent);
+			overridePendingTransition(0, 0);
+			finish();
+        }
     }
 
 }
