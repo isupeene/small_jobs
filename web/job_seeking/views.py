@@ -13,19 +13,24 @@ def deserialize_request(serializer_class, **skwargs):
 		def new_func(self, request, *args, **kwargs):
 			serializer = serializer_class(data=request.data, **skwargs)
 			if serializer.is_valid():
-				func(self, request, serializer.get_instance(), *args, **kwargs)
-				return Response(serializer.data, status=201)
+				return func(
+					self, request, serializer.get_instance(),
+					*args, **kwargs
+				)
 			else:
 				return Response(serializer.errors, status=400)
 		return new_func
 	return decorator
 
-def serialize_response(serializer_class, **skwargs):
+def serialize_response(serializer_class, status=200, **skwargs):
 	def decorator(func):
 		def new_func(self, request, *args, **kwargs):
 			result = func(self, request, *args, **kwargs)
-			serializer = serializer_class(result, **skwargs)
-			return Response(serializer.data)
+			if isinstance(result, Response):
+				return result
+			else:
+				serializer = serializer_class(result, **skwargs)
+				return Response(serializer.data, status=status)
 		return new_func
 	return decorator
 
@@ -34,17 +39,18 @@ def serialize_response(serializer_class, **skwargs):
 class CreateAccountView(APIView):
 	permission_classes = (AllowAny,)
 
+	@serialize_response(default_serializer(Contractor), status=201)
 	@deserialize_request(NewContractorSerializer)
 	def post(self, request, contractor):
 		create_account(request, contractor)
+		return contractor
 
 
-# TODO: Clean this up.
 class LoginView(APIView):
+	@serialize_response(default_serializer(Contractor))
 	def get(self, request):
-		return Response("Welcome, {}!".format(
-			request.user.name
-		))
+		return request.user
+
 
 class LogoutView(APIView):
 	permission_classes = (AllowAny,)
@@ -53,12 +59,11 @@ class LogoutView(APIView):
 		logout(request)
 		return Response("Successfully logged out.")
 
+
 class ProfileView(APIView):
+	@serialize_response(default_serializer(Contractor))
 	def get(self, request):
-		contractor = request.user
-		return HttpResponse('name: {}; email: {}'.format(
-			contractor.name, contractor.email
-		))
+		return request.user
 
 
 class JobsView(APIView):
@@ -75,9 +80,11 @@ class JobPosterView(APIView):
 
 
 class BidView(APIView):
+	@serialize_response(default_serializer(Bid), status=201)
 	@deserialize_request(default_serializer(Bid))
 	def post(self, request, bid):
 		place_bid(request.user, bid)
+		return bid
 
 
 class CurrentJobsView(APIView):
