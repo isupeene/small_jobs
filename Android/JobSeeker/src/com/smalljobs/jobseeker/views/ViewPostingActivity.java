@@ -24,6 +24,8 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.BidPostRequest;
+import com.smalljobs.jobseeker.DataHolder;
 import com.smalljobs.jobseeker.PosterProfileRequest;
 import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.models.JobPoster;
@@ -33,6 +35,7 @@ public class ViewPostingActivity extends Activity {
 
 	private Context context=this;
 	private PosterProfileRequest profileRequest;
+	private BidPostRequest bidPostRequest;
 	private JobPosting job;
 	private JobPoster jobPoster;
 	
@@ -44,6 +47,7 @@ public class ViewPostingActivity extends Activity {
 	private TextView bidConfDeadline;
 	private TextView compensationAmount;	
 	private TextView completionDate;
+	
 	
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
 	
@@ -77,6 +81,11 @@ public class ViewPostingActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.view_posting, menu);
+		if(DataHolder.getInstance().getBids().contains(job.getId())){
+			menu.findItem(R.id.action_bid).setEnabled(false);
+		} else {
+			menu.findItem(R.id.action_bid).setEnabled(true);
+		}
 		return true;
 	}
 
@@ -90,6 +99,11 @@ public class ViewPostingActivity extends Activity {
 			return true;
 		}
 		if (id == R.id.action_bid) {
+			// TODO Disable bid button
+			DataHolder.getInstance().addBid(job.getId());
+			invalidateOptionsMenu();
+			bidPostRequest = new BidPostRequest(job.getId(), null, null);
+			spiceManager.execute( bidPostRequest, "json", DurationInMillis.ONE_MINUTE, new BidPostRequestListener() );
 			return true;
 		}
 		if (id == android.R.id.home) {
@@ -208,6 +222,21 @@ public class ViewPostingActivity extends Activity {
             Toast.makeText( ViewPostingActivity.this, "success", Toast.LENGTH_SHORT ).show();
             jobPoster = result;
             displayJob();
+        }
+    }
+    
+    public final class BidPostRequestListener implements RequestListener< String > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+            Toast.makeText( ViewPostingActivity.this, "failure", Toast.LENGTH_SHORT ).show();
+        }
+
+        @Override
+        public void onRequestSuccess( final String result ) {
+        	setProgressBarVisibility( false );
+            Toast.makeText( ViewPostingActivity.this, "success", Toast.LENGTH_SHORT ).show();
+            System.out.println(result);
         }
     }
 }

@@ -5,6 +5,9 @@ import com.google.api.client.util.Key;
 public class Contractor {
 	
 	@Key
+	private String id;
+	
+	@Key
 	private String name;
 	
 	@Key
@@ -16,8 +19,6 @@ public class Contractor {
 	@Key
 	private String email;
 
-	
-	
 	public Contractor(String name, String email) {
 		super();
 		this.name = name;
@@ -54,6 +55,14 @@ public class Contractor {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	

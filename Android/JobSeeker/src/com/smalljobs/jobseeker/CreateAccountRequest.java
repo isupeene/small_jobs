@@ -51,6 +51,8 @@ public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contract
         
         String result = response.parseAsString();
         
+        System.out.println(result);
+        
         Gson gson = new Gson();
         JsonParser parser = new JsonParser();
         JsonObject obj = parser.parse(result).getAsJsonObject();

@@ -8,6 +8,9 @@ import com.google.api.client.util.Key;
 public class JobPosting implements Serializable {
 
 	@Key
+	private String id;
+	
+	@Key
 	private String poster;
 	
 	@Key
@@ -138,6 +141,12 @@ public class JobPosting implements Serializable {
 	}
 	public void setDateCompleted(String date_completed) {
 		this.date_completed = date_completed;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 
