@@ -21,7 +21,6 @@ public class MainActivity extends BaseActivity {
 		
 		mLoremTextView = (TextView) findViewById( R.id.name );
 		
-		
 	}
 
 	@Override

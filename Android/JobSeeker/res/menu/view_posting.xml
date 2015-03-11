@@ -3,6 +3,11 @@
     tools:context="com.smalljobs.jobseeker.ViewPostingActivity" >
 
     <item
+        android:id="@+id/action_bid"
+        android:showAsAction="withText|ifRoom"
+        android:title="@string/action_bid"/>
+    
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"

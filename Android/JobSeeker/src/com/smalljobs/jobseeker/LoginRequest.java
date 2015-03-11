@@ -24,7 +24,7 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest< String > {
         super( String.class );
         this.context = context;
         this.email = email;
-        this.baseUrl = "http://192.168.1.75:8000/job_seeking/login/";
+        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/login/";
     }
 
     @Override

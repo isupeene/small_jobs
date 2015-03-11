@@ -1,12 +1,19 @@
 package com.smalljobs.jobseeker;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 
 import com.smalljobs.jobseeker.models.JobPosting;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.provider.SyncStateContract.Constants;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,14 +59,47 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(this.resId, parent, false);
 		}
-		//final ListView list=(ListView)parent.findViewById(R.id.MainListView);
+		
 		TextView title = (TextView) convertView.findViewById(R.id.titleMain);
-		TextView description = (TextView) convertView.findViewById(R.id.descriptionMain);
+		TextView biddingDeadline = (TextView) convertView.findViewById(R.id.biddingDeadlineMain);
+		TextView compensationAmount = (TextView) convertView.findViewById(R.id.compensationAmountMain);
+		TextView completionDate = (TextView) convertView.findViewById(R.id.completionDateMain);
 		
-		final JobPosting posting = postings.get(position);
+		final JobPosting job = postings.get(position);
+				
+		SpannableString ss;
 		
-		title.setText(posting.getTitle());
-		description.setText(posting.getDescription());
+		title.setText(job.getTitle());
+		
+		
+		Date date = null;
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		try {
+			date = df1.parse(job.getBiddingDeadline());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ss =  new SpannableString("Bidding Deadline: \n" + date);
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 17, 0);
+		biddingDeadline.setText(ss);
+		
+		date = null;
+		try {
+			date = df1.parse(job.getBiddingConfirmationDeadline());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ss =  new SpannableString("Compensation Amount: Not specified");
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 20, 0);
+		compensationAmount.setText(ss);
+		
+		ss =  new SpannableString("Completion Date: Not specified");
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 16, 0);
+		completionDate.setText(ss);
+		
 		
 		return convertView;
 	}

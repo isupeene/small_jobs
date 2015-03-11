@@ -10,39 +10,112 @@
    
     
     <TextView
+        android:id="@+id/creationDate"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:paddingBottom="10sp"
+    	android:textSize="12sp"
+    	android:textColor="@android:color/darker_gray"
+    	android:layout_alignParentLeft="true"
+    	android:layout_alignParentStart="true">
+    </TextView>
+    
+    <TextView
         android:id="@+id/jobTitle"
 	    android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
+    	android:layout_below="@id/creationDate"
     	android:textSize="20sp"
-    	android:text="Title"
-    	android:layout_alignParentLeft="true">
+    	android:layout_alignParentLeft="true"
+    	android:layout_alignParentStart="true">
     </TextView>
     
     <TextView
         android:id="@+id/jobPoster"
 	    android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:paddingTop="10sp"
     	android:textSize="15sp"
-    	android:text="Description"
+    	android:paddingTop="10sp"
     	android:textColor="@android:color/holo_blue_dark"
     	android:layout_below="@id/jobTitle"
     	android:layout_alignParentLeft="true"
+    	android:layout_alignParentStart="true"
     	android:clickable="true"
     	android:onClick="displayPoster">
     </TextView>
-    
+ 
+       
     <TextView
-        android:id="@+id/jobDescription"
+        android:id="@+id/descriptionTitle"
 	    android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:paddingTop="10sp"
     	android:textSize="15sp"
-    	android:text="Description"
-    	android:textColor="@android:color/darker_gray"
+    	android:text="Description:"
+    	android:textColor="@color/sysDkGray"
     	android:layout_below="@id/jobPoster"
+    	android:layout_alignParentLeft="true"
+    	android:visibility="invisible">
+    </TextView>
+    
+    <ScrollView 
+        android:id="@+id/ScrollView01" 
+        android:layout_height="150dp"
+        android:layout_below="@id/descriptionTitle" 
+        android:layout_width="fill_parent">
+	    
+	    <TextView
+	        android:id="@+id/jobDescription"
+		    android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:textSize="15sp"
+	    	android:textColor="@android:color/darker_gray"/>
+	    
+	</ScrollView>
+	    
+    <TextView
+        android:id="@+id/bidConfDeadline"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:textSize="13sp"
+    	android:textColor="@android:color/darker_gray"
+    	android:layout_alignParentBottom="true"
     	android:layout_alignParentLeft="true">
     </TextView>
+    
+    <TextView
+        android:id="@+id/biddingDeadline"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:paddingTop="15sp"
+    	android:textSize="13sp"
+    	android:textColor="@android:color/darker_gray"
+    	android:layout_above="@id/bidConfDeadline"
+    	android:layout_alignParentLeft="true">
+    </TextView>
+    
+    <TextView
+        android:id="@+id/completionDate"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:textSize="13sp"
+    	android:textColor="@android:color/darker_gray"
+    	android:layout_above="@id/biddingDeadline"
+    	android:layout_alignParentLeft="true">
+    </TextView>
+    
+    <TextView
+        android:id="@+id/compensationAmount"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:paddingTop="10sp"
+    	android:textSize="13sp"
+    	android:textColor="@android:color/darker_gray"
+    	android:layout_above="@id/completionDate"
+    	android:layout_alignParentLeft="true">
+    </TextView>
+    
+
     
 
 </RelativeLayout>

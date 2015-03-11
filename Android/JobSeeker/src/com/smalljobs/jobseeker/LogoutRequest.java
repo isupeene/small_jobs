@@ -17,7 +17,7 @@ public class LogoutRequest extends GoogleHttpClientSpiceRequest< String > {
 
     public LogoutRequest() {
         super( String.class );
-        this.baseUrl = "http://192.168.1.75:8000/job_seeking/logout/";
+        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/logout/";
     }
 
     @Override

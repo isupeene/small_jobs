@@ -23,7 +23,7 @@ public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoste
 
     public PosterProfileRequest(String id) {
         super( JobPoster.class );
-        this.baseUrl = "http://192.168.1.75:8000/job_seeking/job_poster/" + id + "/";
+        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/job_poster/" + id + "/";
     }
 
     @Override

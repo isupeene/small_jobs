@@ -31,7 +31,7 @@ public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contract
         super( Contractor.class );
         contractor = new Contractor(name, email);
         this.context = context;
-        this.baseUrl = "http://192.168.1.75:8000/job_seeking/create_account/";
+        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/create_account/";
     }
 
     @Override

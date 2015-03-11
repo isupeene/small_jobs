@@ -10,9 +10,13 @@ import com.smalljobs.jobseeker.models.JobPoster;
 import com.smalljobs.jobseeker.models.JobPosting;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 public class PosterProfileActivity extends Activity {
@@ -52,8 +56,21 @@ public class PosterProfileActivity extends Activity {
 	}
 	
 	public void displayProfile() {
+		
+		SpannableString ss;
+		
 		((TextView) findViewById(R.id.jobPoster)).setText(jobPoster.getName());
 		((TextView) findViewById(R.id.posterDescription)).setText(jobPoster.getDescription());
-		((TextView) findViewById(R.id.phoneNumber)).setText(jobPoster.getPhoneNumber());
+		
+		ss =  new SpannableString("Call " + jobPoster.getPhoneNumber());
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 4, 0);
+		((TextView) findViewById(R.id.phoneNumber)).setText(ss);
+		
+		ss =  new SpannableString("Email " + jobPoster.getEmail());
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 5, 0);
+		((TextView) findViewById(R.id.email)).setText(ss);
+		
+		((TextView) findViewById(R.id.descriptionTitle)).setVisibility(View.VISIBLE);
+		((TextView) findViewById(R.id.contactTitle)).setVisibility(View.VISIBLE);
 	}
 }

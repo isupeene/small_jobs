@@ -8,8 +8,11 @@ import java.util.Date;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +36,15 @@ public class ViewPostingActivity extends Activity {
 	private JobPosting job;
 	private JobPoster jobPoster;
 	
+	private TextView jobTitle;	
+	private TextView jobDescription;	
+	private TextView jobPosterName;	
+	private TextView creationDate;	
+	private TextView biddingDeadline;	
+	private TextView bidConfDeadline;
+	private TextView compensationAmount;	
+	private TextView completionDate;
+	
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
 	
 	@Override
@@ -44,7 +56,21 @@ public class ViewPostingActivity extends Activity {
 		
 		profileRequest = new PosterProfileRequest(job.getPosterID());
 		
+		jobTitle = (TextView) findViewById(R.id.jobTitle);
+		jobDescription = (TextView) findViewById(R.id.jobDescription);
+		jobPosterName = (TextView) findViewById(R.id.jobPoster);
+		creationDate = (TextView) findViewById(R.id.creationDate);
+		biddingDeadline = (TextView) findViewById(R.id.biddingDeadline);
+		bidConfDeadline = (TextView) findViewById(R.id.bidConfDeadline);
+		compensationAmount = (TextView) findViewById(R.id.compensationAmount);
+		completionDate = (TextView) findViewById(R.id.completionDate);
 		
+		spiceManager.start(this);
+		
+        setProgressBarIndeterminate( true );
+        setProgressBarVisibility( true );
+
+        spiceManager.execute( profileRequest, "json", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
 	}
 
 	@Override
@@ -61,6 +87,9 @@ public class ViewPostingActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			return true;
+		}
+		if (id == R.id.action_bid) {
 			return true;
 		}
 		if (id == android.R.id.home) {
@@ -93,28 +122,66 @@ public class ViewPostingActivity extends Activity {
 	
 	@Override
     protected void onStart() {
-        super.onStart();
-
-        spiceManager.start(this);
+        super.onStart(); 
         
-        setProgressBarIndeterminate( true );
-        setProgressBarVisibility( true );
-
-        spiceManager.execute( profileRequest, "json", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
+        if (!spiceManager.isStarted()) {
+        	spiceManager.start(this);
+        }
     }
 	
 	public void displayJob() {
-		((TextView) findViewById(R.id.jobTitle)).setText(job.getTitle());
-		((TextView) findViewById(R.id.jobPoster)).setText(jobPoster.getName());
-		Date creationDate = null;
-		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		
+		SpannableString ss;
+		
+		jobTitle.setText(job.getTitle());
+		
+		jobPosterName.setText(jobPoster.getName());
+		
+		Date date = null;
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		try {
-			creationDate = df1.parse(job.getCreationDate());
+			date = df1.parse(job.getCreationDate());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		((TextView) findViewById(R.id.jobDescription)).setText(job.getDescription());
+		ss =  new SpannableString("Posted: " + date);
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 7, 0);
+		creationDate.setText(ss);
+		
+		
+		((TextView) findViewById(R.id.descriptionTitle)).setVisibility(View.VISIBLE);
+		jobDescription.setText(job.getDescription());
+		
+		date = null;
+		try {
+			date = df1.parse(job.getBiddingDeadline());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ss =  new SpannableString("Bidding Deadline: \n" + date);
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 17, 0);
+		biddingDeadline.setText(ss);
+		
+		date = null;
+		try {
+			date = df1.parse(job.getBiddingConfirmationDeadline());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ss =  new SpannableString("Bid Confirmation By: \n" + date);
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 20, 0);
+		bidConfDeadline.setText(ss);
+		
+		ss =  new SpannableString("Compensation Amount: Not specified");
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 20, 0);
+		compensationAmount.setText(ss);
+		
+		ss =  new SpannableString("Completion Date: Not specified");
+		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 16, 0);
+		completionDate.setText(ss);
 	}
 	
 	public void displayPoster(View v) {

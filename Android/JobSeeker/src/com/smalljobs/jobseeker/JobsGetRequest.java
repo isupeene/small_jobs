@@ -24,15 +24,11 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
 
     private String baseUrl;
     private Context context;
-    private SharedPreferences sharedpreferences;
-    
-    public static final String MyPREFERENCES = "MyPrefs" ;
-    public static final String Auth = "authKey"; 
 
     public JobsGetRequest( Context context ) {
         super( JobsListing.class );
         this.context = context;
-        this.baseUrl = "http://192.168.1.75:8000/job_seeking/jobs";
+        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/jobs";
     }
 
     @Override
@@ -41,7 +37,6 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
 
-        sharedpreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
         CookieHandler.setDefault(cookieManager);

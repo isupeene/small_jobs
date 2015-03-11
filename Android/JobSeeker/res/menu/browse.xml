@@ -3,6 +3,11 @@
     tools:context="com.smalljobs.jobseeker.BrowseActivity" >
 
     <item
+        android:id="@+id/action_filter"
+        android:showAsAction="withText|ifRoom"
+        android:title="@string/action_filter"/>
+    
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"

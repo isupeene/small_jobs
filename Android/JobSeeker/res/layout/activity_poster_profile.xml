@@ -17,24 +17,57 @@
     	android:layout_alignParentLeft="true">
     </TextView>
    
+    <TextView
+        android:id="@+id/descriptionTitle"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:paddingTop="10sp"
+    	android:textSize="17sp"
+    	android:text="About:"
+    	android:textColor="@color/sysDkGray"
+    	android:layout_below="@id/jobPoster"
+    	android:layout_alignParentLeft="true"
+    	android:visibility="invisible">
+    </TextView>
     
     <TextView
         android:id="@+id/posterDescription"
 	    android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:paddingTop="10sp"
+    	android:paddingTop="5dp"
     	android:textSize="15sp"
     	android:text="Description"
     	android:textColor="@android:color/darker_gray"
-    	android:layout_below="@id/jobPoster"
+    	android:layout_below="@id/descriptionTitle"
     	android:layout_alignParentLeft="true">
     </TextView>
 
     <TextView
+        android:id="@+id/contactTitle"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:paddingTop="26dp"
+    	android:textSize="17sp"
+    	android:text="Contact:"
+    	android:textColor="@color/sysDkGray"
+    	android:layout_below="@id/posterDescription"
+    	android:layout_alignParentLeft="true"
+    	android:visibility="invisible">
+    </TextView>
+    
+    <TextView
         android:id="@+id/phoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/posterDescription"
-        android:layout_marginTop="26dp" />
+        android:layout_below="@+id/contactTitle"
+    	android:textColor="@android:color/darker_gray"
+        android:paddingTop="10dp" />
+    
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/phoneNumber"
+    	android:textColor="@android:color/darker_gray" />
 
 </RelativeLayout>
