@@ -45,6 +45,9 @@ class CreateAccountTest(TestCase):
 			for field
 			in Contractor._meta.fields
 		}
+		response_data = loads(response.content)
+		self.assertEquals(emilys_data, response_data)
+
 		del emilys_data["id"]
 		self.assertEquals(data, emilys_data)
 		self.assertEquals(emily, Contractor.objects.get())
@@ -96,16 +99,22 @@ class LoginTest(TestCase):
 		self.client.get(get_url("job_seeking:logout"))
 
 	def test_login(self):
+		emily = Contractor.objects.get(name="Emily")
 		response = self.client.get(
 			get_url("job_seeking:login"),
 			HTTP_AUTHORIZATION="Basic {}".format(b64encode("emily95@gmail.com:"))
 		)
+		data = loads(response.content)
 
 		self.assertEquals(200, response.status_code)
 		self.assertEquals(
 			Contractor.objects.get(),
 			self.client.session["authenticated_contractor"]
 		)
+		self.assertEquals(emily.id, data['id'])
+		self.assertEquals(emily.name, data['name'])
+		self.assertEquals(emily.email, data['email'])
+
 
 	def test_login_user_does_not_exist(self):
 		response = self.client.get(
@@ -123,6 +132,15 @@ class JobSeekingAPITest(TestCase):
 			get_url("job_seeking:create_account"),
 			{"name" : "Emily", "email" : "emily95@gmail.com"}
 		)
+
+	def test_get_profile(self):
+		emily = Contractor.objects.get(name="Emily")
+		response = self.client.get(get_url("job_seeking:profile"))
+		data = loads(response.content)
+
+		self.assertEquals(emily.id, data['id'])
+		self.assertEquals(emily.name, data['name'])
+		self.assertEquals(emily.email, data['email'])
 
 	def test_get_jobs(self):
 		bob = JobPoster.objects.get(name="Bob")
