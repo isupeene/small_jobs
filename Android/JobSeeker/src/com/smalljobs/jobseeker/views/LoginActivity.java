@@ -1,4 +1,4 @@
-package com.smalljobs.jobseeker;
+package com.smalljobs.jobseeker.views;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +31,12 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.LoginRequest;
+import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.R.id;
+import com.smalljobs.jobseeker.R.layout;
+import com.smalljobs.jobseeker.R.string;
 import com.smalljobs.jobseeker.models.Contractor;
-import com.smalljobs.jobseeker.views.MainActivity;
-import com.smalljobs.jobseeker.views.SignupActivity;
-import com.smalljobs.jobseeker.views.SignupActivity.AuthenticationRequestListener;
 
 /**
  * A login screen that offers login via email/password.

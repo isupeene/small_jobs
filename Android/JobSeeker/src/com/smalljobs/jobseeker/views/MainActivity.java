@@ -15,8 +15,6 @@ import com.smalljobs.jobseeker.models.JobPoster;
 
 public class MainActivity extends BaseActivity {
 
-	
-	
 	private TextView mLoremTextView;
 	
 	@Override
