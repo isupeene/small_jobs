@@ -1,6 +1,8 @@
 package com.smalljobs.jobseeker;
 
 import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.util.ArrayList;
 
 import roboguice.util.temp.Ln;
@@ -21,7 +23,7 @@ public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoste
 
     public PosterProfileRequest(String id) {
         super( JobPoster.class );
-        this.baseUrl = "http://172.28.216.12:8000/job_seeking/job_poster/" + id + "/";
+        this.baseUrl = "http://192.168.1.75:8000/job_seeking/job_poster/" + id + "/";
     }
 
     @Override
@@ -29,24 +31,19 @@ public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoste
         Ln.d( "Call web service " + baseUrl );
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
-                
+        
+        CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
+        CookieHandler.setDefault(cookieManager);
+        
         String result = request.execute().parseAsString();
 
         Gson gson = new Gson();
         JsonParser parser = new JsonParser();
-        JsonArray jArray = parser.parse(result).getAsJsonArray();
+        JsonObject obj = parser.parse(result).getAsJsonObject();
         
-        ArrayList<JobPoster> posters = new ArrayList<JobPoster>();
+        JobPoster poster = gson.fromJson( obj , JobPoster.class);
         
-        for(JsonElement obj : jArray )
-        {
-        	JsonObject o = obj.getAsJsonObject();
-        	obj = o.get("fields");
-            JobPoster poster = gson.fromJson( obj , JobPoster.class);
-            posters.add(poster);
-        }
-        
-        return posters.get(0);        
+        return poster;        
     }
     
     

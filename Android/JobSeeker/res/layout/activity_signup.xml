@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.smalljobs.jobseeker.LoginActivity" >
+    tools:context="com.smalljobs.jobseeker.views.SignupActivity" >
 
     <!-- Login progress -->
 
@@ -29,10 +29,11 @@
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical" >
 
             <AutoCompleteTextView
-                android:id="@+id/loginEmail"
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email"
@@ -40,25 +41,25 @@
                 android:maxLines="1"
                 android:singleLine="true" />
 
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_name"
+                android:imeActionId="@+id/login"
+                android:imeActionLabel="@string/action_sign_up_short"
+                android:imeOptions="actionUnspecified"
+                android:maxLines="1"
+                android:singleLine="true" />
+
             <Button
-                android:id="@+id/email_sign_in_button"
+                android:id="@+id/email_sign_up_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
+                android:text="@string/action_sign_up"
                 android:textStyle="bold" />
-            
-            <TextView
-                android:id="@+id/create_account_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/create_account"
-                android:clickable="true"
-                android:onClick="showSignupDialog"
-                android:textAppearance="@android:style/TextAppearance.Holo.Small"
-                android:textColor="@android:color/holo_blue_dark" />
             
         </LinearLayout>
     </ScrollView>

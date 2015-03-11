@@ -1,9 +1,13 @@
 package com.smalljobs.jobseeker;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 
 import roboguice.util.temp.Ln;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
@@ -13,17 +17,22 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
-import com.smalljobs.jobseeker.models.JobPoster;
 import com.smalljobs.jobseeker.models.JobPosting;
 import com.smalljobs.jobseeker.models.JobsListing;
 
 public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > {
 
     private String baseUrl;
+    private Context context;
+    private SharedPreferences sharedpreferences;
+    
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String Auth = "authKey"; 
 
-    public JobsGetRequest( ) {
+    public JobsGetRequest( Context context ) {
         super( JobsListing.class );
-        this.baseUrl = "http://172.28.216.12:8000/job_seeking/jobs";
+        this.context = context;
+        this.baseUrl = "http://192.168.1.75:8000/job_seeking/jobs";
     }
 
     @Override
@@ -31,7 +40,12 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
         Ln.d( "Call web service " + baseUrl );
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
-                
+
+        sharedpreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+        CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
+        CookieHandler.setDefault(cookieManager);
+        
         String result = request.execute().parseAsString();
 
         Gson gson = new Gson();
@@ -42,8 +56,6 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
         
         for(JsonElement obj : jArray )
         {
-        	JsonObject o = obj.getAsJsonObject();
-        	obj = o.get("fields");
             JobPosting posting = gson.fromJson( obj , JobPosting.class);
             postings.add(posting);
         }

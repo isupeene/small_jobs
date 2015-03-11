@@ -47,7 +47,7 @@ public class BrowseActivity extends BaseActivity {
 			}
 		});
 		
-		jobsRequest = new JobsGetRequest();
+		jobsRequest = new JobsGetRequest(context);
 	}
 
 	public void selectJob(int position) {

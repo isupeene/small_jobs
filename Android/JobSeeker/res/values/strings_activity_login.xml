@@ -1,16 +1,20 @@
 <resources>
 
     <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_signup">Sign up</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Your Email</string>
-    <string name="prompt_password">Your Name</string>
-    <string name="action_sign_in">Sign up</string>
-    <string name="action_sign_in_short">Sign up</string>
+    <string name="prompt_name">Your Name</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="action_sign_up_short">Sign up</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_invalid_name">This name is too short</string>
+    <string name="error_invalid_id">This email is not registered</string>
+    <string name="error_id_exists">This user already exists</string>
     <string name="error_field_required">This field is required</string>
-    <string name="create_account"><u>Already have an account?</u></string>
+    <string name="create_account"><u>Don\'t have an account? Sign up!</u></string>
 
 </resources>
