@@ -1,0 +1,53 @@
+
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Jobs{% endblock %}
+
+
+{% block side_block %}
+  <li><a href="{% url 'job_posting:create_job' %}">Create Job</a></li>
+{% endblock %}
+
+{% block body_block %}
+<h1>Jobs</h1>
+  {% if jobList %}
+    My Jobs Table:
+    <head>
+      <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 5px;
+        }
+      </style>
+    </head>
+
+<table style="width:100%">
+  <tr>
+    <th>Poster</th>
+    <th>Create Date</th>    
+    <th>Short Description</th>
+    <th>Bidding Deadline</th>
+    <th>Bidding Confirm Date</th>
+    <th>Contractor</th>
+  </tr>
+      {% for job in jobList %}
+      <tr>
+        <td>{{job.poster}}</td>
+        <td>{{job.creation_date}}</td>
+        <td>{{job.short_description}}</td>
+        <td>{{job.bidding_deadline}}</td>
+        <td>{{job.confirmation_deadline}}</td>
+        <td>{{job.contractor}}</td>
+      {% endfor %}
+  {% else %}
+    <p>You have never posted a Job!</p> 
+  {% endif %}
+</table>
+{% endblock %}
+
+

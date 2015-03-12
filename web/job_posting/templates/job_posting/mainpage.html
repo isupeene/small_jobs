@@ -1,0 +1,17 @@
+
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Main Page{% endblock %}
+
+{% block body_block %}
+<h1>The Main Page</h1>
+Welcome!
+{% if userInfo %}
+	<p>Hello {{userInfo.name }}<p>
+  {% else %}
+    <p>Couldn't login!</p> 
+  {% endif %}
+<br>
+{% endblock %}
