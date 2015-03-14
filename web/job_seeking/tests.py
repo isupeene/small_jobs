@@ -23,8 +23,10 @@ def new_job_posting(description="foo", short_description="bar",
 		short_description=short_description,
 		bidding_deadline=now() + timedelta(days=10),
 		bidding_confirmation_deadline=now() + timedelta(days=15),
-		bid_includes_compensation_amount = False,
-		bid_includes_completion_date = False,
+		bid_includes_compensation_amount=False,
+		bid_includes_completion_date=False,
+		compensation_amount=50000,
+		completion_date=now() + timedelta(days=50),
 		**kwargs
 	)
 

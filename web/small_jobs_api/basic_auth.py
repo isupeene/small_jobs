@@ -1,4 +1,4 @@
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.db import IntegrityError
 
 from rest_framework.authentication import BaseAuthentication
@@ -29,8 +29,7 @@ def create_account(request, contractor):
 	try:
 		contractor.save()
 		request.session['authenticated_contractor'] = contractor
-	except IntegrityError as ex:
-		print(ex)
+	except (IntegrityError, ValidationError):
 		raise SuspiciousOperation
 
 def logout(request):

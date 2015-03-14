@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.utils.timezone import now
-from django.core.exceptions import SuspiciousOperation, PermissionDenied
+from django.core.exceptions import (
+	SuspiciousOperation, PermissionDenied, ValidationError
+)
 from django.http import Http404
 
 from datetime import timedelta
@@ -10,18 +12,27 @@ from small_jobs_api import job_posting_api as post
 from small_jobs_api import job_seeking_api as seek
 
 
-# Add more parameters if necessary.  Make sure not to call
-# now() in a parameter default - it will only be executed when the
-# function is interpreted, not when it's run!
+# Add more parameters if necessary.
+# It's OK to call now() in a parameter default, even though it will
+# only be executed when the function is interpreted, not when it's run,
+# because unit tests are a very short running process.
 def new_job_posting(description="foo", short_description="bar",
+					bidding_deadline=now() + timedelta(days=10),
+					bidding_confirmation_deadline=now() + timedelta(days=15),
+					bid_includes_compensation_amount=False,
+					bid_includes_completion_date=False,
+					compensation_amount=50000,
+					completion_date=now() + timedelta(days=50),
 					**kwargs):
 	return JobPosting(
 		description=description,
 		short_description=short_description,
-		bidding_deadline=now() + timedelta(days=10),
-		bidding_confirmation_deadline=now() + timedelta(days=15),
-		bid_includes_compensation_amount = False,
-		bid_includes_completion_date = False,
+		bidding_deadline=bidding_deadline,
+		bidding_confirmation_deadline=bidding_confirmation_deadline,
+		bid_includes_compensation_amount=bid_includes_compensation_amount,
+		bid_includes_completion_date=bid_includes_completion_date,
+		compensation_amount=compensation_amount,
+		completion_date=completion_date,
 		**kwargs
 	)
 
@@ -668,3 +679,300 @@ class JobSeekingAPITest(TestCase):
 		with self.assertRaises(Http404):
 			seek.mark_complete(emily, 0)
 
+
+class ModelValidationTest(TestCase):
+	def setUp(self):
+		JobPoster(openid=0, name="Bob").save()
+		Contractor(name="Emily", email="emily95@gmail.com").save()
+
+	def test_job_poster_invalid_phone_number(self):
+		with self.assertRaises(ValidationError):
+			JobPoster(openid=1, name="Frank", phone_number="2").save()
+
+	def test_job_poster_invalid_email(self):
+		with self.assertRaises(ValidationError):
+			JobPoster(openid=1, name="Frang", email="invalid").save()
+
+	def test_contractor_invalid_phone_number(self):
+		with self.assertRaises(ValidationError):
+			Contractor(
+				name="Joseph",
+				email="joseph86@gmail.com",
+				phone_number="2"
+			).save()
+
+	def test_contractor_invalid_email(self):
+		with self.assertRaises(ValidationError):
+			Contractor(name="Joseph", email="invalid").save()
+
+	def test_job_posting_bidding_confirmation_deadline_too_early(self):
+		bob = JobPoster.objects.get(name="Bob")
+		with self.assertRaises(ValidationError):
+			new_job_posting(
+				poster=bob,
+				bidding_deadline=now() + timedelta(days=10),
+				bidding_confirmation_deadline=now() + timedelta(days=5)
+			).save()
+
+	def test_job_posting_bidding_deadline_too_early(self):
+		bob = JobPoster.objects.get(name="Bob")
+		with self.assertRaises(ValidationError):
+			new_job_posting(
+				poster=bob,
+				bidding_deadline=now() - timedelta(days=10)
+			).save()
+
+	def test_job_posting_negative_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+		with self.assertRaises(ValidationError):
+			new_job_posting(
+				poster=bob,
+				compensation_amount=-1
+			).save()
+
+	def test_job_posting_no_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+		with self.assertRaises(ValidationError):
+			new_job_posting(
+				poster=bob,
+				bid_includes_compensation_amount=False,
+				compensation_amount=None
+			).save()
+
+	def test_job_posting_no_completion_date(self):
+		bob = JobPoster.objects.get(name="Bob")
+		with self.assertRaises(ValidationError):
+			new_job_posting(
+				poster=bob,
+				bid_includes_completion_date=False,
+				completion_date=None
+			).save()
+
+	def test_bid_no_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_compensation_amount=True
+		)
+		posting.save()
+		with self.assertRaises(ValidationError):
+			Bid(contractor=emily, job=posting, compensation_amount=None).save()
+
+	def test_bid_no_completion_date(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_completion_date=True
+		)
+		posting.save()
+		with self.assertRaises(ValidationError):
+			Bid(contractor=emily, job=posting, completion_date=None).save()
+
+	def test_bid_with_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_compensation_amount=False
+		)
+		posting.save()
+		with self.assertRaises(ValidationError):
+			Bid(contractor=emily, job=posting, compensation_amount=10000).save()
+
+	def test_bid_with_completion_date(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_completion_date=False
+		)
+		posting.save()
+		with self.assertRaises(ValidationError):
+			Bid(
+				contractor=emily,
+				job=posting,
+				completion_date=now() + timedelta(days=50)
+			).save()
+
+	def test_bid_negative_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_compensation_amount=True
+		)
+		posting.save()
+		with self.assertRaises(ValidationError):
+			Bid(contractor=emily, job=posting, compensation_amount=-1).save()
+
+	def test_job_poster_rating_too_low(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		new_job_posting(
+			poster=bob,
+			contractor=emily,
+			completed=True
+		).save()
+		with self.assertRaises(ValidationError):
+			JobPosterRating(poster=bob, contractor=emily, rating=-1).save()
+
+	def test_job_poster_rating_too_high(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		new_job_posting(
+			poster=bob,
+			contractor=emily,
+			completed=True
+		).save()
+		with self.assertRaises(ValidationError):
+			JobPosterRating(poster=bob, contractor=emily, rating=6).save()
+		
+	def test_contractor_rating_too_low(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		new_job_posting(
+			poster=bob,
+			contractor=emily,
+			completed=True
+		).save()
+		with self.assertRaises(ValidationError):
+			ContractorRating(poster=bob, contractor=emily, rating=-1).save()
+
+	def test_contractor_rating_too_high(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		new_job_posting(
+			poster=bob,
+			contractor=emily,
+			completed=True
+		).save()
+		with self.assertRaises(ValidationError):
+			ContractorRating(poster=bob, contractor=emily, rating=6).save()
+
+	def test_change_job_posting_when_bids_exist_no_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_compensation_amount=False
+		)
+		posting.save()
+
+		Bid(job=posting, contractor=emily).save()
+
+		posting.bid_includes_compensation_amount = True
+		with self.assertRaises(ValidationError):
+			posting.save()
+		self.assertFalse(
+			JobPosting.objects.get().bid_includes_compensation_amount
+		)
+
+	def test_change_job_posting_when_bids_exist_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_compensation_amount=True
+		)
+		posting.save()
+
+		Bid(job=posting, contractor=emily, compensation_amount=50000).save()
+
+		posting.bid_includes_compensation_amount = False
+		with self.assertRaises(ValidationError):
+			posting.save()
+		self.assertTrue(
+			JobPosting.objects.get().bid_includes_compensation_amount
+		)
+
+	def test_change_job_posting_when_no_bids_exist_no_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_compensation_amount=False
+		)
+		posting.save()
+
+		posting.bid_includes_compensation_amount = True
+		posting.save()
+
+	def test_change_job_posting_when_no_bids_exist_compensation_amount(self):
+		bob = JobPoster.objects.get(name="Bob")
+
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_compensation_amount=True
+		)
+		posting.save()
+
+		posting.bid_includes_compensation_amount = False
+		posting.save()
+
+	def test_change_job_posting_when_bids_exist_no_completion_date(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_completion_date=False
+		)
+		posting.save()
+
+		Bid(job=posting, contractor=emily).save()
+
+		posting.bid_includes_completion_date = True
+		with self.assertRaises(ValidationError):
+			posting.save()
+		self.assertFalse(JobPosting.objects.get().bid_includes_completion_date)
+
+	def test_change_job_posting_when_bids_exist_completion_date(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_completion_date=True
+		)
+		posting.save()
+
+		Bid(
+			job=posting,
+			contractor=emily,
+			completion_date=now() + timedelta(days=50)
+		).save()
+
+		posting.bid_includes_completion_date = False
+		with self.assertRaises(ValidationError):
+			posting.save()
+		self.assertTrue(JobPosting.objects.get().bid_includes_completion_date)
+
+	def test_change_job_posting_when_no_bids_exist_no_completion_date(self):
+		bob = JobPoster.objects.get(name="Bob")
+
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_completion_date=False
+		)
+		posting.save()
+
+		posting.bid_includes_completion_date = True
+		posting.save()
+
+	def test_change_job_posting_when_no_bids_exist_completion_date(self):
+		bob = JobPoster.objects.get(name="Bob")
+
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_completion_date=True
+		)
+		posting.save()
+
+		posting.bid_includes_completion_date = False
+		posting.save()
+
+		

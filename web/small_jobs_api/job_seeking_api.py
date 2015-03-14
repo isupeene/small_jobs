@@ -1,5 +1,5 @@
 from django.core.exceptions import (
-	PermissionDenied, SuspiciousOperation
+	PermissionDenied, SuspiciousOperation, ValidationError
 )
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
@@ -23,7 +23,7 @@ from small_jobs_api.models import (
 def update_contractor(contractor):
 	try:
 		contractor.save()
-	except DataError:
+	except (DataError, IntegrityError, ValidationError):
 		raise SuspiciousOperation
 
 def get_rating(contractor):
@@ -59,7 +59,7 @@ def place_bid(contractor, bid):
 	try:
 		bid.contractor = contractor
 		bid.save()
-	except DataError:
+	except (DataError, ValidationError):
 		raise SuspiciousOperation
 	except IntegrityError:
 		raise Http404
@@ -88,12 +88,14 @@ def rate_job_poster(contractor, poster_id, rating):
 		raise PermissionDenied
 
 	try:
-		existing_rating = JobPosterRating.get(
+		existing_rating = JobPosterRating.objects.get(
 			poster_id=poster_id,
 			contractor=contractor
 		)
 		existing_rating.rating = rating
-	except:
+	except ValidationError:
+		raise SuspiciousOperation
+	except JobPosterRating.DoesNotExist:
 		JobPosterRating(
 			poster_id=poster_id,
 			contractor=contractor,
