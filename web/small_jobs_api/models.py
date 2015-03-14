@@ -4,7 +4,16 @@ from django.db.models import (
 	BooleanField, IntegerField, CharField,
 	ForeignKey
 )
+from django.core.validators import (
+	validate_email,
+	MinValueValidator,
+	MaxValueValidator
+)
+from django.core.exceptions import ValidationError
 from django.utils.timezone import now
+
+import phonenumbers
+from phonenumbers import NumberParseException, is_possible_number
 
 
 class MoneyField(DecimalField):
@@ -47,12 +56,27 @@ NullableDateTimeField = nullable(DateTimeField)
 NullableForeignKey = nullable(ForeignKey)
 
 
+# YOLO: We are assuming canadian phone numbers for this validation.
+# In the future, a way to use the user's actual location to determine
+# the region would be ideal.
+def validate_phone_number(text):
+	try:
+		number = phonenumbers.parse(text, "CA")
+		if not is_possible_number(number):
+			raise ValidationError
+	except NumberParseException:
+		raise ValidationError(NumberParseException)
+
 class JobPoster(Model):
 	openid = ShortCharField(unique=True)
 	name = ShortCharField()
 	description = NullableTextField()
-	email = NullableShortCharField()
-	phone_number = NullableShortCharField()
+	email = NullableShortCharField(validators=[validate_email])
+	phone_number = NullableShortCharField(validators=[validate_phone_number])
+
+	def save(self):
+		self.full_clean()
+		super(JobPoster, self).save()
 
 	def __unicode__(self):
 		return self.name
@@ -60,8 +84,12 @@ class JobPoster(Model):
 class Contractor(Model):
 	name = ShortCharField()
 	description = NullableTextField()
-	email = ShortCharField(unique=True)
-	phone_number = NullableShortCharField()
+	email = ShortCharField(unique=True, validators=[validate_email])
+	phone_number = NullableShortCharField(validators=[validate_phone_number])
+
+	def save(self):
+		self.full_clean()
+		super(Contractor, self).save()
 
 	def is_authenticated(self):
 		return True
@@ -77,13 +105,60 @@ class JobPosting(Model):
 	description = TextField(blank=False)
 	bidding_deadline = DateTimeField()
 	bidding_confirmation_deadline = DateTimeField()
-	compensation_amount = NullableMoneyField()
+	compensation_amount = NullableMoneyField(validators=[MinValueValidator(0)])
 	completion_date = NullableDateTimeField()
 	bid_includes_compensation_amount = BooleanField()
 	bid_includes_completion_date = BooleanField()
 	completed = BooleanField(default=False)
 	marked_completed_by_contractor = BooleanField(default=False)
 	date_completed = NullableDateTimeField()
+
+	def save(self):
+		self.full_clean()
+		super(JobPosting, self).save()
+
+	def __init__(self, *args, **kwargs):
+		super(JobPosting, self).__init__(*args, **kwargs)
+		self.bid_included_compensation_amount = \
+			self.bid_includes_compensation_amount
+		self.bid_included_completion_date = \
+			self.bid_includes_completion_date
+
+	def clean(self):
+		if self.bidding_confirmation_deadline < self.bidding_deadline:
+			raise ValidationError(
+				"Bidding confirmation deadline must be after bidding deadline."
+			)
+
+		if self.bidding_deadline < self.creation_date:
+			raise ValidationError(
+				"Bidding deadline must be after creation date."
+			)
+
+		if not self.bid_includes_compensation_amount \
+		   and self.compensation_amount is None:
+			raise ValidationError(
+				"Jobs for which the bid cannot include a compensation " +
+				"amount must include one in the job posting."
+			)
+
+		if not self.bid_includes_completion_date \
+		   and self.completion_date is None:
+			raise ValidationError(
+				"Jobs for which the bid cannot include a completion date " +
+				"must include one in the job posting."
+			)
+
+		if any(self.bid_set.all()) and \
+		 (self.bid_included_compensation_amount !=
+		   self.bid_includes_compensation_amount or
+		  self.bid_included_completion_date !=
+		   self.bid_includes_completion_date):
+			raise ValidationError(
+				"Cannot modify bid_includes_compensation_amount or " +
+				"bid_includes_completion_date when bids have already been added."
+			)
+
 
 	def __unicode__(self):
 		return self.short_description
@@ -92,8 +167,42 @@ class Bid(Model):
 	job = ForeignKey(JobPosting)
 	contractor = ForeignKey(Contractor)
 	message = NullableTextField()
-	compensation_amount = NullableMoneyField()
+	compensation_amount = NullableMoneyField(validators=[MinValueValidator(0)])
 	completion_date = NullableDateTimeField()
+
+	def save(self):
+		self.full_clean()
+		super(Bid, self).save()
+
+	# TODO: Consider the following -
+	# If a posting specifies a compensation amount, the
+	# bid_includes_compensation_amount field will *allow* the bid to include
+	# a compensation amount, otherwise, it will *require* it.  For now,
+	# it is always required if that field is true.
+	def clean(self):
+		if self.job.bid_includes_compensation_amount \
+		   and self.compensation_amount is None:
+			raise ValidationError(
+				"Bids on this job must include a compensation amount."
+			)
+
+		if self.job.bid_includes_completion_date \
+		   and self.completion_date is None:
+			raise ValidationError(
+				"Bids on this job must include a completion date."
+			)
+
+		if not self.job.bid_includes_compensation_amount \
+		   and self.compensation_amount is not None:
+			raise ValidationError(
+				"Bids on this job cannot include a compensation amount."
+			)
+
+		if not self.job.bid_includes_completion_date \
+		   and self.completion_date is not None:
+			raise ValidationError(
+				"Bids on this job cannot include a completion date."
+			)
 
 	class Meta:
 		unique_together = (('job', 'contractor'),)
@@ -105,6 +214,10 @@ class JobSkill(Model):
 	job = ForeignKey(JobPosting)
 	skill = ShortCharField(db_index=True)
 
+	def save(self):
+		self.full_clean()
+		super(JobSkill, self).save()
+
 	class Meta:
 		unique_together = (('job', 'skill'),)
 
@@ -115,6 +228,10 @@ class ContractorSkill(Model):
 	contractor = ForeignKey(Contractor)
 	skill = ShortCharField(db_index=True)
 
+	def save(self):
+		self.full_clean()
+		super(ContractorSkill, self).save()
+
 	class Meta:
 		unique_together = (('contractor', 'skill'),)
 
@@ -124,8 +241,14 @@ class ContractorSkill(Model):
 class JobPosterRating(Model):
 	poster = ForeignKey(JobPoster)
 	contractor = ForeignKey(Contractor)
-	rating = IntegerField()
+	rating = IntegerField(
+		validators=[MinValueValidator(0), MaxValueValidator(5)]
+	)
 	
+	def save(self):
+		self.full_clean()
+		super(JobPosterRating, self).save()
+
 	class Meta:
 		unique_together = (('poster', 'contractor'),)
 
@@ -137,7 +260,13 @@ class JobPosterRating(Model):
 class ContractorRating(Model):
 	contractor = ForeignKey(Contractor)
 	poster = ForeignKey(JobPoster)
-	rating = IntegerField()
+	rating = IntegerField(
+		validators=[MinValueValidator(0), MaxValueValidator(5)]
+	)
+
+	def save(self):
+		self.full_clean()
+		super(ContractorRating, self).save()
 
 	class Meta:
 		unique_together = (('contractor', 'poster'),)

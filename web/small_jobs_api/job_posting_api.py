@@ -1,4 +1,6 @@
-from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.core.exceptions import (
+	PermissionDenied, SuspiciousOperation, ValidationError
+)
 from django.shortcuts import get_object_or_404
 from django.db import DataError, IntegrityError
 
@@ -18,7 +20,7 @@ from small_jobs_api.models import (
 def update_job_poster(job_poster):
 	try:
 		job_poster.save()
-	except DataError:
+	except (DataError, IntegrityError, ValidationError):
 		raise SuspiciousOperation
 
 def get_rating(job_poster):
@@ -34,7 +36,7 @@ def create_job_posting(job_poster, job_posting):
 	try:
 		job_posting.poster = job_poster
 		job_posting.save()
-	except (IntegrityError, DataError):
+	except (IntegrityError, DataError, ValidationError):
 		raise SuspiciousOperation
 
 # Reviewing Postings and Bids
@@ -85,12 +87,14 @@ def rate_contractor(job_poster, contractor, rating):
 		raise PermissionDenied
 
 	try:
-		existing_rating = ContractorRating.get(
+		existing_rating = ContractorRating.objects.get(
 			contractor=contractor,
 			poster=job_poster
 		)
 		existing_rating.rating = rating
-	except:
+	except ValidationError:
+		raise SuspiciousOperation
+	except ContractorRating.DoesNotExist:
 		ContractorRating(
 			contractor=contractor,
 			poster=job_poster,

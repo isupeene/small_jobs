@@ -3,6 +3,7 @@ apt-get install python-psycopg2
 easy_install "Django==1.6.5"
 apt-get install python-pip
 pip install djangorestframework
+pip install phonenumbers
 
 
 cd $(dirname $0)/..
