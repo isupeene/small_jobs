@@ -104,5 +104,10 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 		return convertView;
 	}
 	
+	public void refresh(ArrayList<JobPosting> postings)
+    {
+        this.postings = postings;
+        notifyDataSetChanged();
+    } 
 
 }

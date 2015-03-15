@@ -2,10 +2,11 @@ package com.smalljobs.jobseeker.views;
 
 import java.util.Locale;
 
-import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -15,12 +16,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.JobsGetRequest;
+import com.smalljobs.jobseeker.PostingsListAdapter;
 import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.models.JobsListing;
 
-public class MyJobsActivity extends BaseActivity implements ActionBar.TabListener {
+public class MyJobsActivity extends BaseActivity {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -41,9 +50,6 @@ public class MyJobsActivity extends BaseActivity implements ActionBar.TabListene
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_jobs);
 
-		// Set up the action bar.
-		final ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
@@ -53,27 +59,8 @@ public class MyJobsActivity extends BaseActivity implements ActionBar.TabListene
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-		// When swiping between different sections, select the corresponding
-		// tab. We can also use ActionBar.Tab#select() to do this if we have
-		// a reference to the Tab.
-		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						actionBar.setSelectedNavigationItem(position);
-					}
-				});
 
-		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			// Create a tab with text corresponding to the page title defined by
-			// the adapter. Also specify this Activity object, which implements
-			// the TabListener interface, as the callback (listener) for when
-			// this tab is selected.
-			actionBar.addTab(actionBar.newTab()
-					.setText(mSectionsPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
-		}
+
 	}
 
 	@Override
@@ -95,23 +82,6 @@ public class MyJobsActivity extends BaseActivity implements ActionBar.TabListene
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onTabSelected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-		// When the given tab is selected, switch to the corresponding page in
-		// the ViewPager.
-		mViewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-	}
-
-	@Override
-	public void onTabReselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -128,7 +98,13 @@ public class MyJobsActivity extends BaseActivity implements ActionBar.TabListene
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class
 			// below).
-			return PlaceholderFragment.newInstance(position + 1);
+            Fragment fragment = new PlaceholderFragment(position+1);
+ 
+            Bundle args = new Bundle();
+			args.putInt("section_number", position+1);
+			fragment.setArguments(args);
+			
+			return fragment;
 		}
 
 		@Override
@@ -161,20 +137,76 @@ public class MyJobsActivity extends BaseActivity implements ActionBar.TabListene
 		 * fragment.
 		 */
 		private static final String ARG_SECTION_NUMBER = "section_number";
+		
+		private int sectionNumber;
+		
+		private JobsListing jobs=new JobsListing();
 
-		/**
-		 * Returns a new instance of this fragment for the given section number.
-		 */
-		public static PlaceholderFragment newInstance(int sectionNumber) {
-			PlaceholderFragment fragment = new PlaceholderFragment();
-			Bundle args = new Bundle();
-			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-			fragment.setArguments(args);
-			return fragment;
+		private PostingsListAdapter postingsViewAdapter;
+
+		private JobsGetRequest jobsRequest;
+		
+		private Activity mActivity;
+		
+		private ListView list;
+
+		private String cacheKey = null;
+		
+		public PlaceholderFragment(int i) {
+			sectionNumber = i;
 		}
 
-		public PlaceholderFragment() {
+	    @Override
+	    public void onAttach(Activity activity)
+	    {
+	        if (activity instanceof MyJobsActivity)
+	        {
+	            mActivity = (MyJobsActivity) activity;
+	        }
+	        super.onAttach(activity);
+	    }
+	    
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			super.onCreate(savedInstanceState);
+			
+			
+			switch (sectionNumber) {
+			case 1:
+				jobsRequest = new JobsGetRequest(mActivity, "completed_jobs");
+				cacheKey = "comp";
+				break;
+			case 2:
+				jobsRequest = new JobsGetRequest(mActivity, "current_jobs");
+				cacheKey = "curr";
+				break;
+			case 3:
+				jobsRequest = new JobsGetRequest(mActivity, "prospective_jobs");
+				cacheKey = "pros";
+				break;
+			}
+			
+			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 		}
+
+		@Override
+		public void onStart() {
+			// TODO Auto-generated method stub
+			super.onStart();
+			
+			
+			System.out.println("on start" + sectionNumber);
+			
+			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
+			
+			
+			mActivity.setProgressBarIndeterminate( true );
+			mActivity.setProgressBarVisibility( true );
+
+		}
+		
+		
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -182,12 +214,15 @@ public class MyJobsActivity extends BaseActivity implements ActionBar.TabListene
 			View rootView = inflater.inflate(R.layout.fragment_my_jobs,
 					container, false);
 			
-			ListView list = (ListView) rootView.findViewById(R.id.MyJobsListView);
+			System.out.println("on create view" + sectionNumber);
 			
-			switch (ARG_SECTION_NUMBER) {
+			list = (ListView) rootView.findViewById(R.id.MyJobsListView);
 			
-			}
+			postingsViewAdapter = new PostingsListAdapter(mActivity,
+					R.layout.main_row_layout, jobs);
 			
+
+			list.setAdapter(postingsViewAdapter);
 			
 			list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -200,10 +235,31 @@ public class MyJobsActivity extends BaseActivity implements ActionBar.TabListene
 			
 			return rootView;
 		}
-		
+
 		public void selectJob(int position) {
-			
+			Intent detailIntent = new Intent(mActivity,
+					ViewPostingActivity.class);
+			detailIntent.putExtra("job", jobs.get(position));
+			startActivity(detailIntent);
 		}
+		
+	    public final class JobsRequestListener implements RequestListener< JobsListing > {
+
+	        @Override
+	        public void onRequestFailure( SpiceException spiceException ) {
+	            Toast.makeText( mActivity, "failure", Toast.LENGTH_SHORT ).show();
+	        }
+	        
+
+	        @Override
+	        public void onRequestSuccess( final JobsListing result ) {
+	        	mActivity.setProgressBarVisibility( false );
+	            Toast.makeText( mActivity, "success", Toast.LENGTH_SHORT ).show();
+	            jobs = result;
+				System.out.println("request success" + getArguments().getInt(ARG_SECTION_NUMBER));
+				postingsViewAdapter.notifyDataSetChanged();
+	        }
+	    }
 	}
 
 }
