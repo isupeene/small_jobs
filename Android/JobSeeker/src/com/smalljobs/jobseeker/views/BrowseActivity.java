@@ -47,7 +47,7 @@ public class BrowseActivity extends BaseActivity {
 			}
 		});
 		
-		jobsRequest = new JobsGetRequest(context);
+		jobsRequest = new JobsGetRequest(context, "jobs");
 	}
 
 	public void selectJob(int position) {
@@ -84,7 +84,7 @@ public class BrowseActivity extends BaseActivity {
 		setProgressBarIndeterminate( true );
         setProgressBarVisibility( true );
 
-        getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
+        getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 		
 	}
 	
@@ -92,7 +92,7 @@ public class BrowseActivity extends BaseActivity {
     // INNER CLASSES
     // ============================================================================================
 
-    public final class ProfileRequestListener implements RequestListener< JobsListing > {
+    public final class JobsRequestListener implements RequestListener< JobsListing > {
 
         @Override
         public void onRequestFailure( SpiceException spiceException ) {

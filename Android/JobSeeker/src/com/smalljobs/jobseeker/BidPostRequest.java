@@ -12,6 +12,7 @@ import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 import com.smalljobs.jobseeker.models.Bid;
+import com.smalljobs.jobseeker.models.User;
 
 
 public class BidPostRequest extends GoogleHttpClientSpiceRequest< String > {
@@ -22,7 +23,13 @@ public class BidPostRequest extends GoogleHttpClientSpiceRequest< String > {
 	
 	public BidPostRequest(String job, String compensationAmount, String completionDate) {
 		super(String.class);
-		bid = new Bid(job, "31");
+		bid = new Bid(job, User.getInstance().getContractor().getId());
+		if(compensationAmount != null) {
+			bid.setCompensationAmount(compensationAmount);
+		}
+		if(completionDate != null) {
+			bid.setCompletionDate(completionDate);
+		}
         this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/bid/";
 	}
 	
@@ -36,7 +43,6 @@ public class BidPostRequest extends GoogleHttpClientSpiceRequest< String > {
 
         CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
         CookieHandler.setDefault(cookieManager);
-        
         
         HttpRequest request = getHttpRequestFactory()//
                 .buildPostRequest( new GenericUrl( baseUrl ), content);

@@ -285,7 +285,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         @Override
         public void onRequestSuccess( final String result ) {
         	showProgress(false);
-            Toast.makeText( LoginActivity.this, result, Toast.LENGTH_SHORT ).show();
+            Toast.makeText( LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT ).show();
             Intent intent = new Intent(context, MainActivity.class);
 			startActivity(intent);
 			overridePendingTransition(0, 0);

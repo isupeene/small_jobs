@@ -25,10 +25,10 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
     private String baseUrl;
     private Context context;
 
-    public JobsGetRequest( Context context ) {
+    public JobsGetRequest( Context context, String type ) {
         super( JobsListing.class );
         this.context = context;
-        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/jobs";
+        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type;
     }
 
     @Override

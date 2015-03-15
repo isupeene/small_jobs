@@ -48,7 +48,6 @@ public class ViewPostingActivity extends Activity {
 	private TextView compensationAmount;	
 	private TextView completionDate;
 	
-	
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
 	
 	@Override

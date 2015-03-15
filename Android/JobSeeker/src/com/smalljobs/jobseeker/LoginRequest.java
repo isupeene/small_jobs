@@ -11,7 +11,12 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
+import com.smalljobs.jobseeker.models.Contractor;
+import com.smalljobs.jobseeker.models.User;
 
 public class LoginRequest extends GoogleHttpClientSpiceRequest< String > {
 
@@ -47,8 +52,18 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest< String > {
         
         HttpResponse response = request.execute();
         
-		
-        return response.parseAsString();
+        String result = response.parseAsString();
+        
+        Gson gson = new Gson();
+        JsonParser parser = new JsonParser();
+        JsonObject obj = parser.parse(result).getAsJsonObject();
+
+        Contractor contractor = gson.fromJson( obj , Contractor.class);
+
+        User.getInstance().setContractor(contractor);
+        
+        
+        return result;
     }
     
     

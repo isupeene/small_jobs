@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.models.User;
 
 public class MainActivity extends BaseActivity {
 
@@ -21,6 +22,7 @@ public class MainActivity extends BaseActivity {
 		
 		mLoremTextView = (TextView) findViewById( R.id.name );
 		
+		mLoremTextView.setText("Welcome " + User.getInstance().getContractor().getName() + "!");
 	}
 
 	@Override

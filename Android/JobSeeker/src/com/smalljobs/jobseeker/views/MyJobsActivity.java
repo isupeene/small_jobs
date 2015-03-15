@@ -2,27 +2,23 @@ package com.smalljobs.jobseeker.views;
 
 import java.util.Locale;
 
-import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.R.id;
-import com.smalljobs.jobseeker.R.layout;
-import com.smalljobs.jobseeker.R.menu;
-import com.smalljobs.jobseeker.R.string;
-
-import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.smalljobs.jobseeker.R;
 
 public class MyJobsActivity extends BaseActivity implements ActionBar.TabListener {
 
@@ -185,7 +181,28 @@ public class MyJobsActivity extends BaseActivity implements ActionBar.TabListene
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_my_jobs,
 					container, false);
+			
+			ListView list = (ListView) rootView.findViewById(R.id.MyJobsListView);
+			
+			switch (ARG_SECTION_NUMBER) {
+			
+			}
+			
+			
+			list.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					selectJob(position);
+				}
+			});
+			
 			return rootView;
+		}
+		
+		public void selectJob(int position) {
+			
 		}
 	}
 

@@ -65,5 +65,8 @@ public class Contractor {
 		this.id = id;
 	}
 	
-	
+	public String toString() {
+		return "Name:" + this.name;
+		
+	}
 }
