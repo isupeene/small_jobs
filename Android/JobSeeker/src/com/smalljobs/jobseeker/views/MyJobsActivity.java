@@ -126,6 +126,7 @@ public class MyJobsActivity extends BaseActivity {
 			}
 			return null;
 		}
+		
 	}
 
 	/**
@@ -168,10 +169,8 @@ public class MyJobsActivity extends BaseActivity {
 	    
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
-			// TODO Auto-generated method stub
 			super.onCreate(savedInstanceState);
-			
-			
+						
 			switch (sectionNumber) {
 			case 1:
 				jobsRequest = new JobsGetRequest(mActivity, "completed_jobs");
@@ -192,7 +191,6 @@ public class MyJobsActivity extends BaseActivity {
 
 		@Override
 		public void onStart() {
-			// TODO Auto-generated method stub
 			super.onStart();
 			
 			
