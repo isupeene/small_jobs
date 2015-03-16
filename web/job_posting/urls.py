@@ -13,7 +13,10 @@ urlpatterns = patterns('',
 	url(r'^jobs/$', views.jobs, name='jobs_main'),
 	url(r'^newjob/$', views.new_job, name='new job'),
 	url(r'^create_job/post_a_job', views.post_new_job, name='post_a_job'),
+	url(r'^homepage/login', views.login, name='login'),
 	url(r'^edit_profile/edit_my_profile_form', views.edit_my_profile_form, name='edit_my_profile_form'),
+	url(r'^edit_job/$', views.edit_job, name='edit_job'),
+	url(r'^edit_job/edit_job_form', views.edit_job_form, name='edit_job_form'),
 
 )
 

@@ -10,7 +10,7 @@ from small_jobs_api.decorators import require_login
 from small_jobs_api.models import (
 	JobPoster, JobPosting
 )
-from small_jobs_api.api import *
+from small_jobs_api.job_posting_api import *
 
 # A sample view requiring OpenID authentication.
 @require_login
@@ -32,8 +32,18 @@ def edit_profile(request):
 def create_job(request):
 	return render(request,'job_posting/create_job.html')
 
+def edit_job(request):
+	jobPk = request.GET.get('pk','')
+	myJob = JobPosting.objects.get(pk= jobPk) #TODO Change this to use API
+	context = {'myJob': myJob }
+	return render(request,'job_posting/edit_job.html',context)
+
 def job_details(request):
-	return render(request,'job_posting/job_details.html')
+	jobPk = request.GET.get('pk','')
+	myJob = JobPosting.objects.get(pk= jobPk) #TODO Change this to use API
+	bidList = get_bids(_get_job_poster(request),myJob.pk)
+	context = {'myJob': myJob , 'bidList': bidList}
+	return render(request,'job_posting/job_details.html',context)
 
 def jobs(request):
 	jobList = get_job_postings(_get_job_poster(request))
@@ -46,6 +56,8 @@ def view_profile(request):
 def new_job(request):
 	return render(request,'job_posting/index.html')
 
+def login(request):
+	return mainpage(request)
 
 # form stuff
 def post_new_job(request):
@@ -65,6 +77,21 @@ def post_new_job(request):
 	create_job_posting(_get_job_poster(request), myPosting)
 	return jobs(request)
 
+# TODO Lots of repittion 	
+def edit_job_form(request):
+	description = request.POST['description']
+	short_description = request.POST['short_description']
+	jobPk = request.POST['pk']
+	# TODO have to check these probably w/ js
+	# bidding_deadline = request.POST['bidding_deadline']
+	# compensation_amount = request.POST['compensation_amount']
+	myJob = JobPosting.objects.get(pk= jobPk) #TODO Change this to use API
+	myJob.description = description
+	#TODO ADD other fields 
+	myJob.short_description = short_description
+	update_job_posting(_get_job_poster(request), myJob)
+	return jobs(request)
+
 def edit_my_profile_form(request):
 	# name = request.POST['name']
 	openid = request.session["authenticated_user"].openid
@@ -80,3 +107,5 @@ def _get_job_poster(request):
 	openid = request.session["authenticated_user"].openid
 	jobposter = JobPoster.objects.get(openid=openid)
 	return jobposter
+
+

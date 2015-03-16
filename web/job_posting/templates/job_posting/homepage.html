@@ -6,6 +6,8 @@
 {% block title %}Home Page {% endblock %}
 
 {% block body_block %}
-<h1>Small Jobs!</h1>
-<a href="http://127.0.0.1:8000/job_posting/mainpage">Login!</a>
+<h1>Small Jobs</h1>
+<form action="login/" method="post">
+{% csrf_token %}
+<input type="submit" value="Login" />
 {% endblock %}

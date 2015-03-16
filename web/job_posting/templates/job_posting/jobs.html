@@ -37,7 +37,7 @@
   </tr>
       {% for job in jobList %}
       <tr>
-        <td>{{job.poster}}</td>
+        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.poster}}</a> <br></td>
         <td>{{job.creation_date}}</td>
         <td>{{job.short_description}}</td>
         <td>{{job.bidding_deadline}}</td>
