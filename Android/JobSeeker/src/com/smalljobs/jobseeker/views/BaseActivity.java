@@ -34,6 +34,8 @@ public class BaseActivity extends Activity {
     
     private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
     
+    private Context context = this;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,7 +169,7 @@ public class BaseActivity extends Activity {
 			break;
 		case 5:
 			//Logout
-			logoutRequest = new LogoutRequest();
+			logoutRequest = new LogoutRequest(this.context);
 			spiceManager.execute(logoutRequest, new LogoutRequestListener());
 			break;
 		}

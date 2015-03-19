@@ -18,6 +18,10 @@
     <string name="title_activity_my_profile">My Profile</string>
     <string name="title_activity_my_jobs">My Jobs</string>
     <string name="title_activity_poster_profile">Poster Profile</string>
+    
     <string name="job_description"><u>Description: </u></string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="please_confirm">Are you sure?</string>
 
 </resources>

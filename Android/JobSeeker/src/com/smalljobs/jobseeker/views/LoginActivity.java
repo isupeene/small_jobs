@@ -1,7 +1,15 @@
 package com.smalljobs.jobseeker.views;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.HttpCookie;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -12,9 +20,9 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -33,10 +41,10 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.smalljobs.jobseeker.LoginRequest;
 import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.R.id;
-import com.smalljobs.jobseeker.R.layout;
-import com.smalljobs.jobseeker.R.string;
+import com.smalljobs.jobseeker.UserProfileRequest;
 import com.smalljobs.jobseeker.models.Contractor;
+import com.smalljobs.jobseeker.models.CookieManagerSingleton;
+import com.smalljobs.jobseeker.models.Server;
 
 /**
  * A login screen that offers login via email/password.
@@ -55,6 +63,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	
 	Context context = this;
 	
+	public static final String PREFS_NAME = "Credentials";
+	
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
 
 	// UI references.
@@ -63,12 +73,22 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	private View mLoginFormView;
 
 	private LoginRequest loginRequest = null;
+
+	private UserProfileRequest profileRequest = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_login);
 
+
+		SharedPreferences credentials = context.getSharedPreferences(PREFS_NAME, 0);
+		String email = credentials.getString("email", null);
+		
+		
+        spiceManager.start(this);
+        
 		// Set up the login form.
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.loginEmail);
 		populateAutoComplete();
@@ -84,13 +104,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 		mLoginFormView = findViewById(R.id.login_form);
 		mProgressView = findViewById(R.id.login_progress);
+		
+		
+		if (email != null) {
+			
+			showProgress(true);
+			loginRequest = new LoginRequest(context, email);
+			spiceManager.execute( loginRequest, "json", DurationInMillis.ONE_MINUTE, new AuthenticationRequestListener() );
+		}
+		
 	}
 
-	@Override
-    protected void onStart() {
-        spiceManager.start(this);
-        super.onStart();
-    }
 	
 	@Override
     protected void onStop() {
@@ -286,6 +310,24 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         public void onRequestSuccess( final String result ) {
         	showProgress(false);
             Toast.makeText( LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT ).show();
+            Intent intent = new Intent(context, MainActivity.class);
+			startActivity(intent);
+			overridePendingTransition(0, 0);
+			finish();
+        }
+    }
+	
+    public final class ProfileRequestListener implements RequestListener< Contractor > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+            Toast.makeText( LoginActivity.this, "failure", Toast.LENGTH_SHORT ).show();
+        }
+
+        @Override
+        public void onRequestSuccess( final Contractor result ) {
+        	showProgress(false);
+            Toast.makeText( LoginActivity.this, "success", Toast.LENGTH_SHORT ).show();
             Intent intent = new Intent(context, MainActivity.class);
 			startActivity(intent);
 			overridePendingTransition(0, 0);

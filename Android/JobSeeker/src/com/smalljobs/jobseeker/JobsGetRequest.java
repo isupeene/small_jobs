@@ -17,8 +17,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
+import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.JobPosting;
 import com.smalljobs.jobseeker.models.JobsListing;
+import com.smalljobs.jobseeker.models.Server;
 
 public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > {
 
@@ -37,9 +39,9 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
 
-
         CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
         CookieHandler.setDefault(cookieManager);
+        
         
         String result = request.execute().parseAsString();
 

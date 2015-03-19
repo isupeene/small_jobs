@@ -12,6 +12,8 @@ import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 import com.smalljobs.jobseeker.models.Bid;
+import com.smalljobs.jobseeker.models.CookieManagerSingleton;
+import com.smalljobs.jobseeker.models.Server;
 import com.smalljobs.jobseeker.models.User;
 
 

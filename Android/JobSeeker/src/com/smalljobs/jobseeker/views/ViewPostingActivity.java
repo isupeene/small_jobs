@@ -6,13 +6,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +62,8 @@ public class ViewPostingActivity extends Activity {
 		
 		job = (JobPosting) getIntent().getSerializableExtra("job");
 		
+		invalidateOptionsMenu();
+		
 		profileRequest = new PosterProfileRequest(job.getPosterID());
 		
 		jobTitle = (TextView) findViewById(R.id.jobTitle);
@@ -80,9 +87,10 @@ public class ViewPostingActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.view_posting, menu);
-		if(DataHolder.getInstance().getBids().contains(job.getId())){
+		if(DataHolder.getInstance().getPotentialJobs().contains(job)){
 			menu.findItem(R.id.action_bid).setEnabled(false);
 		} else {
+			System.out.println("Stupid");
 			menu.findItem(R.id.action_bid).setEnabled(true);
 		}
 		return true;
@@ -98,11 +106,10 @@ public class ViewPostingActivity extends Activity {
 			return true;
 		}
 		if (id == R.id.action_bid) {
-			// TODO Disable bid button
-			DataHolder.getInstance().addBid(job.getId());
+			DataHolder.getInstance().addPotentialJob(job);
 			invalidateOptionsMenu();
-			bidPostRequest = new BidPostRequest(job.getId(), null, null);
-			spiceManager.execute( bidPostRequest, "json", DurationInMillis.ONE_MINUTE, new BidPostRequestListener() );
+			DialogFragment fm = new ConfirmBidDialogFragment();
+			fm.show(getFragmentManager(), "tag");
 			return true;
 		}
 		if (id == android.R.id.home) {
@@ -228,7 +235,8 @@ public class ViewPostingActivity extends Activity {
 
         @Override
         public void onRequestFailure( SpiceException spiceException ) {
-            Toast.makeText( ViewPostingActivity.this, "failure", Toast.LENGTH_SHORT ).show();
+        	spiceException.printStackTrace();
+            Toast.makeText( ViewPostingActivity.this, spiceException.getMessage(), Toast.LENGTH_SHORT ).show();
         }
 
         @Override
@@ -236,6 +244,33 @@ public class ViewPostingActivity extends Activity {
         	setProgressBarVisibility( false );
             Toast.makeText( ViewPostingActivity.this, "success", Toast.LENGTH_SHORT ).show();
             System.out.println(result);
+        }
+    }
+    
+    public class ConfirmBidDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+        	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        	LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        	// Inflate and set the layout for the dialog
+        	// Pass null as the parent view because its going in the dialog layout
+        	builder.setView(inflater.inflate(R.layout.dialog_bid, null))
+        	.setMessage(R.string.please_confirm)
+        	.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+        		public void onClick(DialogInterface dialog, int id) {
+        			bidPostRequest = new BidPostRequest(job.getId(), null, null);
+        			spiceManager.execute( bidPostRequest, "json", DurationInMillis.ONE_MINUTE, new BidPostRequestListener() );
+        		}
+        	})
+        	.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        		public void onClick(DialogInterface dialog, int id) {
+        			// User cancelled the dialog
+        		}
+        	});
+        	// Create the AlertDialog object and return it
+        	return builder.create();
         }
     }
 }

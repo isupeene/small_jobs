@@ -3,9 +3,12 @@ package com.smalljobs.jobseeker;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.net.HttpCookie;
+import java.util.List;
 
 import roboguice.util.temp.Ln;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
@@ -16,10 +19,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 import com.smalljobs.jobseeker.models.Contractor;
+import com.smalljobs.jobseeker.models.CookieManagerSingleton;
+import com.smalljobs.jobseeker.models.Server;
 import com.smalljobs.jobseeker.models.User;
 
 public class LoginRequest extends GoogleHttpClientSpiceRequest< String > {
 
+	public static final String PREFS_NAME = "Credentials";
+	
     private String baseUrl;
     private String email;
     private Context context;
@@ -41,6 +48,7 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest< String > {
         CookieHandler.setDefault(cookieManager);
         
         
+        
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ));
         
@@ -52,7 +60,9 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest< String > {
         
         HttpResponse response = request.execute();
         
+        
         String result = response.parseAsString();
+
         
         Gson gson = new Gson();
         JsonParser parser = new JsonParser();
@@ -61,6 +71,13 @@ public class LoginRequest extends GoogleHttpClientSpiceRequest< String > {
         Contractor contractor = gson.fromJson( obj , Contractor.class);
 
         User.getInstance().setContractor(contractor);
+        
+        SharedPreferences credentials = context.getSharedPreferences(PREFS_NAME, 0);
+        
+        SharedPreferences.Editor editor = credentials.edit();
+        editor.putString("email", email);
+        editor.commit();
+        
         
         
         return result;

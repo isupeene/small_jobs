@@ -1,4 +1,4 @@
-package com.smalljobs.jobseeker;
+package com.smalljobs.jobseeker.models;
 
 import java.net.CookieManager;
 

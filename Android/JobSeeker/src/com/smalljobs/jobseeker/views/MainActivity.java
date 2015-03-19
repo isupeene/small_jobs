@@ -1,6 +1,7 @@
 package com.smalljobs.jobseeker.views;
 
 import java.io.IOException;
+import java.net.CookieManager;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.content.Context;
@@ -19,8 +20,19 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.DataHolder;
+import com.smalljobs.jobseeker.JobsGetRequest;
+import com.smalljobs.jobseeker.PostingsListAdapter;
 import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.UserProfileRequest;
+import com.smalljobs.jobseeker.models.Contractor;
+import com.smalljobs.jobseeker.models.CookieManagerSingleton;
+import com.smalljobs.jobseeker.models.JobsListing;
 import com.smalljobs.jobseeker.models.User;
+import com.smalljobs.jobseeker.views.MyJobsActivity.PlaceholderFragment.JobsRequestListener;
 
 public class MainActivity extends BaseActivity {
 
@@ -38,6 +50,7 @@ public class MainActivity extends BaseActivity {
 	
 	private TextView mLoremTextView;
 	private int backButtonCount;
+	
 
     GoogleCloudMessaging gcm;
     AtomicInteger msgId = new AtomicInteger();
@@ -55,8 +68,8 @@ public class MainActivity extends BaseActivity {
 		
 		mLoremTextView = (TextView) findViewById( R.id.name );
 		
-		mLoremTextView.setText("Welcome " + User.getInstance().getContractor().getName() + "!");
-		
+        mLoremTextView.setText("Welcome " + User.getInstance().getContractor().getName() + "!");
+        
 		if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             regid = getRegistrationId(context);
@@ -67,6 +80,8 @@ public class MainActivity extends BaseActivity {
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
+		
+		
 	}
 
 	@Override
@@ -104,6 +119,17 @@ public class MainActivity extends BaseActivity {
 	    }
 	}
 	
+	
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		if (DataHolder.getInstance().getPotentialJobs() == null) {
+			JobsGetRequest jobsRequest = new JobsGetRequest(this, "prospective_jobs");
+			getSpiceManager().execute( jobsRequest, "pros", DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
+		}
+	}
+
 	@Override
 	protected void onResume() {
 	    super.onResume();
@@ -134,6 +160,8 @@ public class MainActivity extends BaseActivity {
 	        Log.i(TAG, "App version changed.");
 	        return "";
 	    }
+	    
+	    Log.i(TAG, "Registration ID found.");
 	    return registrationId;
 	}
 	
@@ -255,4 +283,20 @@ public class MainActivity extends BaseActivity {
 	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
 	    editor.commit();
 	}
+	
+    public final class JobsRequestListener implements RequestListener< JobsListing > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+            Toast.makeText( MainActivity.this, "failure", Toast.LENGTH_SHORT ).show();
+        }
+
+        @Override
+        public void onRequestSuccess( final JobsListing result ) {
+        	setProgressBarVisibility( false );
+            Toast.makeText( MainActivity.this, "success", Toast.LENGTH_SHORT ).show();
+            DataHolder.getInstance().setPotentialJobs(result);
+        }
+    }
+
 }
