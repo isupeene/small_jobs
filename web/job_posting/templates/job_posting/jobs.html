@@ -28,6 +28,7 @@
 
 <table style="width:100%">
   <tr>
+    <th>Select</th>
     <th>Poster</th>
     <th>Create Date</th>    
     <th>Short Description</th>
@@ -37,9 +38,10 @@
   </tr>
       {% for job in jobList %}
       <tr>
-        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.poster}}</a> <br></td>
-        <td>{{job.creation_date}}</td>
-        <td>{{job.short_description}}</td>
+        <td><input type="checkbox" name="item"></td> 
+        <td>{{job.poster}}</a> <br></td>
+        <td>{{job.creation_date}}</td>  
+        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.short_description}}</td>
         <td>{{job.bidding_deadline}}</td>
         <td>{{job.confirmation_deadline}}</td>
         <td>{{job.contractor}}</td>
@@ -48,6 +50,12 @@
     <p>You have never posted a Job!</p> 
   {% endif %}
 </table>
+
+<br>
+<div id="form_footer">
+                <input type="submit" value="Mark Complete" onclick="">
+                <input type="submit" value="Delete" onclick="">
+</div>
 {% endblock %}
 
 
