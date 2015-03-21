@@ -7,6 +7,7 @@ from django.db import DataError, IntegrityError
 from small_jobs_api.models import (
 	JobPosting, Bid, ContractorRating, JobPosterRating
 )
+import small_jobs_api.gcm_notifications as notify
 
 
 # NOTE: All this code is simplified by high level abstractions.
@@ -61,10 +62,14 @@ def delete_job_posting(job_poster, job_id):
 
 	job_posting.delete()
 
+	notify.job_deleted(job_posting)
+
 def update_job_posting(job_poster, job_posting):
 	_check_job_owner(job_poster, job_posting)
 
 	job_posting.save()
+
+	notify.job_modified(job_posting)
 
 def get_bids(job_poster, job_id):
 	job_posting = get_object_or_404(JobPosting, pk=job_id)
@@ -78,6 +83,8 @@ def accept_bid(job_poster, bid_id):
 
 	bid.job.contractor = bid.contractor
 	bid.job.save()
+
+	notify.bid_accepted(bid)
 
 # After the Job
 
