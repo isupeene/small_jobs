@@ -59,8 +59,6 @@ class JobPostingAPITest(TestCase):
 			bob.email = email
 			post.update_job_poster(bob)
 
-	# TODO: Test invalid email and phone number fields
-
 	def test_get_rating(self):
 		emily = Contractor.objects.get(name="Emily")
 		joseph = Contractor.objects.get(name="Joseph")
@@ -93,9 +91,6 @@ class JobPostingAPITest(TestCase):
 			bob = JobPoster.objects.get(name="Bob")
 			posting = new_job_posting(short_description="toolong" * 50)
 			post.create_job_posting(bob, posting)
-
-	# TODO: Test other contstraints, such as requiring compensation amount
-	# if bids don't include it
 
 	def test_get_job_postings(self):
 		bob = JobPoster.objects.get(name="Bob")
@@ -235,8 +230,6 @@ class JobPostingAPITest(TestCase):
 			bob.jobposting_set.get().description
 		)
 
-	# TODO: Test that contractors receive a notification on update and deletion
-
 	def test_get_bids(self):
 		bob = JobPoster.objects.get(name="Bob")
 		emily = Contractor.objects.get(name="Emily")
@@ -327,8 +320,6 @@ class JobPostingAPITest(TestCase):
 		with self.assertRaises(Http404):
 			post.accept_bid(bob, 0)
 
-	# TODO: Test that all contractors receive a notification when accepting a bid
-
 	def test_rate_contractor(self):
 		bob = JobPoster.objects.get(name="Bob")
 		emily = Contractor.objects.get(name="Emily")
@@ -364,13 +355,11 @@ class JobPostingAPITest(TestCase):
 
 		self.assertEquals(0, len(emily.contractorrating_set.all()))
 
-	# TODO: Test that the value must be between 1 and 5
-
 
 class JobSeekingAPITest(TestCase):
 	def setUp(self):
-		JobPoster(name="Bob", openid="0").save()
-		JobPoster(name="Frank", openid="1").save()
+		JobPoster(name="Bob", openid="0", region="Calgary").save()
+		JobPoster(name="Frank", openid="1", region="Edmonton").save()
 		Contractor(name="Emily", email="emily95@gmail.com").save()
 		Contractor(name="Joseph", email="joseph86@gmail.com").save()
 
@@ -389,8 +378,6 @@ class JobSeekingAPITest(TestCase):
 			email = "toolong" * 50 + "@contractors.org"
 			emily.email = email
 			seek.update_contractor(emily)
-
-	# TODO: Test malformed email and phone number fields
 
 	def test_get_rating(self):
 		emily = Contractor.objects.get(name="Emily")
@@ -443,7 +430,49 @@ class JobSeekingAPITest(TestCase):
 			set(seek.get_jobs(emily, ["python", "django"]))
 		)
 
-	# TODO: Test filtering jobs by region.
+
+	def test_get_jobs_with_region(self):
+		bob = JobPoster.objects.get(name="Bob")
+		frank = JobPoster.objects.get(name="Frank")
+
+		posting1 = new_job_posting(poster=bob)
+		posting1.save()
+
+		posting2 = new_job_posting(poster=frank)
+		posting2.save()
+
+		emily = Contractor.objects.get(name="Emily")
+		self.assertEquals(
+			{posting1},
+			set(seek.get_jobs(emily, region=bob.region))
+		)
+
+	def test_get_jobs_with_skill_and_region(self):
+		bob = JobPoster.objects.get(name="Bob")
+		frank = JobPoster.objects.get(name="Frank")
+
+		posting1 = new_job_posting(poster=bob)
+		posting1.save()
+		posting1.jobskill_set.add(JobSkill(skill="python"))
+		posting1.jobskill_set.add(JobSkill(skill="django"))
+
+		posting2 = new_job_posting(poster=bob)
+		posting2.save()
+		posting2.jobskill_set.add(JobSkill(skill="python"))
+
+		posting3 = new_job_posting(poster=frank)
+		posting3.save()
+		posting3.jobskill_set.add(JobSkill(skill="django"))
+
+		posting4 = new_job_posting(poster=bob)
+		posting4.save()
+		posting4.jobskill_set.add(JobSkill(skill="ruby"))
+
+		emily = Contractor.objects.get(name="Emily")
+		self.assertEquals(
+			{posting1, posting2},
+			set(seek.get_jobs(emily, ["python", "django"], "Calgary"))
+		)
 
 	def test_get_job_poster(self):
 		bob = JobPoster.objects.get(name="Bob")
