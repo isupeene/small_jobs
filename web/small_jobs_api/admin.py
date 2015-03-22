@@ -203,6 +203,7 @@ user_fieldsets = [
 
 job_poster_fieldsets = deepcopy(user_fieldsets)
 job_poster_fieldsets[0][1]['fields'].insert(1, 'openid')
+job_poster_fieldsets[0][1]['fields'].append('region')
 
 contractor_fieldsets = deepcopy(user_fieldsets)
 

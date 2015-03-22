@@ -73,6 +73,7 @@ class JobPoster(Model):
 	description = NullableTextField()
 	email = NullableShortCharField(validators=[validate_email])
 	phone_number = NullableShortCharField(validators=[validate_phone_number])
+	region = NullableShortCharField()
 
 	def save(self):
 		self.full_clean()
