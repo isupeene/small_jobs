@@ -1,9 +1,9 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import *
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.utils.timezone import now
 from django.core.serializers import serialize
+from django.template import RequestContext
 from datetime import timedelta
 
 from small_jobs_api.decorators import require_login
@@ -11,6 +11,7 @@ from small_jobs_api.models import (
 	JobPoster, JobPosting
 )
 from small_jobs_api.job_posting_api import *
+from job_posting.forms import JobPosterForm
 
 # A sample view requiring OpenID authentication.
 @require_login
@@ -24,10 +25,6 @@ def homepage(request):
 def mainpage(request):
 	context = {'userInfo': _get_job_poster(request)}
 	return render(request,'job_posting/mainpage.html', context)
-
-def edit_profile(request):
-	context = {'userInfo': _get_job_poster(request)}
-	return render(request,'job_posting/edit_profile.html',context)
 
 def create_job(request):
 	return render(request,'job_posting/create_job.html')
@@ -56,6 +53,7 @@ def view_profile(request):
 def new_job(request):
 	return render(request,'job_posting/index.html')
 
+@require_login
 def login(request):
 	return mainpage(request)
 
@@ -77,7 +75,40 @@ def post_new_job(request):
 	create_job_posting(_get_job_poster(request), myPosting)
 	return jobs(request)
 
-# TODO Lots of repittion 	
+def edit_profile(request):
+    # Get the context from the request.
+    context = RequestContext(request)
+
+    # A HTTP POST?
+    if request.method == 'POST':
+        form = JobPosterForm(request.POST)
+
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            # Save the new category to the database.
+            
+            # form.save(commit=True)
+            # Now call the index() view.
+            # The user will be shown the homepage.
+			jobposter = _get_job_poster(request)
+			jobposter.description = form.cleaned_data['description']
+			jobposter.email = form.cleaned_data['email']
+			jobposter.phone_number = form.cleaned_data['phone_number']
+			jobposter.region = form.cleaned_data['region']
+			update_job_poster(jobposter)
+			return jobs(request)
+        else:
+            # The supplied form contained errors - just print them to the terminal.
+            print form.errors
+    else:
+        # If the request was not a POST, display the form to enter details.
+		form = JobPosterForm(instance= _get_job_poster(request))
+
+    # Bad form (or form details), no form supplied...
+    # Render the form with error messages (if any).
+    return render_to_response('job_posting/edit_profile.html', {'form': form}, context)
+
+# TODO Lots of repition 	
 def edit_job_form(request):
 	description = request.POST['description']
 	short_description = request.POST['short_description']
@@ -91,16 +122,6 @@ def edit_job_form(request):
 	myJob.short_description = short_description
 	update_job_posting(_get_job_poster(request), myJob)
 	return jobs(request)
-
-def edit_my_profile_form(request):
-	# name = request.POST['name']
-	openid = request.session["authenticated_user"].openid
-	jobposter = JobPoster.objects.get(openid=openid)
-	jobposter.description = request.POST['description']
-	jobposter.email = request.POST['email']
-	jobposter.phone_number = request.POST['phone_number']
-	update_job_poster(jobposter)
-	return mainpage(request)
 
 # Helper Functions
 def _get_job_poster(request):

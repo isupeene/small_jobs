@@ -45,17 +45,19 @@
         <td>{{job.bidding_deadline}}</td>
         <td>{{job.confirmation_deadline}}</td>
         <td>{{job.contractor}}</td>
+      </tr>
       {% endfor %}
+</table>
+<br>
+    <div id="form_footer">
+                <input type="submit" value="Mark Complete" onclick="">
+                <input type="submit" value="Delete" onclick="">
+    </div>
   {% else %}
     <p>You have never posted a Job!</p> 
   {% endif %}
-</table>
 
-<br>
-<div id="form_footer">
-                <input type="submit" value="Mark Complete" onclick="">
-                <input type="submit" value="Delete" onclick="">
-</div>
+
 {% endblock %}
 
 
