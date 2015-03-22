@@ -127,7 +127,8 @@ class LoginTest(TestCase):
 
 class JobSeekingAPITest(TestCase):
 	def setUp(self):
-		JobPoster(name="Bob", openid="0").save()
+		JobPoster(name="Bob", openid="0", region="Calgary").save()
+		JobPoster(name="Frank", openid="1", region="Edmonton").save()
 		Contractor(name="Joseph", email="joseph86@gmail.com").save()
 		# Create and login as Emily
 		self.client.post(
@@ -193,7 +194,28 @@ class JobSeekingAPITest(TestCase):
 			{posting["id"] for posting in data}
 		)
 
-	# TODO: Test regions
+	def test_get_jobs_with_region(self):
+		bob = JobPoster.objects.get(name="Bob")
+		frank = JobPoster.objects.get(name="Frank")
+
+		calgary_posting = new_job_posting(poster=bob)
+		calgary_posting.save()
+
+		edmonton_posting = new_job_posting(poster=frank)
+		edmonton_posting.save()
+
+		response = self.client.get(
+			get_url("job_seeking:jobs"),
+			{"region" : "Calgary"}
+		)
+		data = loads(response.content)
+
+		self.assertEquals(200, response.status_code)
+		self.assertEquals(1, len(data))
+		self.assertEquals(
+			calgary_posting.id,
+			data[0]["id"]
+		)
 
 	def test_get_job_poster(self):
 		bob = JobPoster.objects.get(name="Bob")

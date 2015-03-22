@@ -35,12 +35,14 @@ def get_rating(contractor):
 
 # Finding Jobs
 
-# TODO: filter by region
-def get_jobs(contractor, skills=None):
+def get_jobs(contractor, skills=None, region=None):
 	if skills:
 		return {skill.job for
 				skill in
-				JobSkill.objects.filter(skill__in=skills)}
+				JobSkill.objects.filter(skill__in=skills)
+				if (not region) or (skill.job.poster.region == region)}
+	elif region:
+		return JobPosting.objects.filter(poster__region=region)
 	else:
 		return JobPosting.objects.all()
 
