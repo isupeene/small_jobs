@@ -165,7 +165,35 @@ class JobSeekingAPITest(TestCase):
 
 		self.assertEquals(0, len(data))
 
-	# TODO: Test skills and regions
+	def test_get_jobs_with_skill(self):
+		bob = JobPoster.objects.get(name="Bob")
+
+		python_posting = new_job_posting(poster=bob)
+		python_posting.save()
+		python_posting.jobskill_set.add(JobSkill(skill="python"))
+
+		django_posting = new_job_posting(poster=bob)
+		django_posting.save()
+		django_posting.jobskill_set.add(JobSkill(skill="django"))
+
+		java_posting = new_job_posting(poster=bob)
+		java_posting.save()
+		java_posting.jobskill_set.add(JobSkill(skill="java"))
+
+		response = self.client.get(
+			get_url("job_seeking:jobs"),
+			{"skill" : ["python", "django"]}
+		)
+		data = loads(response.content)
+
+		self.assertEquals(200, response.status_code)
+		self.assertEquals(2, len(data))
+		self.assertEquals(
+			{python_posting.id, django_posting.id},
+			{posting["id"] for posting in data}
+		)
+
+	# TODO: Test regions
 
 	def test_get_job_poster(self):
 		bob = JobPoster.objects.get(name="Bob")

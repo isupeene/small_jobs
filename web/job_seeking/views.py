@@ -66,13 +66,13 @@ class ProfileView(APIView):
 		return request.user
 
 
+# TODO: Region
 class JobsView(APIView):
 	@serialize_response(default_serializer(JobPosting), many=True)
 	def get(self, request):
-		return get_jobs(request.user)
+		return get_jobs(request.user, request.GET.getlist("skill"))
 
 
-# TODO: Skills and region
 class JobPosterView(APIView):
 	@serialize_response(SecureJobPosterSerializer)
 	def get(self, request, poster_id):
