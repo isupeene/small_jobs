@@ -12,7 +12,7 @@ if [-d python-openid]; then
 	cd python-openid
 	git pull
 else
-	git clone git@github.com:openid/python-openid.git
+	git clone https://github.com/openid/python-openid.git
 	cd python-openid
 fi
 
@@ -27,7 +27,7 @@ if [-d python-gcm]; then
 	cd python-gcm
 	git pull
 else
-	git clone git@github.com:geeknam/python-gcm.git
+	git clone https://github.com/geeknam/python-gcm.git
 	cd python-gcm
 fi
 
