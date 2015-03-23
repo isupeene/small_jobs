@@ -17,4 +17,19 @@ else
 fi
 
 python setup.py install
+cd ..
+
+# We need the latest version of python-gcm, which has
+# dry_run support for tests.  Unfortunately, the
+# version fetched by pip doesn't have this.
+
+if [-d python-gcm]; then
+	cd python-gcm
+	git pull
+else
+	git clone git@github.com:geeknam/python-gcm.git
+	cd python-gcm
+fi
+
+python setup.py install
 

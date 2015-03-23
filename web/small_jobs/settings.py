@@ -83,6 +83,8 @@ REST_FRAMEWORK = {
 	'DEFAULT_AUTHENTICATION_CLASSES': ('small_jobs_api.basic_auth.BasicAuthentication',)
 }
 
+GCM_AUTHORIZATION_KEY = "AIzaSyBf5SRRKSEyD213TTqOAgsU-KEZmfFOVLo"
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
