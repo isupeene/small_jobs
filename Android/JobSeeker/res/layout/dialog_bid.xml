@@ -4,21 +4,44 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <TextView
+        android:id="@+id/promptDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="1dp"
+        android:text="@string/prompt_date"
+        android:visibility="gone" />
+    
     <DatePicker
         android:id="@+id/datePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:calendarViewShown="false" />
+        android:calendarViewShown="false"
+        android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/promptAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="2dp"
+        android:text="@string/prompt_amount"
+        android:visibility="gone" />
+    
     <EditText
-        android:id="@+id/compensationAmount"
+        android:id="@+id/specifyCompensationAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="2dp"
         android:ems="10"
+        android:visibility="gone"
         android:inputType="numberDecimal" >
         <requestFocus />
     </EditText>
+
+    
 
 </LinearLayout>

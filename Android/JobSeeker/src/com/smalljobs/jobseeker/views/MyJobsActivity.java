@@ -24,10 +24,12 @@ import android.widget.Toast;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.DataHolder;
 import com.smalljobs.jobseeker.JobsGetRequest;
 import com.smalljobs.jobseeker.PostingsListAdapter;
 import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.models.JobsListing;
+import com.smalljobs.jobseeker.models.User;
 
 public class MyJobsActivity extends BaseActivity {
 
@@ -175,18 +177,21 @@ public class MyJobsActivity extends BaseActivity {
 			case 1:
 				jobsRequest = new JobsGetRequest(mActivity, "completed_jobs");
 				cacheKey = "comp";
+				((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 				break;
 			case 2:
 				jobsRequest = new JobsGetRequest(mActivity, "current_jobs");
 				cacheKey = "curr";
+				((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 				break;
 			case 3:
-				jobsRequest = new JobsGetRequest(mActivity, "prospective_jobs");
-				cacheKey = "pros";
+				//jobsRequest = new JobsGetRequest(mActivity, "prospective_jobs");
+				//cacheKey = "pros";
+				jobs = DataHolder.getInstance().getPotentialJobs();
 				break;
 			}
 			
-			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
+			
 		}
 
 		@Override
@@ -196,7 +201,7 @@ public class MyJobsActivity extends BaseActivity {
 			
 			System.out.println("on start" + sectionNumber);
 			
-			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
+			//((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 			
 			
 			mActivity.setProgressBarIndeterminate( true );
@@ -252,7 +257,7 @@ public class MyJobsActivity extends BaseActivity {
 	        @Override
 	        public void onRequestSuccess( final JobsListing result ) {
 	        	mActivity.setProgressBarVisibility( false );
-	            Toast.makeText( mActivity, "success", Toast.LENGTH_SHORT ).show();
+	            //Toast.makeText( mActivity, "success", Toast.LENGTH_SHORT ).show();
 	            jobs = result;
 				System.out.println("request success" + getArguments().getInt(ARG_SECTION_NUMBER));
 				postingsViewAdapter.notifyDataSetChanged();

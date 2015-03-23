@@ -102,7 +102,7 @@ public class BrowseActivity extends BaseActivity {
         @Override
         public void onRequestSuccess( final JobsListing result ) {
         	setProgressBarVisibility( false );
-            Toast.makeText( BrowseActivity.this, "success", Toast.LENGTH_SHORT ).show();
+            //Toast.makeText( BrowseActivity.this, "success", Toast.LENGTH_SHORT ).show();
             postingsViewAdapter = new PostingsListAdapter(context,
 					R.layout.main_row_layout, result);
             jobs = result;

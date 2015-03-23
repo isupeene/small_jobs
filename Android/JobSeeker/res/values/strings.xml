@@ -12,7 +12,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">Home</string>
     <string name="title_activity_browse">Browse Jobs</string>
-    <string name="hello_world">No new activity...</string>
+    <string name="hello_world">No new activity</string>
     <string name="title_activity_base">BaseActivity</string>
     <string name="title_activity_view_posting">View Job</string>
     <string name="title_activity_my_profile">My Profile</string>
@@ -23,5 +23,8 @@
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="please_confirm">Are you sure?</string>
+    <string name="please_confirm_with_info">Please provide the required information:</string>
+    <string name="prompt_date">Proposed completion date:</string>
+    <string name="prompt_amount">Proposed compensation amount:</string>
 
 </resources>
