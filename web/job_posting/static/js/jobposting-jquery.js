@@ -36,7 +36,14 @@ $(document).ready(function() {
         		success: function(response) {
         			//alert(response.success);
         			location.reload();
+                    uncheck_all();
     			}
     		});
     	}
+
+        uncheck_all = function(){
+            $('tbody tr td input[type="checkbox"]').each(function(){
+            $(this).prop('checked', false);
+            });
+        }
 });
