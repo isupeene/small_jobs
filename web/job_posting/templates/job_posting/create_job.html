@@ -11,9 +11,11 @@
 <h1>Edit Job</h1>
 {% endif%}
 <br>
-
+    {% if creating %}
     <form id="post_job" method="post" action="/job_posting/post_job/">
-
+    {% else %}
+     <form id="post_job" method="post" action="/job_posting/post_job/?pk={{pk}}">
+    {% endif %}
             {% csrf_token %}
             {% for hidden in form.hidden_fields %}
                 {{ hidden }}

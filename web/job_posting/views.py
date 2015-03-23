@@ -96,30 +96,40 @@ def edit_profile(request):
 
 @require_login
 def post_job(request):
-    # Get the context from the request.
     context = RequestContext(request)
     creating = True
-    # A HTTP POST?
     if request.method == 'POST':
         form = JobPostingForm(request.POST)
-
         # Have we been provided with a valid form?
         if form.is_valid():
+			jobPk = request.GET.get('pk','')
 			description = form.cleaned_data['description']
 			short_description = form.cleaned_data['short_description']
 			# TODO have to check these probably w/ js
 			bidding_deadline = form.cleaned_data['bidding_deadline']
 			bidding_confirmation_deadline = form.cleaned_data['bidding_confirmation_deadline']
 			compensation_amount = form.cleaned_data['compensation_amount']
-			myPosting = JobPosting(
-				description=description,
-				short_description=short_description,
-				bidding_deadline=bidding_deadline,
-				bidding_confirmation_deadline=bidding_confirmation_deadline,
-				bid_includes_compensation_amount = False,
-				bid_includes_completion_date = False,
-			)
-			create_job_posting(_get_job_poster(request), myPosting)
+			if jobPk != '': 
+				myJob = JobPosting.objects.get(pk= jobPk)
+				myJob.description = description
+				myJob.short_description=short_description
+				myJob.bidding_deadline=bidding_deadline
+				myJob.bidding_confirmation_deadline=bidding_confirmation_deadline
+				update_job_posting(_get_job_poster(request), myJob)
+				# TODO need logic for bid_includes stuff 
+				# bid_includes_compensation_amount = False,
+				# bid_includes_completion_date = False,
+			else:
+				myPosting = JobPosting(
+					description=description,
+					short_description=short_description,
+					bidding_deadline=bidding_deadline,
+					bidding_confirmation_deadline=bidding_confirmation_deadline,
+					# TODO need logic for bid_includes stuff
+					bid_includes_compensation_amount = False,
+					bid_includes_completion_date = False,
+				)
+				create_job_posting(_get_job_poster(request), myPosting)
 			return HttpResponsePermanentRedirect("/job_posting/jobs/")
         else:
             # The supplied form contained errors - just print them to the terminal.
@@ -133,9 +143,10 @@ def post_job(request):
 			creating = False
 		else:
 			form = JobPostingForm()
+
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
-    return render_to_response('job_posting/create_job.html', {'form': form,'creating': creating}, context)
+    return render_to_response('job_posting/create_job.html', {'form': form,'creating': creating, 'pk': jobPk}, context)
 
 @csrf_exempt
 def mark_delete_jobs(request):
