@@ -8,15 +8,14 @@ urlpatterns = patterns('',
 	url(r'^mainpage/$', views.mainpage, name='mainpage'),
 	url(r'^edit_profile/$', views.edit_profile, name='edit_profile'),
 	url(r'^create_job/$', views.create_job, name='create_job'),
+	url(r'^post_job/$', views.post_job, name='post_job'),
 	url(r'^job_details/$', views.job_details, name='job_details'),
 	url(r'^view_profile/$', views.view_profile, name='view_profile'),
 	url(r'^jobs/$', views.jobs, name='jobs_main'),
 	url(r'^newjob/$', views.new_job, name='new job'),
 	url(r'^create_job/post_a_job', views.post_new_job, name='post_a_job'),
 	url(r'^homepage/login', views.login, name='login'),
-	url(r'^edit_job/$', views.edit_job, name='edit_job'),
-	url(r'^edit_job/edit_job_form', views.edit_job_form, name='edit_job_form'),
-
+	url(r'^edit_job/$', views.post_job, name='edit_job'),
 )
 
 

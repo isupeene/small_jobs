@@ -1,29 +1,34 @@
-
 {% extends 'base.html' %}
 
 {% load staticfiles %}
 
-{% block title %} Create A Job{% endblock %}
+{% block title %}Create A Job{% endblock %}
 
 {% block body_block %}
-<h1>Create</h1>
-<!-- TODO see if its a create or an edit im pretty sure i can check this! -->
-<form action="post_a_job/" method="post">
-{% csrf_token %}
-    Short Description:
-    <input type="text" name="short_description" id="short_description"  />
-    <br />
-    <!-- TODO date types in forms only in html5 i think , firefox doesnt support , so probably do some kind of javascript thing -->
-    Bidding Deadline:
-    <input type="date" name="bidding_deadline" id="bidding_description"  />
-    <br />
-    Compensation Amount:
-    <input type="text" name="compensation_amount" id="compensation_amount"  />
-    <br />
-    Description: <br/>
-    <textarea rows="5" cols="100" name="description" id="description">
-    </textarea>
-    <br />
-<input type="submit" value="Post!" />
-</form>
+{% if create %}
+<h1>Create Job</h1>
+{% else %}
+<h1>Edit Job</h1>
+{% endif%}
+<br>
+
+    <form id="post_job" method="post" action="/job_posting/post_job/">
+
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                <br>
+                {{ field }}
+            <br>
+            {% endfor %}
+
+            <input type="submit" name="submit" value="Save!" />
+    </form>
+<br>
+
 {% endblock %}

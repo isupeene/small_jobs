@@ -11,7 +11,7 @@ from small_jobs_api.models import (
 	JobPoster, JobPosting
 )
 from small_jobs_api.job_posting_api import *
-from job_posting.forms import JobPosterForm
+from job_posting.forms import *
 
 # A sample view requiring OpenID authentication.
 @require_login
@@ -85,11 +85,6 @@ def edit_profile(request):
 
         # Have we been provided with a valid form?
         if form.is_valid():
-            # Save the new category to the database.
-            
-            # form.save(commit=True)
-            # Now call the index() view.
-            # The user will be shown the homepage.
 			jobposter = _get_job_poster(request)
 			jobposter.description = form.cleaned_data['description']
 			jobposter.email = form.cleaned_data['email']
@@ -108,20 +103,48 @@ def edit_profile(request):
     # Render the form with error messages (if any).
     return render_to_response('job_posting/edit_profile.html', {'form': form}, context)
 
-# TODO Lots of repition 	
-def edit_job_form(request):
-	description = request.POST['description']
-	short_description = request.POST['short_description']
-	jobPk = request.POST['pk']
-	# TODO have to check these probably w/ js
-	# bidding_deadline = request.POST['bidding_deadline']
-	# compensation_amount = request.POST['compensation_amount']
-	myJob = JobPosting.objects.get(pk= jobPk) #TODO Change this to use API
-	myJob.description = description
-	#TODO ADD other fields 
-	myJob.short_description = short_description
-	update_job_posting(_get_job_poster(request), myJob)
-	return jobs(request)
+def post_job(request):
+    # Get the context from the request.
+    context = RequestContext(request)
+
+    # A HTTP POST?
+    if request.method == 'POST':
+        form = JobPostingForm(request.POST)
+
+        # Have we been provided with a valid form?
+        if form.is_valid():
+			description = cleaned_data['description']
+			short_description = cleaned_data['short_description']
+			# TODO have to check these probably w/ js
+			bidding_deadline = cleaned_data['bidding_deadline']
+			bidding_confirmation_deadline = cleaned_data['bidding_confirmation_deadline']
+			compensation_amount = cleaned_data['compensation_amount']
+			myPosting = JobPosting(
+				description=description,
+				short_description=short_description,
+				bidding_deadline=bidding_deadline,
+				bidding_confirmation_deadline=now() + timedelta(days=15),
+				bid_includes_compensation_amount = False,
+				bid_includes_completion_date = False,
+			)
+			create_job_posting(_get_job_poster(request), myPosting)
+			return jobs(request)
+        else:
+            # The supplied form contained errors - just print them to the terminal.
+            print form.errors
+    else:
+    	# TODO better to specify in urls and have parameters
+		jobPk = request.GET.get('pk','')
+		create = True
+		if jobPk != '': 
+			myJob = JobPosting.objects.get(pk= jobPk)
+			form = JobPostingForm(instance = myJob)
+			create = False
+		else:
+			form = JobPostingForm()
+    # Bad form (or form details), no form supplied...
+    # Render the form with error messages (if any).
+    return render_to_response('job_posting/create_job.html', {'form': form,'create': create}, context)
 
 # Helper Functions
 def _get_job_poster(request):

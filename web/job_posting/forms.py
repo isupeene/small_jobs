@@ -2,11 +2,13 @@ from django import forms
 from small_jobs_api.models import (
     JobPosting, JobPoster
 )
+from django.forms.extras.widgets import SelectDateWidget
+from django.forms.widgets import *
 
 class JobPosterForm(forms.ModelForm):
     name = forms.CharField(max_length=128, help_text="Name")
     description = forms.CharField(max_length=128, help_text="Description")
-    email = forms.EmailField(max_length=128, help_text="eMail")
+    email = forms.EmailField(widget=EmailInput, max_length=128, help_text="eMail")
     phone_number = forms.CharField(max_length=128, help_text="Phone Number")
     region = forms.CharField(max_length=128, help_text="Region")
 
@@ -17,17 +19,18 @@ class JobPosterForm(forms.ModelForm):
         fields = ('name', 'description', 'email', 'phone_number' , 'region')
 
 class JobPostingForm(forms.ModelForm):
-    description = forms.CharField(max_length=128, help_text="description")
-    short_description = forms.CharField(max_length=128, help_text="short_description")
-    bidding_deadline = forms.DateField()
-    compensation_amount = forms.IntegerField(help_text="compensation_amount")
+    short_description = forms.CharField(max_length=128, help_text="Short Description")
+    bidding_deadline = forms.DateField(widget=SelectDateWidget,help_text="Bidding Deadline")
+    bidding_confirmation_deadline = forms.DateField(widget=SelectDateWidget,help_text="Bidding Cofirmation Deadline")
+    compensation_amount = forms.IntegerField(help_text="Compensation Amount")
+    description = forms.CharField(widget=forms.Textarea, help_text="Description (Input Box Is Resizable)")
     
-    # class Meta:
+    class Meta:
         # Provide an association between the ModelForm and a model
-        # model = Page
+        model = JobPosting
 
         # What fields do we want to include in our form?
         # This way we don't need every field in the model present.
         # Some fields may allow NULL values, so we may not want to include them...
         # Here, we are hiding the foreign key.
-        # fields = ('description', 'short_description', 'bidding_deadline' , 'bidding_confirmation_deadline')
+        fields = ('short_description', 'bidding_deadline','bidding_confirmation_deadline' , 'compensation_amount' , 'description')
