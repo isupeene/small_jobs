@@ -77,6 +77,7 @@ class CreateAccountTest(TestCase):
 	def test_create_account_duplicate_email(self):
 		data = {
 			"name" : "Emily",
+			"registration_id" : "0",
 			"email" : "emily95@gmail.com"
 		}
 		response = self.client.post(get_url("job_seeking:create_account"), data)

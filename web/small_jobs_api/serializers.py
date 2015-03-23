@@ -19,11 +19,17 @@ def default_serializer(model_class):
 class NewContractorSerializer(Serializer):
 	class Meta:
 		model = Contractor
-		fields = ('name', 'description', 'email', 'phone_number')
+		fields = [field.name
+				  for field
+				  in Contractor._meta.fields
+				  if field.name != "id"]
 
 # Exclude OpenID for the Job Poster's security.
 class SecureJobPosterSerializer(Serializer):
 	class Meta:
 		model = JobPoster
-		fields = ('id', 'name', 'description', 'email', 'phone_number')
+		fields = [field.name
+				  for field
+				  in JobPoster._meta.fields
+				  if field.name != "openid"]
 
