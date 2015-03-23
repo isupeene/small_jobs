@@ -90,7 +90,13 @@ public class ViewPostingActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.view_posting, menu);
+		if (job.getContractor() == null) {
+			getMenuInflater().inflate(R.menu.view_posting, menu);
+		} else if (!job.getCompleted() && !job.getMarkedAsComplete()) {
+			getMenuInflater().inflate(R.menu.view_posting_in_progress, menu);
+		} else {
+			getMenuInflater().inflate(R.menu.view_posting_completed, menu);
+		}
 		
 		menu.findItem(R.id.action_bid).setEnabled(true);
 		for (JobPosting each: DataHolder.getInstance().getPotentialJobs()) {
