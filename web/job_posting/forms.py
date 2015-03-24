@@ -2,8 +2,10 @@ from django import forms
 from small_jobs_api.models import (
     JobPosting, JobPoster
 )
+from django.utils.timezone import now
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import *
+
 
 class JobPosterForm(forms.ModelForm):
     name = forms.CharField(max_length=128, help_text="Name")
@@ -19,11 +21,14 @@ class JobPosterForm(forms.ModelForm):
         fields = ('name', 'description', 'email', 'phone_number' , 'region')
 
 class JobPostingForm(forms.ModelForm):
-    short_description = forms.CharField(max_length=128, help_text="Short Description")
-    bidding_deadline = forms.DateField(widget=SelectDateWidget,help_text="Bidding Deadline")
-    bidding_confirmation_deadline = forms.DateField(widget=SelectDateWidget,help_text="Bidding Cofirmation Deadline")
-    compensation_amount = forms.IntegerField(help_text="Compensation Amount")
-    description = forms.CharField(widget=forms.Textarea, help_text="Description (Input Box Is Resizable)")
+    short_description = forms.CharField(max_length=128)
+    bidding_deadline = forms.DateField(widget=SelectDateWidget,initial=now())
+    bidding_confirmation_deadline = forms.DateField(widget=SelectDateWidget,initial=now())
+    bid_includes_completion_date = forms.BooleanField()
+    completion_date = forms.DateField(widget=SelectDateWidget,required=False,initial=now())
+    bid_includes_compensation_amount = forms.BooleanField()
+    compensation_amount = forms.IntegerField(required=False)
+    description = forms.CharField(widget=forms.Textarea)
     
     class Meta:
         # Provide an association between the ModelForm and a model
@@ -33,4 +38,6 @@ class JobPostingForm(forms.ModelForm):
         # This way we don't need every field in the model present.
         # Some fields may allow NULL values, so we may not want to include them...
         # Here, we are hiding the foreign key.
-        fields = ('short_description', 'bidding_deadline','bidding_confirmation_deadline' , 'compensation_amount' , 'description')
+        fields = ('short_description', 'bidding_deadline','bidding_confirmation_deadline' ,
+        'bid_includes_completion_date' , 'completion_date', 'bid_includes_compensation_amount',
+         'compensation_amount' , 'description')

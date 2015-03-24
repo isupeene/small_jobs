@@ -6,6 +6,17 @@
 
 {% block body_block %}
 {% if creating %}
+
+<!--TODO: CAN format this nicer!-->
+{% if form.errors %}
+<div id="form-error">
+    <p>The operation could not be performed because one or more error(s) occurred.<br />Please resubmit the form after making the following changes:</p>
+    <ul>
+    {{ form.errors }}
+    </ul>
+</div>
+{% endif %}
+
 <h1>Create Job</h1>
 {% else %}
 <h1>Edit Job</h1>
@@ -17,18 +28,10 @@
      <form id="post_job" method="post" action="/job_posting/post_job/?pk={{pk}}">
     {% endif %}
             {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
-
-            {% for field in form.visible_fields %}
-                {{ field.errors }}
-                {{ field.help_text }}
-                <br>
-                {{ field }}
-            <br>
-            {% endfor %}
-
+            
+            <table>
+            {{ form.as_table }}
+            </table>
             <input type="submit" name="submit" value="Save!" />
     </form>
 <br>

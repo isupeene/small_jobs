@@ -98,36 +98,41 @@ def edit_profile(request):
 def post_job(request):
     context = RequestContext(request)
     creating = True
+    jobPk = request.GET.get('pk','')
     if request.method == 'POST':
         form = JobPostingForm(request.POST)
         # Have we been provided with a valid form?
         if form.is_valid():
-			jobPk = request.GET.get('pk','')
 			description = form.cleaned_data['description']
 			short_description = form.cleaned_data['short_description']
-			# TODO have to check these probably w/ js
 			bidding_deadline = form.cleaned_data['bidding_deadline']
 			bidding_confirmation_deadline = form.cleaned_data['bidding_confirmation_deadline']
 			compensation_amount = form.cleaned_data['compensation_amount']
+			completion_date = form.cleaned_data['completion_date']
+			bid_includes_compensation_amount = form.cleaned_data['bid_includes_compensation_amount']
+			bid_includes_completion_date = form.cleaned_data['bid_includes_completion_date']
 			if jobPk != '': 
 				myJob = JobPosting.objects.get(pk= jobPk)
 				myJob.description = description
 				myJob.short_description=short_description
 				myJob.bidding_deadline=bidding_deadline
 				myJob.bidding_confirmation_deadline=bidding_confirmation_deadline
+				myJob.bid_includes_compensation_amount = bid_includes_compensation_amount
+				myJob.compensation_amount = compensation_amount
+				myJob.bid_includes_completion_date = bid_includes_completion_date
+				myJob.completion_date = completion_date
+				
 				update_job_posting(_get_job_poster(request), myJob)
-				# TODO need logic for bid_includes stuff 
-				# bid_includes_compensation_amount = False,
-				# bid_includes_completion_date = False,
 			else:
 				myPosting = JobPosting(
 					description=description,
 					short_description=short_description,
 					bidding_deadline=bidding_deadline,
 					bidding_confirmation_deadline=bidding_confirmation_deadline,
-					# TODO need logic for bid_includes stuff
-					bid_includes_compensation_amount = False,
-					bid_includes_completion_date = False,
+					bid_includes_compensation_amount = bid_includes_compensation_amount,
+					compensation_amount = compensation_amount,
+					bid_includes_completion_date = bid_includes_completion_date,
+					completion_date = completion_date,
 				)
 				create_job_posting(_get_job_poster(request), myPosting)
 			return HttpResponsePermanentRedirect("/job_posting/jobs/")
@@ -136,7 +141,6 @@ def post_job(request):
             print form.errors
     else:
     	# TODO better to specify in urls and have parameters
-		jobPk = request.GET.get('pk','')
 		if jobPk != '': 
 			myJob = JobPosting.objects.get(pk= jobPk)
 			form = JobPostingForm(instance = myJob)
