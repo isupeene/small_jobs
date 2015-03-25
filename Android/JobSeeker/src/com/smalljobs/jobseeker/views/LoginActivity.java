@@ -51,7 +51,7 @@ import com.smalljobs.jobseeker.models.Contractor;
  */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
-
+	public static final String PREFS_FILE = "ids";
 	public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -71,7 +71,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     String regid;
 	
-	Context context;
+	Context context = this;
 	
 	public static final String PREFS_NAME = "Credentials";
 	
@@ -93,11 +93,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 		
 		setContentView(R.layout.activity_login);
 
-
-		context = getApplicationContext();
-		
 		dialog=new ProgressDialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-		dialog.setMessage("message");
 		dialog.setCancelable(false);
 		dialog.setInverseBackgroundForced(false);
 		dialog.show();
@@ -378,7 +374,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	private SharedPreferences getGCMPreferences(Context context) {
 	    // This sample app persists the registration ID in shared preferences, but
 	    // how you store the registration ID in your app is up to you.
-	    return getSharedPreferences(MainActivity.class.getSimpleName(),
+	    return getSharedPreferences(PREFS_FILE,
 	            Context.MODE_PRIVATE);
 	}
 	

@@ -13,6 +13,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -39,9 +40,12 @@ import com.smalljobs.jobseeker.PosterProfileRequest;
 import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.models.JobPoster;
 import com.smalljobs.jobseeker.models.JobPosting;
+import com.smalljobs.jobseeker.models.User;
 
 public class ViewPostingActivity extends Activity {
 
+	public static final String PREFS_RATINGS = "ratings";
+	
 	private Context context=this;
 	private PosterProfileRequest profileRequest;
 	private BidPostRequest bidPostRequest;
@@ -56,6 +60,8 @@ public class ViewPostingActivity extends Activity {
 	private TextView bidConfDeadline;
 	private TextView compensationAmount;	
 	private TextView completionDate;
+	
+	private SharedPreferences ratings;
 	
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
 	
@@ -92,18 +98,23 @@ public class ViewPostingActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		if (job.getContractor() == null) {
 			getMenuInflater().inflate(R.menu.view_posting, menu);
+			menu.findItem(R.id.action_bid).setEnabled(true);
+			for (JobPosting each: DataHolder.getInstance().getPotentialJobs()) {
+				if(each.getId().contentEquals(job.getId())){
+					menu.findItem(R.id.action_bid).setEnabled(false);
+				}
+			}
 		} else if (!job.getCompleted() && !job.getMarkedAsComplete()) {
 			getMenuInflater().inflate(R.menu.view_posting_in_progress, menu);
 		} else {
 			getMenuInflater().inflate(R.menu.view_posting_completed, menu);
-		}
-		
-		menu.findItem(R.id.action_bid).setEnabled(true);
-		for (JobPosting each: DataHolder.getInstance().getPotentialJobs()) {
-			if(each.getId().contentEquals(job.getId())){
-				menu.findItem(R.id.action_bid).setEnabled(false);
+			ratings = context.getSharedPreferences(User.getInstance().getContractor().getName() + PREFS_RATINGS, 0);
+			if (ratings.contains(job.getPosterID())) {
+				menu.findItem(R.id.action_rate).setEnabled(false);
 			}
 		}
+		
+		
 		return true;
 	}
 
@@ -119,6 +130,16 @@ public class ViewPostingActivity extends Activity {
 		if (id == R.id.action_bid) {
 			DialogFragment fm = new ConfirmBidDialogFragment();
 			fm.show(getFragmentManager(), "tag");
+			return true;
+		}
+		if (id == R.id.action_rate) {
+			//DialogFragment fm = new RateDialogFragment();
+			//fm.show(getFragmentManager(), "tag");
+			return true;
+		}
+		if (id == R.id.action_mark_complete) {
+			//DialogFragment fm = new RateDialogFragment();
+			//fm.show(getFragmentManager(), "tag");
 			return true;
 		}
 		if (id == android.R.id.home) {

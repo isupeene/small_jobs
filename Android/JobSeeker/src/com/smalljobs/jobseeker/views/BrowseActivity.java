@@ -84,7 +84,7 @@ public class BrowseActivity extends BaseActivity {
 		setProgressBarIndeterminate( true );
         setProgressBarVisibility( true );
 
-        getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
+        getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ALWAYS_EXPIRED, new JobsRequestListener() );
 		
 	}
 	

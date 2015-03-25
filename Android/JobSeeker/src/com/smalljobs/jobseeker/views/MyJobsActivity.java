@@ -143,7 +143,7 @@ public class MyJobsActivity extends BaseActivity {
 		
 		private int sectionNumber;
 		
-		private JobsListing jobs=new JobsListing();
+		private JobsListing jobs = new JobsListing();
 
 		private PostingsListAdapter postingsViewAdapter;
 
@@ -177,21 +177,19 @@ public class MyJobsActivity extends BaseActivity {
 			case 1:
 				jobsRequest = new JobsGetRequest(mActivity, "completed_jobs");
 				cacheKey = "comp";
-				((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 				break;
 			case 2:
 				jobsRequest = new JobsGetRequest(mActivity, "current_jobs");
 				cacheKey = "curr";
-				((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 				break;
 			case 3:
-				//jobsRequest = new JobsGetRequest(mActivity, "prospective_jobs");
-				//cacheKey = "pros";
-				jobs = DataHolder.getInstance().getPotentialJobs();
+				jobsRequest = new JobsGetRequest(mActivity, "prospective_jobs");
+				cacheKey = "pros";
+				//jobs = DataHolder.getInstance().getPotentialJobs();
 				break;
 			}
 			
-			
+			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 		}
 
 		@Override
@@ -201,11 +199,6 @@ public class MyJobsActivity extends BaseActivity {
 			
 			System.out.println("on start" + sectionNumber);
 			
-			//((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
-			
-			
-			mActivity.setProgressBarIndeterminate( true );
-			mActivity.setProgressBarVisibility( true );
 
 		}
 		
@@ -261,6 +254,7 @@ public class MyJobsActivity extends BaseActivity {
 	            jobs = result;
 				System.out.println("request success" + getArguments().getInt(ARG_SECTION_NUMBER));
 				postingsViewAdapter.notifyDataSetChanged();
+				postingsViewAdapter.addAll(jobs);
 	        }
 	    }
 	}

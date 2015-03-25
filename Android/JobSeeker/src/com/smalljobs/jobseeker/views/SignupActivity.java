@@ -63,7 +63,7 @@ public class SignupActivity extends Activity implements LoaderCallbacks<Cursor> 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_signup);
 
-		
+		context = getApplicationContext();
 		
 		// Set up the login form.
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.email);

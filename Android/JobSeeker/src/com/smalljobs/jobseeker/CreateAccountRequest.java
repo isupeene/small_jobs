@@ -34,15 +34,16 @@ public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contract
     private Contractor contractor;
     private Context context;
 
+    public static final String PREFS_FILE = "ids";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     static final String TAG = "GCM";
 
     public CreateAccountRequest(Context context, String email, String name) {
         super( Contractor.class );
-        contractor = new Contractor(name, email);
-        contractor.setRegistrationId(getRegistrationId(context));
         this.context = context;
+        contractor = new Contractor(name, email);
+        contractor.setRegistrationId(getRegistrationId(this.context));
         this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/create_account/";
     }
 
@@ -93,7 +94,7 @@ public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contract
 	        return "";
 	    }
 	    
-	    Log.i(TAG, "Registration ID found."+registrationId);
+	    Log.i(TAG, "Registration ID found: "+registrationId);
 	    return registrationId;
 	}
 	
@@ -103,7 +104,7 @@ public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contract
 	private SharedPreferences getGCMPreferences(Context context) {
 	    // This sample app persists the registration ID in shared preferences, but
 	    // how you store the registration ID in your app is up to you.
-	    return context.getSharedPreferences(MainActivity.class.getSimpleName(),
+	    return context.getSharedPreferences(PREFS_FILE,
 	            Context.MODE_PRIVATE);
 	}
     
