@@ -47,7 +47,7 @@ public class BrowseActivity extends BaseActivity {
 			}
 		});
 		
-		jobsRequest = new JobsGetRequest(context);
+		jobsRequest = new JobsGetRequest(context, "jobs");
 	}
 
 	public void selectJob(int position) {
@@ -84,7 +84,7 @@ public class BrowseActivity extends BaseActivity {
 		setProgressBarIndeterminate( true );
         setProgressBarVisibility( true );
 
-        getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
+        getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ALWAYS_EXPIRED, new JobsRequestListener() );
 		
 	}
 	
@@ -92,7 +92,7 @@ public class BrowseActivity extends BaseActivity {
     // INNER CLASSES
     // ============================================================================================
 
-    public final class ProfileRequestListener implements RequestListener< JobsListing > {
+    public final class JobsRequestListener implements RequestListener< JobsListing > {
 
         @Override
         public void onRequestFailure( SpiceException spiceException ) {
@@ -102,7 +102,7 @@ public class BrowseActivity extends BaseActivity {
         @Override
         public void onRequestSuccess( final JobsListing result ) {
         	setProgressBarVisibility( false );
-            Toast.makeText( BrowseActivity.this, "success", Toast.LENGTH_SHORT ).show();
+            //Toast.makeText( BrowseActivity.this, "success", Toast.LENGTH_SHORT ).show();
             postingsViewAdapter = new PostingsListAdapter(context,
 					R.layout.main_row_layout, result);
             jobs = result;

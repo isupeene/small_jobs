@@ -92,11 +92,25 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 			e.printStackTrace();
 		}
 		
-		ss =  new SpannableString("Compensation Amount: Not specified");
+		if (job.getCompensationAmount() != null) {
+			ss =  new SpannableString("Compensation Amount: $" + job.getCompensationAmount());			
+		} else {
+			ss =  new SpannableString("Compensation Amount: Not specified");			
+		}
 		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 20, 0);
 		compensationAmount.setText(ss);
 		
-		ss =  new SpannableString("Completion Date: Not specified");
+		if (job.getCompletionDate() != null) {
+			try {
+				date = df1.parse(job.getCompletionDate());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ss =  new SpannableString("Completion Date: " + date);
+		} else {
+			ss =  new SpannableString("Completion Date: Not specified");
+		}
 		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 16, 0);
 		completionDate.setText(ss);
 		
@@ -104,5 +118,10 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 		return convertView;
 	}
 	
+	public void refresh(ArrayList<JobPosting> postings)
+    {
+        this.postings = postings;
+        notifyDataSetChanged();
+    } 
 
 }

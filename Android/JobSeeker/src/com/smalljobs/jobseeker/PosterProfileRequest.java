@@ -3,19 +3,18 @@ package com.smalljobs.jobseeker;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.util.ArrayList;
 
 import roboguice.util.temp.Ln;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
+import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.JobPoster;
+import com.smalljobs.jobseeker.models.Server;
 
 public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoster > {
 

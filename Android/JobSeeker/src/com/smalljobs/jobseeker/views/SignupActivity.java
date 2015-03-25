@@ -7,13 +7,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -23,7 +19,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -49,16 +44,7 @@ import com.smalljobs.jobseeker.models.Contractor;
  */
 public class SignupActivity extends Activity implements LoaderCallbacks<Cursor> {
 
-	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
-	/**
-	 * Keep track of the login task to ensure we can cancel it if requested.
-	 */
-	//private UserLoginTask mAuthTask = null;
+
 
 	// UI references.
 	private AutoCompleteTextView mEmailView;
@@ -66,12 +52,10 @@ public class SignupActivity extends Activity implements LoaderCallbacks<Cursor> 
 	private View mProgressView;
 	private View mLoginFormView;
 
+	private Context context;
+	
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
-	
-	private Context context = this;
-	
 	private CreateAccountRequest signUpRequest = null;
-	
 	private LoginRequest loginRequest = null;
 	
 	@Override
@@ -79,7 +63,7 @@ public class SignupActivity extends Activity implements LoaderCallbacks<Cursor> 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_signup);
 
-		
+		context = getApplicationContext();
 		
 		// Set up the login form.
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -106,7 +90,7 @@ public class SignupActivity extends Activity implements LoaderCallbacks<Cursor> 
 				attemptLogin();
 			}
 		});
-
+		
 		mLoginFormView = findViewById(R.id.login_form);
 		mProgressView = findViewById(R.id.login_progress);
 		
@@ -200,7 +184,7 @@ public class SignupActivity extends Activity implements LoaderCallbacks<Cursor> 
 
 	private boolean isNameValid(String name) {
 		// TODO: Replace this with your own logic
-		return name.length() > 3;
+		return name.length() > 2;
 	}
 
 	/**
@@ -301,6 +285,8 @@ public class SignupActivity extends Activity implements LoaderCallbacks<Cursor> 
 
         @Override
         public void onRequestFailure( SpiceException spiceException ) {
+        	System.out.println("Sign up failed");
+        	spiceException.printStackTrace();
             Toast.makeText( SignupActivity.this, "failure", Toast.LENGTH_SHORT ).show();
             showProgress(false);
             mEmailView
@@ -313,7 +299,7 @@ public class SignupActivity extends Activity implements LoaderCallbacks<Cursor> 
         @Override
         public void onRequestSuccess( final Contractor result ) {
         	showProgress(false);
-            Toast.makeText( SignupActivity.this, "success", Toast.LENGTH_SHORT ).show();
+            //Toast.makeText( SignupActivity.this, "success", Toast.LENGTH_SHORT ).show();
             Intent intent = new Intent(context, MainActivity.class);
 			startActivity(intent);
 			overridePendingTransition(0, 0);

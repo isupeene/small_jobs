@@ -3,61 +3,52 @@ package com.smalljobs.jobseeker;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.CookiePolicy;
 
 import roboguice.util.temp.Ln;
-import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
+import com.smalljobs.jobseeker.models.Contractor;
 import com.smalljobs.jobseeker.models.CookieManagerSingleton;
-import com.smalljobs.jobseeker.models.JobPosting;
-import com.smalljobs.jobseeker.models.JobsListing;
 import com.smalljobs.jobseeker.models.Server;
+import com.smalljobs.jobseeker.models.User;
 
-public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > {
+public class UserProfileRequest extends GoogleHttpClientSpiceRequest< Contractor > {
 
     private String baseUrl;
-    private Context context;
 
-    public JobsGetRequest( Context context, String type ) {
-        super( JobsListing.class );
-        this.context = context;
-        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type;
+    public UserProfileRequest() {
+        super( Contractor.class );
+        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/profile/";
     }
 
     @Override
-    public JobsListing loadDataFromNetwork() throws IOException {
+    public Contractor loadDataFromNetwork() throws IOException {
         Ln.d( "Call web service " + baseUrl );
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
-
+        
         CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
         CookieHandler.setDefault(cookieManager);
         
+        System.out.println("Profile request");
+        System.out.println(cookieManager.getCookieStore().getCookies().size());
         
         String result = request.execute().parseAsString();
 
         Gson gson = new Gson();
         JsonParser parser = new JsonParser();
-        JsonArray jArray = parser.parse(result).getAsJsonArray();
+        JsonObject obj = parser.parse(result).getAsJsonObject();
         
-        JobsListing postings = new JobsListing();
+        Contractor contractor = gson.fromJson( obj , Contractor.class);
         
-        for(JsonElement obj : jArray )
-        {
-            JobPosting posting = gson.fromJson( obj , JobPosting.class);
-            postings.add(posting);
-        }
+        User.getInstance().setContractor(contractor);
         
-        return postings;        
+        return contractor;        
     }
     
     
