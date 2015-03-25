@@ -37,11 +37,15 @@ def get_sql_store():
 def get_consumer(request):
 	return Consumer(request.session, get_sql_store())
 
-def get_job_poster(auth_response):
+def get_job_poster(auth_response, sreg_response):
 	try:
 		return JobPoster.objects.get(openid=auth_response.identity_url)
 	except:
-		poster = JobPoster(openid=auth_response.identity_url)
+		poster = JobPoster(
+			openid=auth_response.identity_url,
+			name=sreg_response['fullname'],
+			email=sreg_response['email']
+		)
 		poster.save()
 		return poster	
 

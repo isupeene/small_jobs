@@ -196,20 +196,28 @@ class JobPosterContractorRatingInline(ContractorRatingInline):
 
 # Users
 
-class UserAdmin(NestedModelAdmin):
-	fieldsets = [
-		(None, {'fields' : ['name', 'description']}),
-		("Contact info", {'fields' : ['email', 'phone_number']})
-	]
+user_fieldsets = [
+	(None, {'fields' : ['name', 'description']}),
+	("Contact info", {'fields' : ['email', 'phone_number']})
+]
 
-class JobPosterAdmin(UserAdmin):
+job_poster_fieldsets = deepcopy(user_fieldsets)
+job_poster_fieldsets[0][1]['fields'].insert(1, 'openid')
+job_poster_fieldsets[0][1]['fields'].append('region')
+
+contractor_fieldsets = deepcopy(user_fieldsets)
+contractor_fieldsets[0][1]['fields'].insert(1, 'registration_id')
+
+class JobPosterAdmin(NestedModelAdmin):
+	fieldsets = job_poster_fieldsets
 	inlines = [
 		JobPosterJobPostingInline,
 		JobPosterJobPosterRatingInline,
 		JobPosterContractorRatingInline
 	]
 
-class ContractorAdmin(UserAdmin):
+class ContractorAdmin(NestedModelAdmin):
+	fieldsets = contractor_fieldsets
 	inlines = [
 		ContractorSkillInline,
 		ContractorJobPostingInline,

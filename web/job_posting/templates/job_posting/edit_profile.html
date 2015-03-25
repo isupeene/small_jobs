@@ -1,0 +1,29 @@
+
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body_block %}
+<h1>Profile</h1>
+<br>
+
+<form action="edit_my_profile_form/" method="post">
+{% csrf_token %}
+    Name: 
+    <input type="text" name="name" id="name" value="{{userInfo.name}}"/>
+    <br />
+    Description:
+    <input type="text" name="description" id="description" value="{{userInfo.description}}"  />
+    <br />
+    eMail:
+    <input type="text" name="email" id="email" value="{{userInfo.email}}"/>
+    <br />
+    Phone Number:
+    <input type="text" name="phone_number" id="phone_number" value="{{userInfo.phone_number}}"  />
+    <br />
+<input type="submit" value="Save!" />
+<br>
+
+{% endblock %}
