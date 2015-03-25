@@ -2,9 +2,6 @@
 <resources>
 
     <string name="app_name">JobSeeker</string>
-    <string name="title_section1">Completed</string>
-    <string name="title_section2">Current</string>
-    <string name="title_section3">Potential</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_main">Home</string>
@@ -29,5 +26,9 @@
     <string name="action_settings">Settings</string>
     <string name="action_rate">Rate Poster</string>
     <string name="action_mark_complete">Mark as complete</string>
-
+    
+    <string name="title_section1">Completed</string>
+    <string name="title_section2">Current</string>
+    <string name="title_section3">Potential</string>
+    
 </resources>

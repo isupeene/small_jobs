@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.app.ListFragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,7 +86,7 @@ public class MyJobsActivity extends BaseActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -100,13 +103,8 @@ public class MyJobsActivity extends BaseActivity {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class
 			// below).
-            Fragment fragment = new PlaceholderFragment(position+1);
- 
-            Bundle args = new Bundle();
-			args.putInt("section_number", position+1);
-			fragment.setArguments(args);
 			
-			return fragment;
+			return JobsListFragment.newInstance(position);
 		}
 
 		@Override
@@ -131,6 +129,107 @@ public class MyJobsActivity extends BaseActivity {
 		
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static class JobsListFragment extends ListFragment {
+        int section_number;
+        String[] strings = {"Cheese", "Pepperoni", "Black Olives"};
+
+        /**
+         * Create a new instance of CountingFragment, providing "num"
+         * as an argument.
+         */
+        static JobsListFragment newInstance(int num) {
+            JobsListFragment fragment = new JobsListFragment();
+
+            // Supply num input as an argument.
+            Bundle args = new Bundle();
+			args.putInt("section_number", num+1);
+			fragment.setArguments(args);
+
+            return fragment;
+        }
+
+        /**
+         * When creating, retrieve this instance's number from its arguments.
+         */
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            section_number = getArguments() != null ? getArguments().getInt("section_number") : 1;
+        }
+
+        /**
+         * The Fragment's UI is just a simple text view showing its
+         * instance number.
+         */
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View v = inflater.inflate(R.layout.fragment_pager_list, container, false);
+            View tv = v.findViewById(R.id.text);
+            ((TextView)tv).setText("Fragment #" + section_number);
+            return v;
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            setListAdapter(new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_list_item_1, strings));
+        }
+
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            Log.i("FragmentList", "Item clicked: " + id);
+        }
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -195,11 +294,7 @@ public class MyJobsActivity extends BaseActivity {
 		@Override
 		public void onStart() {
 			super.onStart();
-			
-			
 			System.out.println("on start" + sectionNumber);
-			
-
 		}
 		
 		
@@ -213,12 +308,6 @@ public class MyJobsActivity extends BaseActivity {
 			System.out.println("on create view" + sectionNumber);
 			
 			list = (ListView) rootView.findViewById(R.id.MyJobsListView);
-			
-			postingsViewAdapter = new PostingsListAdapter(mActivity,
-					R.layout.main_row_layout, jobs);
-			
-
-			list.setAdapter(postingsViewAdapter);
 			
 			list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -253,8 +342,10 @@ public class MyJobsActivity extends BaseActivity {
 	            //Toast.makeText( mActivity, "success", Toast.LENGTH_SHORT ).show();
 	            jobs = result;
 				System.out.println("request success" + getArguments().getInt(ARG_SECTION_NUMBER));
+				postingsViewAdapter = new PostingsListAdapter(mActivity,
+						R.layout.main_row_layout, jobs);
+				list.setAdapter(postingsViewAdapter);
 				postingsViewAdapter.notifyDataSetChanged();
-				postingsViewAdapter.addAll(jobs);
 	        }
 	    }
 	}
