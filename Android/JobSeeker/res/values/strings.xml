@@ -31,4 +31,9 @@
     <string name="title_section2">Current</string>
     <string name="title_section3">Potential</string>
     
+    <string name="filter_title">Filter by:</string>
+    <string name="prompt_location">Location</string>
+    <string name="prompt_skills">Skills</string>
+    <string name="search">Search</string>
+    
 </resources>

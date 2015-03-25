@@ -1,15 +1,21 @@
 package com.smalljobs.jobseeker.views;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.transition.Slide;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,6 +34,7 @@ public class BrowseActivity extends BaseActivity {
 	private JobsGetRequest jobsRequest;
 	private JobsListing jobs=new JobsListing();
 	private PostingsListAdapter postingsViewAdapter;
+	private DialogFragment fm;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +81,11 @@ public class BrowseActivity extends BaseActivity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
+		if (id == R.id.action_filter) {
+			fm = new FilterDialogFragment();
+			fm.show(getFragmentManager(), "tag");
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -87,10 +99,75 @@ public class BrowseActivity extends BaseActivity {
         getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ALWAYS_EXPIRED, new JobsRequestListener() );
 		
 	}
+
 	
 	// ============================================================================================
     // INNER CLASSES
     // ============================================================================================
+	
+	public class FilterDialogFragment extends DialogFragment {
+
+		EditText locationSpecifier;
+		EditText skillsSpecifier;
+
+		
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Use the Builder class for convenient dialog construction
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			LayoutInflater inflater = getActivity().getLayoutInflater();
+
+			View dialogView = inflater.inflate(R.layout.dialog_filter, null);
+			// Inflate and set the layout for the dialog
+			// Pass null as the parent view because its going in the dialog layout
+			builder.setView(dialogView);
+
+			locationSpecifier = (EditText) dialogView.findViewById(R.id.prompt_location);
+			skillsSpecifier = (EditText) dialogView.findViewById(R.id.prompt_skills);
+
+			builder.setTitle(R.string.filter_title);
+			
+			builder.setPositiveButton(R.string.search, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+
+
+				}
+			})
+			.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					// User cancelled the dialog
+				}
+			});
+			// Create the AlertDialog object and return it
+			return builder.create();
+		}
+
+		@Override
+		public void onStart() {
+			super.onStart();
+			AlertDialog d = (AlertDialog) getDialog();
+
+			if(d != null)
+			{
+				Button positiveButton = (Button) d.getButton(Dialog.BUTTON_POSITIVE);
+				positiveButton.setOnClickListener(new View.OnClickListener()
+				{
+					@Override
+					public void onClick(View v)
+					{
+						String location = locationSpecifier.getText().toString();
+						String skills = skillsSpecifier.getText().toString();
+						
+						setProgressBarIndeterminate( true );
+				        setProgressBarVisibility( true );
+						
+						jobsRequest = new JobsGetRequest(context, "jobs", location, skills);
+						getSpiceManager().execute( jobsRequest, "json", DurationInMillis.ALWAYS_EXPIRED, new JobsRequestListener() );
+					}
+				});
+			}
+		}
+	}
 
     public final class JobsRequestListener implements RequestListener< JobsListing > {
 
@@ -101,6 +178,9 @@ public class BrowseActivity extends BaseActivity {
 
         @Override
         public void onRequestSuccess( final JobsListing result ) {
+        	if (fm != null) {
+        		fm.dismiss();
+        	}
         	setProgressBarVisibility( false );
             //Toast.makeText( BrowseActivity.this, "success", Toast.LENGTH_SHORT ).show();
             postingsViewAdapter = new PostingsListAdapter(context,
