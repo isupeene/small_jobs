@@ -11,7 +11,7 @@ $(document).ready(function() {
             				pk : $(this).val()
             			}));
     			});
-    		mark_delete('delete', values)
+    		sendMsgToServer('delete', values)
     	});
 
         // calls the server to mark the selected jobs
@@ -24,17 +24,38 @@ $(document).ready(function() {
             				pk : $(this).val()
             			}));
     			});
-    			mark_delete('mark', values)
+    			sendMsgToServer('mark', values)
     		});
 
+        // called the server to accept a bid
+        $("#accept").click( function(event) {
+            var values = [];
+            var theCheckboxes = $("input[type='checkbox']")
+            if (theCheckboxes.filter(":checked").length > 1 ||
+                theCheckboxes.filter(":checked").length == 0){
+                alert("You are only allowed to accept one bid! " + theCheckboxes.filter(":checked").length
+                    + " are selected !");
+                return false;
+            }else{
+                $('#bidsTable').find("input[type=checkbox]:checked").each(function () {
+                        var row = $(this);
+                        alert($(this).val());
+                        values.push(JSON.stringify({
+                            pk : $(this).val()
+                        }));
+                });
+            sendMsgToServer('accept',values)
+            }
+        });
+
     	// helper function to mark or delete 
-    	mark_delete = function(type, values){
+    	sendMsgToServer = function(type, values){
     		$.ajax({
         		type: 'POST',
-        		url: 'mark_delete_jobs/',
+        		url: 'js_message/',
         		data: { 'action': type , 'values[]': values,},
         		success: function(response) {
-        			//alert(response.success);
+        			alert(response.success);
         			location.reload();
                     uncheck_all();
     			}

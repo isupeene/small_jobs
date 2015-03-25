@@ -33,6 +33,9 @@
     Completed  :
     {{myJob.completed}}
     <br />
+    Current Contractor :
+    {{myJob.contractor}}
+    <br/>
     Description: <br/>
     <textarea rows="5" cols="100" readonly="true">{{myJob.description}}</textarea>
     <br />
@@ -54,25 +57,33 @@
       </style>
     </head>
 
-<table style="width:100%">
+<table id="bidsTable" style="width:100%">
   <tr>
+    <th>Select</th>
     <th>Contractor</th>
     <th>Compensation Amount</th>    
     <th>Completion Date</th>
     <th>Message</th>
+    <th>ContractorID</th>
   </tr>
       {% for bid in bidList %}
       <tr>
-        <td>{{bid.contractor}}</td>
+        <td><input type="checkbox" name="item" value="{{bid.pk}}" ></td> 
+        <td><a href="http://127.0.0.1:8000/job_posting/view_profile/?contractor={{job.pk}}">{{bid.contractor}}</td>
         <td>{{bid.compensation_amount}}</td>
         <td>{{bid.completion_date}}</td>
         <td>{{bid.message}}</td>
+        <td>{{bid.pk}}</td>
       {% endfor %}
+    <br>
+</table>
+    <div id="form_footer">
+                <button id="accept">Accept</button>
+    </div>
   {% else %}
     <p>No bids on job!</p> 
   {% endif %}
-</table>
-<!--TODO: Add links to contractor <a href="http://127.0.0.1:8000/job_posting/view_profile">contractor info!</a>-->
+
  <br>
 {% endblock %}
 

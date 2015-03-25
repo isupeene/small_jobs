@@ -153,20 +153,23 @@ def post_job(request):
     return render_to_response('job_posting/create_job.html', {'form': form,'creating': creating, 'pk': jobPk}, context)
 
 @csrf_exempt
-def mark_delete_jobs(request):
-    # Get the context from the request.
-    JSONdata = request.POST.getlist('values[]')
-    action = request.POST.get('action')
-    payload = {'success':False}
-    jobPoster = _get_job_poster(request)
-    for job in JSONdata:
+def js_message(request):
+	# Get the context from the request.
+	print "Hey bud"
+	JSONdata = request.POST.getlist('values[]')
+	action = request.POST.get('action')
+	payload = {'success':False}
+	jobPoster = _get_job_poster(request)
+	for job in JSONdata:
 		parsedJob = json.loads(job)
 		if (action == 'delete'):
 			delete_job_posting(jobPoster,parsedJob['pk'])
 		elif (action == 'mark'):    			
 			mark_complete(jobPoster,JobPosting.objects.get(pk=parsedJob['pk'] ))
-    payload = {'success':True}
-    return HttpResponse(json.dumps(payload), content_type='application/json')
+		elif (action == 'accept'):
+			accept_bid(jobPoster, parsedJob['pk'])
+	payload = {'success':True}
+	return HttpResponse(json.dumps(payload), content_type='application/json')
 
 # Helper Functions
 def _get_job_poster(request):
