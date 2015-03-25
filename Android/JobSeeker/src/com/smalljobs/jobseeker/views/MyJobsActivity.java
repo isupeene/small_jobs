@@ -63,10 +63,18 @@ public class MyJobsActivity extends BaseActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
-
-
 	}
+
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		mSectionsPagerAdapter.notifyDataSetChanged();
+	}
+
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -184,7 +192,7 @@ public class MyJobsActivity extends BaseActivity {
 				break;
 			}
 			
-			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
+			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ALWAYS_EXPIRED, new JobsRequestListener() );
 		}
 
 		/**

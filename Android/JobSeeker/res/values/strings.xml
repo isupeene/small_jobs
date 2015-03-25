@@ -36,4 +36,7 @@
     <string name="prompt_skills">Skills</string>
     <string name="search">Search</string>
     
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    
 </resources>
