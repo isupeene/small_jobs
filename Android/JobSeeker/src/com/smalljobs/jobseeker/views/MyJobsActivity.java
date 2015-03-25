@@ -128,27 +128,14 @@ public class MyJobsActivity extends BaseActivity {
 		}
 		
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	public static class JobsListFragment extends ListFragment {
         int section_number;
         String[] strings = {"Cheese", "Pepperoni", "Black Olives"};
+        JobsListing jobs = new JobsListing();
+        JobsGetRequest jobsRequest;
+		String cacheKey = null;
+		PostingsListAdapter postingsViewAdapter;
 
         /**
          * Create a new instance of CountingFragment, providing "num"
@@ -174,115 +161,24 @@ public class MyJobsActivity extends BaseActivity {
             section_number = getArguments() != null ? getArguments().getInt("section_number") : 1;
         }
 
-        /**
-         * The Fragment's UI is just a simple text view showing its
-         * instance number.
-         */
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.fragment_pager_list, container, false);
-            View tv = v.findViewById(R.id.text);
-            ((TextView)tv).setText("Fragment #" + section_number);
-            return v;
-        }
+		public void onStart() {
+			super.onStart();
+			
 
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-            setListAdapter(new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_list_item_1, strings));
-        }
-
-        @Override
-        public void onListItemClick(ListView l, View v, int position, long id) {
-            Log.i("FragmentList", "Item clicked: " + id);
-        }
-    }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		private static final String ARG_SECTION_NUMBER = "section_number";
-		
-		private int sectionNumber;
-		
-		private JobsListing jobs = new JobsListing();
-
-		private PostingsListAdapter postingsViewAdapter;
-
-		private JobsGetRequest jobsRequest;
-		
-		private Activity mActivity;
-		
-		private ListView list;
-
-		private String cacheKey = null;
-		
-		public PlaceholderFragment(int i) {
-			sectionNumber = i;
-		}
-
-	    @Override
-	    public void onAttach(Activity activity)
-	    {
-	        if (activity instanceof MyJobsActivity)
-	        {
-	            mActivity = (MyJobsActivity) activity;
-	        }
-	        super.onAttach(activity);
-	    }
-	    
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-						
-			switch (sectionNumber) {
+			System.out.println("onStart " + getArguments().getInt("section_number"));
+			
+			switch (section_number) {
 			case 1:
-				jobsRequest = new JobsGetRequest(mActivity, "completed_jobs");
+				jobsRequest = new JobsGetRequest(getActivity(), "completed_jobs");
 				cacheKey = "comp";
 				break;
 			case 2:
-				jobsRequest = new JobsGetRequest(mActivity, "current_jobs");
+				jobsRequest = new JobsGetRequest(getActivity(), "current_jobs");
 				cacheKey = "curr";
 				break;
 			case 3:
-				jobsRequest = new JobsGetRequest(mActivity, "prospective_jobs");
+				jobsRequest = new JobsGetRequest(getActivity(), "prospective_jobs");
 				cacheKey = "pros";
 				//jobs = DataHolder.getInstance().getPotentialJobs();
 				break;
@@ -291,63 +187,73 @@ public class MyJobsActivity extends BaseActivity {
 			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 		}
 
-		@Override
-		public void onStart() {
-			super.onStart();
-			System.out.println("on start" + sectionNumber);
-		}
-		
-		
+		/**
+         * The Fragment's UI is just a simple text view showing its
+         * instance number.
+         */
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+        	System.out.println("onCreateView " + getArguments().getInt("section_number"));
+        	
+            View v = inflater.inflate(R.layout.fragment_pager_list, container, false);
+            return v;
+        }
 
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_my_jobs,
-					container, false);
-			
-			System.out.println("on create view" + sectionNumber);
-			
-			list = (ListView) rootView.findViewById(R.id.MyJobsListView);
-			
-			list.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view,
-						int position, long id) {
-					selectJob(position);
-				}
-			});
-			
-			return rootView;
+        @Override
+		public void onViewCreated(View view, Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			super.onViewCreated(view, savedInstanceState);
+			System.out.println("onViewCreated " + getArguments().getInt("section_number"));
 		}
 
+		@Override
+		public void onResume() {
+			// TODO Auto-generated method stub
+			super.onResume();
+			System.out.println("onResume " + getArguments().getInt("section_number"));
+		}
+
+		@Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            postingsViewAdapter = new PostingsListAdapter(getActivity(),
+					R.layout.main_row_layout, jobs);
+            setListAdapter(postingsViewAdapter);
+            //setListAdapter(new ArrayAdapter<String>(getActivity(),
+            //        android.R.layout.simple_list_item_1, strings));
+        }
+
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            Log.i("FragmentList", "Item clicked: " + id);
+            selectJob(position);
+        }
+        
 		public void selectJob(int position) {
-			Intent detailIntent = new Intent(mActivity,
+			Intent detailIntent = new Intent(getActivity(),
 					ViewPostingActivity.class);
 			detailIntent.putExtra("job", jobs.get(position));
 			startActivity(detailIntent);
 		}
 		
-	    public final class JobsRequestListener implements RequestListener< JobsListing > {
+		public final class JobsRequestListener implements RequestListener< JobsListing > {
 
 	        @Override
 	        public void onRequestFailure( SpiceException spiceException ) {
-	            Toast.makeText( mActivity, "failure", Toast.LENGTH_SHORT ).show();
+	            Toast.makeText( getActivity(), "failure", Toast.LENGTH_SHORT ).show();
 	        }
 	        
-
-	        @Override
+	        @Override																																																																																																																																																					 																
 	        public void onRequestSuccess( final JobsListing result ) {
-	        	mActivity.setProgressBarVisibility( false );
 	            //Toast.makeText( mActivity, "success", Toast.LENGTH_SHORT ).show();
 	            jobs = result;
-				System.out.println("request success" + getArguments().getInt(ARG_SECTION_NUMBER));
-				postingsViewAdapter = new PostingsListAdapter(mActivity,
-						R.layout.main_row_layout, jobs);
-				list.setAdapter(postingsViewAdapter);
-				postingsViewAdapter.notifyDataSetChanged();
+				postingsViewAdapter.clear();
+				postingsViewAdapter.addAll(jobs);
+				postingsViewAdapter.notifyDataSetChanged();																																																																																																																																																					
 	        }
 	    }
-	}
+    }
+	
 
 }
