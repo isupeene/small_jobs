@@ -39,9 +39,9 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
         String skillsQuery = null;
         if (!skills.isEmpty()) {
         	List<String> list = Arrays.asList(skills.split("\\s*,\\s*"));
-        	skillsQuery = "/?skill=" + list.get(0);
+        	skillsQuery = "/?skill=" + list.get(0).replaceAll("\\s+", "%20").trim();
         	for (int i = 1; i < list.size()-1; i++) {
-        		skillsQuery.concat("&skill=" + list.get(i));
+        		skillsQuery.concat("&skill=" + list.get(i).replaceAll("\\s+", "%20").trim());
         	}
         }
         
