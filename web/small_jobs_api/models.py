@@ -87,7 +87,7 @@ class Contractor(Model):
 	description = NullableTextField()
 	email = ShortCharField(unique=True, validators=[validate_email])
 	phone_number = NullableShortCharField(validators=[validate_phone_number])
-	registration_id = ShortCharField()
+	registration_id = CharField(max_length=500, default=None)
 
 	def save(self):
 		self.full_clean()
