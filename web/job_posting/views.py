@@ -8,7 +8,7 @@ from datetime import timedelta
 
 from small_jobs_api.decorators import require_login
 from small_jobs_api.models import (
-	JobPoster, JobPosting
+	JobPoster, JobPosting, Contractor
 )
 from small_jobs_api.job_posting_api import *
 from job_posting.forms import *
@@ -57,7 +57,13 @@ def jobs(request):
 
 @require_login
 def view_profile(request):
-	return render(request,'job_posting/view_profile.html')
+	contractorPK = request.GET.get('contractor','')
+	rating = get_contractor_rating(_get_contractor(contractorPK))
+	if rating != None:
+		context = {'userInfo': _get_contractor(contractorPK), 'rating': rating}
+	else:
+		context = context = {'userInfo': _get_contractor(contractorPK) }
+	return render(request,'job_posting/view_profile.html',context)
 
 @require_login
 def login(request):
@@ -176,5 +182,9 @@ def _get_job_poster(request):
 	openid = request.session["authenticated_user"].openid
 	jobposter = JobPoster.objects.get(openid=openid)
 	return jobposter
+
+def _get_contractor(contractorPK):
+	contractor = Contractor.objects.get(pk=contractorPK)
+	return contractor
 
 

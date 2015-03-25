@@ -79,6 +79,13 @@ def accept_bid(job_poster, bid_id):
 	bid.job.contractor = bid.contractor
 	bid.job.save()
 
+def get_contractor_rating(contractor):
+	ratings = ContractorRating.objects.filter(contractor=contractor)
+	if len(ratings) == 0:
+		return None
+	else:
+		return float(sum([r.rating for r in ratings])) / len(ratings)
+
 # After the Job
 
 def rate_contractor(job_poster, contractor, rating):

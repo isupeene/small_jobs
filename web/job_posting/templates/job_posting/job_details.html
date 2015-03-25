@@ -68,12 +68,12 @@
   </tr>
       {% for bid in bidList %}
       <tr>
-        <td><input type="checkbox" name="item" value="{{bid.pk}}" ></td> 
-        <td><a href="http://127.0.0.1:8000/job_posting/view_profile/?contractor={{job.pk}}">{{bid.contractor}}</td>
+        <td><input type="checkbox" name="item" value="{{bid.contractor.pk}}" ></td> 
+        <td><a href="http://127.0.0.1:8000/job_posting/view_profile/?contractor={{bid.contractor.pk}}">{{bid.contractor}}</td>
         <td>{{bid.compensation_amount}}</td>
         <td>{{bid.completion_date}}</td>
         <td>{{bid.message}}</td>
-        <td>{{bid.pk}}</td>
+        <td>{{bid.contractor.pk}}</td>
       {% endfor %}
     <br>
 </table>
