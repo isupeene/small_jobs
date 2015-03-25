@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.app.ListFragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,7 +86,7 @@ public class MyJobsActivity extends BaseActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -100,13 +103,8 @@ public class MyJobsActivity extends BaseActivity {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class
 			// below).
-            Fragment fragment = new PlaceholderFragment(position+1);
- 
-            Bundle args = new Bundle();
-			args.putInt("section_number", position+1);
-			fragment.setArguments(args);
 			
-			return fragment;
+			return JobsListFragment.newInstance(position);
 		}
 
 		@Override
@@ -130,60 +128,57 @@ public class MyJobsActivity extends BaseActivity {
 		}
 		
 	}
+	
+	public static class JobsListFragment extends ListFragment {
+        int section_number;
+        String[] strings = {"Cheese", "Pepperoni", "Black Olives"};
+        JobsListing jobs = new JobsListing();
+        JobsGetRequest jobsRequest;
+		String cacheKey = null;
+		PostingsListAdapter postingsViewAdapter;
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		private static final String ARG_SECTION_NUMBER = "section_number";
-		
-		private int sectionNumber;
-		
-		private JobsListing jobs = new JobsListing();
+        /**
+         * Create a new instance of CountingFragment, providing "num"
+         * as an argument.
+         */
+        static JobsListFragment newInstance(int num) {
+            JobsListFragment fragment = new JobsListFragment();
 
-		private PostingsListAdapter postingsViewAdapter;
+            // Supply num input as an argument.
+            Bundle args = new Bundle();
+			args.putInt("section_number", num+1);
+			fragment.setArguments(args);
 
-		private JobsGetRequest jobsRequest;
-		
-		private Activity mActivity;
-		
-		private ListView list;
+            return fragment;
+        }
 
-		private String cacheKey = null;
-		
-		public PlaceholderFragment(int i) {
-			sectionNumber = i;
-		}
+        /**
+         * When creating, retrieve this instance's number from its arguments.
+         */
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            section_number = getArguments() != null ? getArguments().getInt("section_number") : 1;
+        }
 
-	    @Override
-	    public void onAttach(Activity activity)
-	    {
-	        if (activity instanceof MyJobsActivity)
-	        {
-	            mActivity = (MyJobsActivity) activity;
-	        }
-	        super.onAttach(activity);
-	    }
-	    
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-						
-			switch (sectionNumber) {
+        @Override
+		public void onStart() {
+			super.onStart();
+			
+
+			System.out.println("onStart " + getArguments().getInt("section_number"));
+			
+			switch (section_number) {
 			case 1:
-				jobsRequest = new JobsGetRequest(mActivity, "completed_jobs");
+				jobsRequest = new JobsGetRequest(getActivity(), "completed_jobs");
 				cacheKey = "comp";
 				break;
 			case 2:
-				jobsRequest = new JobsGetRequest(mActivity, "current_jobs");
+				jobsRequest = new JobsGetRequest(getActivity(), "current_jobs");
 				cacheKey = "curr";
 				break;
 			case 3:
-				jobsRequest = new JobsGetRequest(mActivity, "prospective_jobs");
+				jobsRequest = new JobsGetRequest(getActivity(), "prospective_jobs");
 				cacheKey = "pros";
 				//jobs = DataHolder.getInstance().getPotentialJobs();
 				break;
@@ -192,71 +187,73 @@ public class MyJobsActivity extends BaseActivity {
 			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ONE_MINUTE, new JobsRequestListener() );
 		}
 
-		@Override
-		public void onStart() {
-			super.onStart();
-			
-			
-			System.out.println("on start" + sectionNumber);
-			
+		/**
+         * The Fragment's UI is just a simple text view showing its
+         * instance number.
+         */
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+        	System.out.println("onCreateView " + getArguments().getInt("section_number"));
+        	
+            View v = inflater.inflate(R.layout.fragment_pager_list, container, false);
+            return v;
+        }
 
+        @Override
+		public void onViewCreated(View view, Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			super.onViewCreated(view, savedInstanceState);
+			System.out.println("onViewCreated " + getArguments().getInt("section_number"));
 		}
-		
-		
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_my_jobs,
-					container, false);
-			
-			System.out.println("on create view" + sectionNumber);
-			
-			list = (ListView) rootView.findViewById(R.id.MyJobsListView);
-			
-			postingsViewAdapter = new PostingsListAdapter(mActivity,
+		public void onResume() {
+			// TODO Auto-generated method stub
+			super.onResume();
+			System.out.println("onResume " + getArguments().getInt("section_number"));
+		}
+
+		@Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            postingsViewAdapter = new PostingsListAdapter(getActivity(),
 					R.layout.main_row_layout, jobs);
-			
+            setListAdapter(postingsViewAdapter);
+            //setListAdapter(new ArrayAdapter<String>(getActivity(),
+            //        android.R.layout.simple_list_item_1, strings));
+        }
 
-			list.setAdapter(postingsViewAdapter);
-			
-			list.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view,
-						int position, long id) {
-					selectJob(position);
-				}
-			});
-			
-			return rootView;
-		}
-
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            Log.i("FragmentList", "Item clicked: " + id);
+            selectJob(position);
+        }
+        
 		public void selectJob(int position) {
-			Intent detailIntent = new Intent(mActivity,
+			Intent detailIntent = new Intent(getActivity(),
 					ViewPostingActivity.class);
 			detailIntent.putExtra("job", jobs.get(position));
 			startActivity(detailIntent);
 		}
 		
-	    public final class JobsRequestListener implements RequestListener< JobsListing > {
+		public final class JobsRequestListener implements RequestListener< JobsListing > {
 
 	        @Override
 	        public void onRequestFailure( SpiceException spiceException ) {
-	            Toast.makeText( mActivity, "failure", Toast.LENGTH_SHORT ).show();
+	            Toast.makeText( getActivity(), "failure", Toast.LENGTH_SHORT ).show();
 	        }
 	        
-
-	        @Override
+	        @Override																																																																																																																																																					 																
 	        public void onRequestSuccess( final JobsListing result ) {
-	        	mActivity.setProgressBarVisibility( false );
 	            //Toast.makeText( mActivity, "success", Toast.LENGTH_SHORT ).show();
 	            jobs = result;
-				System.out.println("request success" + getArguments().getInt(ARG_SECTION_NUMBER));
-				postingsViewAdapter.notifyDataSetChanged();
+				postingsViewAdapter.clear();
 				postingsViewAdapter.addAll(jobs);
+				postingsViewAdapter.notifyDataSetChanged();																																																																																																																																																					
 	        }
 	    }
-	}
+    }
+	
 
 }
