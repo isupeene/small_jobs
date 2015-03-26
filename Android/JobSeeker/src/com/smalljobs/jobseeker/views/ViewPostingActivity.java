@@ -23,9 +23,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +38,10 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.smalljobs.jobseeker.BidPostRequest;
 import com.smalljobs.jobseeker.DataHolder;
+import com.smalljobs.jobseeker.MarkCompleteRequest;
 import com.smalljobs.jobseeker.PosterProfileRequest;
 import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.RatingPostRequest;
 import com.smalljobs.jobseeker.models.JobPoster;
 import com.smalljobs.jobseeker.models.JobPosting;
 import com.smalljobs.jobseeker.models.User;
@@ -47,8 +51,12 @@ public class ViewPostingActivity extends Activity {
 	public static final String PREFS_RATINGS = "ratings";
 	
 	private Context context=this;
+	
 	private PosterProfileRequest profileRequest;
 	private BidPostRequest bidPostRequest;
+	private MarkCompleteRequest markCompleteRequest;
+	private RatingPostRequest ratingPostRequest;
+	
 	private JobPosting job;
 	private JobPoster jobPoster;
 	
@@ -68,6 +76,8 @@ public class ViewPostingActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature( Window.FEATURE_PROGRESS );
 		setContentView(R.layout.activity_view_posting);
 		
 		job = (JobPosting) getIntent().getSerializableExtra("job");
@@ -133,13 +143,13 @@ public class ViewPostingActivity extends Activity {
 			return true;
 		}
 		if (id == R.id.action_rate) {
-			//DialogFragment fm = new RateDialogFragment();
-			//fm.show(getFragmentManager(), "tag");
+			DialogFragment fm = new RateDialogFragment();
+			fm.show(getFragmentManager(), "tag");
 			return true;
 		}
 		if (id == R.id.action_mark_complete) {
-			//DialogFragment fm = new RateDialogFragment();
-			//fm.show(getFragmentManager(), "tag");
+			DialogFragment fm = new ConfirmCompletionDialogFragment();
+			fm.show(getFragmentManager(), "tag");
 			return true;
 		}
 		if (id == android.R.id.home) {
@@ -192,7 +202,6 @@ public class ViewPostingActivity extends Activity {
 		try {
 			date = df1.parse(job.getCreationDate());
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ss =  new SpannableString("Posted: " + date);
@@ -207,7 +216,6 @@ public class ViewPostingActivity extends Activity {
 		try {
 			date = df1.parse(job.getBiddingDeadline());
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ss =  new SpannableString("Bidding Deadline: \n" + date);
@@ -218,7 +226,6 @@ public class ViewPostingActivity extends Activity {
 		try {
 			date = df1.parse(job.getBiddingConfirmationDeadline());
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ss =  new SpannableString("Bid Confirmation By: \n" + date);
@@ -238,7 +245,6 @@ public class ViewPostingActivity extends Activity {
 			try {
 				date = df1.parse(job.getCompletionDate());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			ss =  new SpannableString("Completion Date: " + date);
@@ -294,6 +300,46 @@ public class ViewPostingActivity extends Activity {
         }
     }
     
+    public final class MarkCompleteRequestListener implements RequestListener< String > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+        	spiceException.printStackTrace();
+            Toast.makeText( ViewPostingActivity.this, "Could not mark the job as completed.", Toast.LENGTH_SHORT ).show();
+        }
+
+        @Override
+        public void onRequestSuccess( final String result ) {
+        	setProgressBarVisibility( false );
+            //Toast.makeText( ViewPostingActivity.this, "success", Toast.LENGTH_SHORT ).show();
+        	job.setCompleted(true);
+			invalidateOptionsMenu();
+            System.out.println(result);
+        }
+    }
+    
+    public final class RatingRequestListener implements RequestListener< String > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+        	spiceException.printStackTrace();
+            Toast.makeText( ViewPostingActivity.this, "Could not rate the poster.", Toast.LENGTH_SHORT ).show();
+            SharedPreferences.Editor editor = ratings.edit();
+            editor.remove(job.getPosterID());
+        	editor.commit();
+        }
+
+        @Override
+        public void onRequestSuccess( final String result ) {
+        	setProgressBarVisibility( false );
+            //Toast.makeText( ViewPostingActivity.this, "success", Toast.LENGTH_SHORT ).show();
+        	
+			invalidateOptionsMenu();
+            System.out.println(result);
+        }
+    }
+       
+    
     public class ConfirmBidDialogFragment extends DialogFragment {
     	
 		EditText moneySpecifier;
@@ -326,7 +372,6 @@ public class ViewPostingActivity extends Activity {
         		try {
 					dateSpecifier.setMinDate(df1.parse(job.getBiddingDeadline()).getTime());
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         		((TextView) dialogView.findViewById(R.id.promptDate)).setVisibility(View.VISIBLE);
@@ -387,6 +432,9 @@ public class ViewPostingActivity extends Activity {
         					}
         				}
         				if(wantToCloseDialog) {
+        					setProgressBarIndeterminate( true );
+        			        setProgressBarVisibility( true );
+        			        
         					bidPostRequest = new BidPostRequest(job.getId(), compensationAmount, completionDate);
         					spiceManager.execute(bidPostRequest, "bid", DurationInMillis.ALWAYS_EXPIRED, new BidPostRequestListener());
         					dismiss();
@@ -394,6 +442,73 @@ public class ViewPostingActivity extends Activity {
         			}
         		});
         	}
+        }
+    }
+
+    public class ConfirmCompletionDialogFragment extends DialogFragment {
+
+
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		// Use the Builder class for convenient dialog construction
+    		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+    		builder.setMessage(R.string.please_confirm)
+
+    		.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				setProgressBarIndeterminate( true );
+    		        setProgressBarVisibility( true );
+    		        
+    				markCompleteRequest = new MarkCompleteRequest(context, job.getId());
+    				spiceManager.execute(markCompleteRequest, new MarkCompleteRequestListener());
+    			}
+    		})
+    		.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				// User cancelled the dialog
+    			}
+    		});
+    		// Create the AlertDialog object and return it
+    		return builder.create();
+    	}
+    }
+    
+    public class RateDialogFragment extends DialogFragment {
+    	
+		RatingBar ratingBar;
+    	
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+        	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        	LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        	View dialogView = inflater.inflate(R.layout.dialog_rate, null);
+        	// Inflate and set the layout for the dialog
+        	// Pass null as the parent view because its going in the dialog layout
+        	builder.setView(dialogView);
+        	
+        	ratingBar = (RatingBar) dialogView.findViewById(R.id.ratingBar);
+        	
+        	
+        	builder.setPositiveButton(R.string.rate, new DialogInterface.OnClickListener() {
+        		public void onClick(DialogInterface dialog, int id) {
+        			int rating = (int) ratingBar.getRating();
+        			SharedPreferences.Editor editor = ratings.edit();
+                	editor.putLong(job.getPosterID(), rating);
+                	editor.commit();
+        			ratingPostRequest = new RatingPostRequest(context, job.getPosterID(), job.getContractor(), rating);
+        			spiceManager.execute(ratingPostRequest, new RatingRequestListener());
+        		}
+        	})
+        	.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        		public void onClick(DialogInterface dialog, int id) {
+        			// User cancelled the dialog
+        		}
+        	});
+        	// Create the AlertDialog object and return it
+        	return builder.create();
         }
     }
 }
