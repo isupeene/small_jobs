@@ -488,6 +488,26 @@ class JobSeekingAPITest(TestCase):
 		with self.assertRaises(Http404):
 			seek.get_job_poster(emily, 0)
 
+	def test_get_job_poster_rating(self):
+		emily = Contractor.objects.get(name="Emily")
+		joseph = Contractor.objects.get(name="Joseph")
+		bob = JobPoster.objects.get(name="Bob")
+
+		JobPosterRating(contractor=emily, poster=bob, rating=3).save()
+		JobPosterRating(contractor=joseph, poster=bob, rating=4).save()
+
+		self.assertAlmostEquals(3.5, seek.get_job_poster_rating(emily, bob.id))
+
+	def test_get_job_poster_rating_no_ratings(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+		self.assertEquals(None, seek.get_job_poster_rating(emily, bob.id))
+
+	def test_get_job_poster_rating_does_not_exist(self):
+		emily = Contractor.objects.get(name="Emily")
+		with self.assertRaises(Http404):
+			seek.get_job_poster_rating(emily, -1)
+
 	def test_place_bid(self):
 		bob = JobPoster.objects.get(name="Bob")
 		emily = Contractor.objects.get(name="Emily")

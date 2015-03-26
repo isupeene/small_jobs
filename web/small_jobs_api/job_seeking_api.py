@@ -10,6 +10,7 @@ from django.http import Http404
 from small_jobs_api.models import (
 	JobPosting, JobSkill, JobPoster, JobPosterRating, ContractorRating
 )
+from small_jobs_api import job_posting_api as post
 
 
 # NOTE: All this code is simplified by high level abstractions.
@@ -48,6 +49,9 @@ def get_jobs(contractor, skills=None, region=None):
 
 def get_job_poster(contractor, poster_id):
 	return get_object_or_404(JobPoster, pk=poster_id)
+
+def get_job_poster_rating(contractor, poster_id):
+	return post.get_rating(get_object_or_404(JobPoster, pk=poster_id))
 
 # Bidding
 
