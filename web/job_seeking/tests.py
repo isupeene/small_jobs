@@ -151,6 +151,22 @@ class JobSeekingAPITest(TestCase):
 		self.assertEquals(emily.name, data['name'])
 		self.assertEquals(emily.email, data['email'])
 
+	def test_update_profile(self):
+		emily = Contractor.objects.get(name="Emily")
+		update_data = {
+			"name" : "Emily Durkheim",
+			"registration_id" : "1",
+			"email" : "emilyd98@gmail.com"
+		}
+
+		response = self.client.post(get_url("job_seeking:profile"), update_data)
+		self.assertEquals(201, response.status_code)
+
+		new_emily = Contractor.objects.get(id=emily.id)
+		self.assertEquals(update_data["name"], new_emily.name)
+		self.assertEquals(update_data["registration_id"], new_emily.registration_id)
+		self.assertEquals(update_data["email"], new_emily.email)
+
 	def test_get_jobs(self):
 		bob = JobPoster.objects.get(name="Bob")
 		posting = new_job_posting(poster=bob)

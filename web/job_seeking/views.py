@@ -65,6 +65,12 @@ class ProfileView(APIView):
 	def get(self, request):
 		return request.user
 
+	@deserialize_request(default_serializer(Contractor))
+	def post(self, request, contractor):
+		contractor.id = request.user.id
+		update_contractor(contractor)
+		return Response("OK", status=201)
+
 
 class JobsView(APIView):
 	@serialize_response(default_serializer(JobPosting), many=True)
