@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/abc_item_background_holo_light" 
     tools:context="com.smalljobs.jobseeker.views.LoginActivity" >
 
     <!-- Login progress -->
@@ -30,8 +31,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_gravity="center_horizontal|center_vertical"
             android:orientation="vertical" >
 
+            <TextView
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:textColor="#33b5e5"
+		        android:gravity="center_horizontal"
+		        android:paddingBottom="30dp"
+		        android:textSize="30sp"
+		        android:textStyle="bold"
+		        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+		        android:text="Job Seeker" />
+            
             <AutoCompleteTextView
                 android:id="@+id/loginEmail"
                 android:layout_width="match_parent"
@@ -48,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in"
+                android:textColor="@android:color/darker_gray"
                 android:textStyle="bold" />
             
             <TextView

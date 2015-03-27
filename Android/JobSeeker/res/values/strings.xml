@@ -12,7 +12,6 @@
     <string name="title_activity_my_profile">My Profile</string>
     <string name="title_activity_my_jobs">My Jobs</string>
     <string name="title_activity_poster_profile">Poster Profile</string>
-    
     <string name="job_description"><u>Description: </u></string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
@@ -20,25 +19,21 @@
     <string name="please_confirm_with_info">Please provide the required information:</string>
     <string name="prompt_date">Proposed completion date:</string>
     <string name="prompt_amount">Proposed compensation amount:</string>
-    
     <string name="action_filter">Filter</string>
     <string name="action_bid">Bid</string>
     <string name="action_settings">Settings</string>
     <string name="action_rate">Rate Poster</string>
     <string name="action_mark_complete">Mark as complete</string>
-    
     <string name="title_section1">Completed</string>
     <string name="title_section2">Current</string>
     <string name="title_section3">Potential</string>
-    
     <string name="filter_title">Filter by:</string>
     <string name="prompt_location">Location</string>
     <string name="prompt_skills">Skills</string>
     <string name="search">Search</string>
-    
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    
     <string name="rate">Rate</string>
-    
+    <string name="title_activity_splash_screen">Job Seeker</string>
+
 </resources>
