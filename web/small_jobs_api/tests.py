@@ -848,7 +848,7 @@ class ModelValidationTest(TestCase):
 		with self.assertRaises(ValidationError):
 			new_job_posting(
 				poster=bob,
-				bid_includes_compensation_amount=False,
+				bid_includes_compensation_amount=True,
 				compensation_amount=None
 			).save()
 
@@ -857,7 +857,7 @@ class ModelValidationTest(TestCase):
 		with self.assertRaises(ValidationError):
 			new_job_posting(
 				poster=bob,
-				bid_includes_completion_date=False,
+				bid_includes_completion_date=True,
 				completion_date=None
 			).save()
 
