@@ -301,6 +301,34 @@ class JobPostingAPITest(TestCase):
 
 		self.assertEquals(bob.jobposting_set.get().contractor, emily)
 
+	def test_accept_bid_updates_job_posting(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		posting = new_job_posting(
+			poster=bob,
+			bid_includes_compensation_amount=True,
+			bid_includes_completion_date=True,
+			compensation_amount=500000,
+			completion_date=now() + timedelta(days=50)
+		)
+		posting.save()
+
+		new_completion_date = now() + timedelta(days=40)
+		bid = Bid(
+			contractor=emily,
+			job=posting,
+			compensation_amount=400000,
+			completion_date=new_completion_date
+		)
+		bid.save()
+
+		post.accept_bid(bob, bid.pk)
+
+		updated_posting = JobPosting.objects.get(pk=posting.pk)
+		self.assertEquals(400000, updated_posting.compensation_amount)
+		self.assertEquals(new_completion_date, updated_posting.completion_date)
+
 	def test_accept_bid_wrong_owner(self):
 		bob = JobPoster.objects.get(name="Bob")
 		frank = JobPoster.objects.get(name="Frank")

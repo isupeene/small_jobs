@@ -82,6 +82,8 @@ def accept_bid(job_poster, bid_id):
 	_check_job_owner(job_poster, bid.job)
 
 	bid.job.contractor = bid.contractor
+	bid.job.compensation_amount = bid.compensation_amount
+	bid.job.completion_date = bid.completion_date
 	bid.job.save()
 
 	notify.bid_accepted(bid)
