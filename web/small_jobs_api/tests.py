@@ -102,8 +102,9 @@ class JobPostingAPITest(TestCase):
 		posting1 = new_job_posting()
 		posting2 = new_job_posting()
 
-		active = new_job_posting(contractor=emily)
+		active = new_job_posting(short_description="active", contractor=emily)
 		completed = new_job_posting(
+			short_description="completed",
 			contractor=emily,
 			completed=True,
 			completion_date=now()
@@ -876,7 +877,7 @@ class ModelValidationTest(TestCase):
 		with self.assertRaises(ValidationError):
 			new_job_posting(
 				poster=bob,
-				bid_includes_compensation_amount=True,
+				bid_includes_compensation_amount=False,
 				compensation_amount=None
 			).save()
 
@@ -885,7 +886,7 @@ class ModelValidationTest(TestCase):
 		with self.assertRaises(ValidationError):
 			new_job_posting(
 				poster=bob,
-				bid_includes_completion_date=True,
+				bid_includes_completion_date=False,
 				completion_date=None
 			).save()
 

@@ -46,7 +46,7 @@ def create_job_posting(job_poster, job_posting):
 # TODO: Notify all bidders when a bid has been accepted.
 
 def get_job_postings(job_poster):
-	return JobPosting.objects.filter(poster=job_poster)#, contractor=None)
+	return JobPosting.objects.filter(poster=job_poster, contractor=None)
 
 def get_active_jobs(job_poster):
 	return JobPosting.objects \
@@ -82,8 +82,10 @@ def accept_bid(job_poster, bid_id):
 	_check_job_owner(job_poster, bid.job)
 
 	bid.job.contractor = bid.contractor
-	bid.job.compensation_amount = bid.compensation_amount
-	bid.job.completion_date = bid.completion_date
+	if bid.compensation_amount:
+		bid.job.compensation_amount = bid.compensation_amount
+	if bid.completion_date:
+		bid.job.completion_date = bid.completion_date
 	bid.job.save()
 
 	notify.bid_accepted(bid)
