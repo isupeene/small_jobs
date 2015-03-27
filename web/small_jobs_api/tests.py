@@ -10,6 +10,9 @@ from datetime import timedelta
 from small_jobs_api.models import *
 from small_jobs_api import job_posting_api as post
 from small_jobs_api import job_seeking_api as seek
+from small_jobs_api import gcm_notifications
+
+gcm_notifications.dry_run = True
 
 
 # Add more parameters if necessary.
@@ -40,8 +43,8 @@ class JobPostingAPITest(TestCase):
 	def setUp(self):
 		JobPoster(name="Bob", openid="0").save()
 		JobPoster(name="Frank", openid="1").save()
-		Contractor(name="Emily", email="emily95@gmail.com").save()
-		Contractor(name="Joseph", email="joseph86@gmail.com").save()
+		Contractor(name="Emily", registration_id="0", email="emily95@gmail.com").save()
+		Contractor(name="Joseph", registration_id="1", email="joseph86@gmail.com").save()
 
 	def test_update_job_poster(self):
 		bob = JobPoster.objects.get(name="Bob")
@@ -360,8 +363,8 @@ class JobSeekingAPITest(TestCase):
 	def setUp(self):
 		JobPoster(name="Bob", openid="0", region="Calgary").save()
 		JobPoster(name="Frank", openid="1", region="Edmonton").save()
-		Contractor(name="Emily", email="emily95@gmail.com").save()
-		Contractor(name="Joseph", email="joseph86@gmail.com").save()
+		Contractor(name="Emily", registration_id="0", email="emily95@gmail.com").save()
+		Contractor(name="Joseph", registration_id="1", email="joseph86@gmail.com").save()
 
 	def test_update_contractor(self):
 		emily = Contractor.objects.get(name="Emily")
@@ -712,7 +715,7 @@ class JobSeekingAPITest(TestCase):
 class ModelValidationTest(TestCase):
 	def setUp(self):
 		JobPoster(openid=0, name="Bob").save()
-		Contractor(name="Emily", email="emily95@gmail.com").save()
+		Contractor(name="Emily", registration_id="0", email="emily95@gmail.com").save()
 
 	def test_job_poster_invalid_phone_number(self):
 		with self.assertRaises(ValidationError):

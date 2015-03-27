@@ -22,6 +22,6 @@ public class User {
 	}
 
 	public void setContractor(Contractor contractor) {
-		contractor = contractor;
+		this.contractor = contractor;
 	}
 }

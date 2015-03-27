@@ -18,6 +18,9 @@ public class Contractor {
 	
 	@Key
 	private String email;
+	
+	@Key
+	private String registration_id;
 
 	public Contractor(String name, String email) {
 		super();
@@ -65,5 +68,16 @@ public class Contractor {
 		this.id = id;
 	}
 	
-	
+	public String getRegistrationId() {
+		return registration_id;
+	}
+
+	public void setRegistrationId(String registration_id) {
+		this.registration_id = registration_id;
+	}
+
+	public String toString() {
+		return "Name:" + this.name;
+		
+	}
 }

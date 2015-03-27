@@ -76,7 +76,8 @@ class JobPoster(Model):
 	region = NullableShortCharField()
 
 	def save(self):
-		self.full_clean()
+		self.clean_fields()
+		self.clean()
 		super(JobPoster, self).save()
 
 	def __unicode__(self):
@@ -87,9 +88,11 @@ class Contractor(Model):
 	description = NullableTextField()
 	email = ShortCharField(unique=True, validators=[validate_email])
 	phone_number = NullableShortCharField(validators=[validate_phone_number])
+	registration_id = CharField(max_length=500, default=None)
 
 	def save(self):
-		self.full_clean()
+		self.clean_fields()
+		self.clean()
 		super(Contractor, self).save()
 
 	def is_authenticated(self):
@@ -115,7 +118,8 @@ class JobPosting(Model):
 	date_completed = NullableDateTimeField()
 
 	def save(self):
-		self.full_clean()
+		self.clean_fields()
+		self.clean()
 		super(JobPosting, self).save()
 
 	def __init__(self, *args, **kwargs):
@@ -172,7 +176,8 @@ class Bid(Model):
 	completion_date = NullableDateTimeField()
 
 	def save(self):
-		self.full_clean()
+		self.clean_fields()
+		self.clean()
 		super(Bid, self).save()
 
 	# TODO: Consider the following -
@@ -216,7 +221,8 @@ class JobSkill(Model):
 	skill = ShortCharField(db_index=True)
 
 	def save(self):
-		self.full_clean()
+		self.clean_fields()
+		self.clean()
 		super(JobSkill, self).save()
 
 	class Meta:
@@ -230,7 +236,8 @@ class ContractorSkill(Model):
 	skill = ShortCharField(db_index=True)
 
 	def save(self):
-		self.full_clean()
+		self.clean_fields()
+		self.clean()
 		super(ContractorSkill, self).save()
 
 	class Meta:
@@ -247,7 +254,8 @@ class JobPosterRating(Model):
 	)
 	
 	def save(self):
-		self.full_clean()
+		self.clean_fields()
+		self.clean()
 		super(JobPosterRating, self).save()
 
 	class Meta:
@@ -266,7 +274,8 @@ class ContractorRating(Model):
 	)
 
 	def save(self):
-		self.full_clean()
+		self.clean_fields()
+		self.clean()
 		super(ContractorRating, self).save()
 
 	class Meta:

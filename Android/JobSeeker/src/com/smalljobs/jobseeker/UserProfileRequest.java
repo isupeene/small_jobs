@@ -12,21 +12,22 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
+import com.smalljobs.jobseeker.models.Contractor;
 import com.smalljobs.jobseeker.models.CookieManagerSingleton;
-import com.smalljobs.jobseeker.models.JobPoster;
 import com.smalljobs.jobseeker.models.Server;
+import com.smalljobs.jobseeker.models.User;
 
-public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoster > {
+public class UserProfileRequest extends GoogleHttpClientSpiceRequest< Contractor > {
 
     private String baseUrl;
 
-    public PosterProfileRequest(String id) {
-        super( JobPoster.class );
-        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/job_poster/" + id + "/";
+    public UserProfileRequest() {
+        super( Contractor.class );
+        this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/profile/";
     }
 
     @Override
-    public JobPoster loadDataFromNetwork() throws IOException {
+    public Contractor loadDataFromNetwork() throws IOException {
         Ln.d( "Call web service " + baseUrl );
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
@@ -34,15 +35,20 @@ public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoste
         CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
         CookieHandler.setDefault(cookieManager);
         
+        System.out.println("Profile request");
+        System.out.println(cookieManager.getCookieStore().getCookies().size());
+        
         String result = request.execute().parseAsString();
 
         Gson gson = new Gson();
         JsonParser parser = new JsonParser();
         JsonObject obj = parser.parse(result).getAsJsonObject();
         
-        JobPoster poster = gson.fromJson( obj , JobPoster.class);
+        Contractor contractor = gson.fromJson( obj , Contractor.class);
         
-        return poster;        
+        User.getInstance().setContractor(contractor);
+        
+        return contractor;        
     }
     
     

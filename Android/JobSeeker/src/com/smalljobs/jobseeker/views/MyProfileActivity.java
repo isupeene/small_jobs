@@ -1,21 +1,32 @@
 package com.smalljobs.jobseeker.views;
 
-import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.R.id;
-import com.smalljobs.jobseeker.R.layout;
-import com.smalljobs.jobseeker.R.menu;
-
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+
+import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.models.User;
 
 public class MyProfileActivity extends BaseActivity {
 
+	EditText name;
+	EditText email;
+	EditText phoneNumber;
+	EditText description;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_profile);
+		
+		name = (EditText) findViewById(R.id.profile_name);
+		email = (EditText) findViewById(R.id.profile_email_address);
+		phoneNumber = (EditText) findViewById(R.id.profile_phone_number);
+		description = (EditText) findViewById(R.id.profile_description);
+		
+		name.setText(User.getInstance().getContractor().getName());
+		email.setText(User.getInstance().getContractor().getEmail());
 	}
 
 	@Override

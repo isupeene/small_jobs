@@ -1,12 +1,12 @@
 package com.smalljobs.jobseeker;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.smalljobs.jobseeker.models.JobPosting;
+import com.smalljobs.jobseeker.models.JobsListing;
 
 public class DataHolder {
 
 	private static DataHolder holder;
-	private List<String> bids = new ArrayList<String>();
+	private JobsListing potentialJobs = null;
 
 	private DataHolder() {
 
@@ -20,11 +20,16 @@ public class DataHolder {
 	}
 	
 
-	public List<String> getBids() {
-		return bids;
+	public JobsListing getPotentialJobs() {
+		return potentialJobs;
 	}
 	
-	public void addBid(String data) {
-		this.bids.add(data);
+	public void setPotentialJobs(JobsListing jobs) {
+		potentialJobs = jobs;
 	}
+	
+	public void addPotentialJob(JobPosting job) {
+		potentialJobs.add(job);
+	}
+	
 }

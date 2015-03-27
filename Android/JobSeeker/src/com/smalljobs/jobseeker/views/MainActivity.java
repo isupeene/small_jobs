@@ -7,19 +7,33 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.DataHolder;
+import com.smalljobs.jobseeker.JobsGetRequest;
 import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.models.JobsListing;
+import com.smalljobs.jobseeker.models.User;
 
 public class MainActivity extends BaseActivity {
-
+	
 	private TextView mLoremTextView;
 	private int backButtonCount;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		//context = getApplicationContext();
+		
 		mLoremTextView = (TextView) findViewById( R.id.name );
+		
+        mLoremTextView.setText("Welcome " + User.getInstance().getContractor().getName() + "!");
+        
+		
 		
 	}
 
@@ -57,4 +71,31 @@ public class MainActivity extends BaseActivity {
 	        backButtonCount++;
 	    }
 	}
+	
+	
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		if (DataHolder.getInstance().getPotentialJobs() == null) {
+			JobsGetRequest jobsRequest = new JobsGetRequest(this, "prospective_jobs");
+			getSpiceManager().execute( jobsRequest, "pros", DurationInMillis.ALWAYS_EXPIRED, new JobsRequestListener() );
+		}
+	}
+	
+    public final class JobsRequestListener implements RequestListener< JobsListing > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+            Toast.makeText( MainActivity.this, "failure", Toast.LENGTH_SHORT ).show();
+        }
+
+        @Override
+        public void onRequestSuccess( final JobsListing result ) {
+        	setProgressBarVisibility( false );
+            //Toast.makeText( MainActivity.this, "success", Toast.LENGTH_SHORT ).show();
+            DataHolder.getInstance().setPotentialJobs(result);
+        }
+    }
+
 }

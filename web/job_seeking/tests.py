@@ -8,6 +8,9 @@ from json import loads
 
 from small_jobs_api.models import *
 from small_jobs_api.serializers import *
+from small_jobs_api import gcm_notifications
+
+gcm_notifications.dry_run = True
 
 # TODO: Silence annoying errors from Django in the test output.
 
@@ -34,6 +37,7 @@ class CreateAccountTest(TestCase):
 	def test_create_account(self):
 		data = {
 			"name" : "Emily",
+			"registration_id" : "0",
 			"email" : "emily95@gmail.com",
 			"description" : "Recent Graduate",
 			"phone_number" : "555-555-5555"
@@ -73,6 +77,7 @@ class CreateAccountTest(TestCase):
 	def test_create_account_duplicate_email(self):
 		data = {
 			"name" : "Emily",
+			"registration_id" : "0",
 			"email" : "emily95@gmail.com"
 		}
 		response = self.client.post(get_url("job_seeking:create_account"), data)
@@ -95,6 +100,7 @@ class LoginTest(TestCase):
 	def setUp(self):
 		data = {
 			"name" : "Emily",
+			"registration_id" : "0",
 			"email" : "emily95@gmail.com"
 		}
 		self.client.post(get_url("job_seeking:create_account"), data)
@@ -129,11 +135,11 @@ class JobSeekingAPITest(TestCase):
 	def setUp(self):
 		JobPoster(name="Bob", openid="0", region="Calgary").save()
 		JobPoster(name="Frank", openid="1", region="Edmonton").save()
-		Contractor(name="Joseph", email="joseph86@gmail.com").save()
+		Contractor(name="Joseph", registration_id="1", email="joseph86@gmail.com").save()
 		# Create and login as Emily
 		self.client.post(
 			get_url("job_seeking:create_account"),
-			{"name" : "Emily", "email" : "emily95@gmail.com"}
+			{"name" : "Emily", "registration_id" : "0", "email" : "emily95@gmail.com"}
 		)
 
 	def test_get_profile(self):
@@ -144,6 +150,22 @@ class JobSeekingAPITest(TestCase):
 		self.assertEquals(emily.id, data['id'])
 		self.assertEquals(emily.name, data['name'])
 		self.assertEquals(emily.email, data['email'])
+
+	def test_update_profile(self):
+		emily = Contractor.objects.get(name="Emily")
+		update_data = {
+			"name" : "Emily Durkheim",
+			"registration_id" : "1",
+			"email" : "emilyd98@gmail.com"
+		}
+
+		response = self.client.post(get_url("job_seeking:profile"), update_data)
+		self.assertEquals(201, response.status_code)
+
+		new_emily = Contractor.objects.get(id=emily.id)
+		self.assertEquals(update_data["name"], new_emily.name)
+		self.assertEquals(update_data["registration_id"], new_emily.registration_id)
+		self.assertEquals(update_data["email"], new_emily.email)
 
 	def test_get_jobs(self):
 		bob = JobPoster.objects.get(name="Bob")
