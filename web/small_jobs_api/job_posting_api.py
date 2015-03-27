@@ -46,7 +46,7 @@ def create_job_posting(job_poster, job_posting):
 # TODO: Notify all bidders when a bid has been accepted.
 
 def get_job_postings(job_poster):
-	return JobPosting.objects.filter(poster=job_poster, contractor=None)
+	return JobPosting.objects.filter(poster=job_poster)#, contractor=None)
 
 def get_active_jobs(job_poster):
 	return JobPosting.objects \
@@ -109,6 +109,7 @@ def rate_contractor(job_poster, contractor, rating):
 			poster=job_poster
 		)
 		existing_rating.rating = rating
+		existing_rating.save()
 	except ValidationError:
 		raise SuspiciousOperation
 	except ContractorRating.DoesNotExist:
@@ -117,6 +118,7 @@ def rate_contractor(job_poster, contractor, rating):
 			poster=job_poster,
 			rating=rating
 		).save()
+
 
 def mark_complete(job_poster, job_posting):
 	_check_job_owner(job_poster, job_posting)

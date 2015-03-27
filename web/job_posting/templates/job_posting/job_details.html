@@ -36,11 +36,22 @@
     Current Contractor :
     {{myJob.contractor}}
     <br/>
+    Marked Complete By Contractor :
+    {{myJob.marked_completed_by_contractor}}
+    <br/>
     Description: <br/>
     <textarea rows="5" cols="100" readonly="true">{{myJob.description}}</textarea>
     <br />
 <br>
 <br>
+{% if myJob.marked_completed_by_contractor and myJob.completed %}
+    <form action="rate_contractor_form/?contractor={{myJob.contractor.pk}}" method="post">
+      {% csrf_token %}
+      Quantity (between 1 and 5):
+    <input type="number" name="rating" min="0" max="5">
+    <input type="submit" value="Rate!">
+</form>
+{% endif %}
 <br>
 <h1> Bids </h1>
   {% if bidList %}

@@ -16,6 +16,7 @@ urlpatterns = patterns('',
 	url(r'^job_details/js_message/$', views.js_message, name='js_message'),
 	url(r'^homepage/login', views.login, name='login'),
 	url(r'^edit_job/$', views.post_job, name='edit_job'),
+	url(r'^job_details/rate_contractor_form', views.rate_contractor_form, name='rate_contractor_form'),
 )
 
 
