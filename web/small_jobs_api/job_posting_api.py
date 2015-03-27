@@ -90,6 +90,7 @@ def accept_bid(job_poster, bid_id):
 
 def get_contractor_rating(contractor):
 	ratings = ContractorRating.objects.filter(contractor=contractor)
+	print len(ratings)
 	if len(ratings) == 0:
 		return None
 	else:
@@ -109,6 +110,7 @@ def rate_contractor(job_poster, contractor, rating):
 			poster=job_poster
 		)
 		existing_rating.rating = rating
+		existing_rating.save()
 	except ValidationError:
 		raise SuspiciousOperation
 	except ContractorRating.DoesNotExist:
@@ -117,6 +119,7 @@ def rate_contractor(job_poster, contractor, rating):
 			poster=job_poster,
 			rating=rating
 		).save()
+
 
 def mark_complete(job_poster, job_posting):
 	_check_job_owner(job_poster, job_posting)
