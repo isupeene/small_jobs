@@ -398,17 +398,33 @@ class JobSeekingAPITest(TestCase):
 
 	def test_get_jobs(self):
 		bob = JobPoster.objects.get(name="Bob")
+		joseph = Contractor.objects.get(name="Joseph")
 
 		posting1 = new_job_posting(poster=bob)
 		posting1.save()
+
 		posting2 = new_job_posting(poster=bob)
 		posting2.save()
+
+		posting3 = new_job_posting(
+			poster=bob,
+			creation_date=now() - timedelta(days=4),
+			bidding_deadline=now() - timedelta(days=1)
+		)
+		posting3.save()
+
+		posting4 = new_job_posting(
+			poster=bob,
+			contractor=joseph
+		)
+		posting4.save()
 
 		emily = Contractor.objects.get(name="Emily")
 		self.assertEquals({posting1, posting2}, set(seek.get_jobs(emily)))
 
 	def test_get_jobs_with_skill(self):
 		bob = JobPoster.objects.get(name="Bob")
+		joseph = Contractor.objects.get(name="Joseph")
 
 		posting1 = new_job_posting(poster=bob)
 		posting1.save()
@@ -427,6 +443,21 @@ class JobSeekingAPITest(TestCase):
 		posting4.save()
 		posting4.jobskill_set.add(JobSkill(skill="ruby"))
 
+		posting5 = new_job_posting(
+			poster=bob,
+			creation_date=now() - timedelta(days=4),
+			bidding_deadline=now() - timedelta(days=1)
+		)
+		posting5.save()
+		posting5.jobskill_set.add(JobSkill(skill="python"))
+
+		posting6 = new_job_posting(
+			poster=bob,
+			contractor=joseph
+		)
+		posting6.save()
+		posting6.jobskill_set.add(JobSkill(skill="django"))
+
 		emily = Contractor.objects.get(name="Emily")
 		self.assertEquals(
 			{posting1, posting2, posting3},
@@ -437,12 +468,26 @@ class JobSeekingAPITest(TestCase):
 	def test_get_jobs_with_region(self):
 		bob = JobPoster.objects.get(name="Bob")
 		frank = JobPoster.objects.get(name="Frank")
+		joseph = Contractor.objects.get(name="Joseph")
 
 		posting1 = new_job_posting(poster=bob)
 		posting1.save()
 
 		posting2 = new_job_posting(poster=frank)
 		posting2.save()
+
+		posting3 = new_job_posting(
+			poster=bob,
+			creation_date=now() - timedelta(days=4),
+			bidding_deadline=now() - timedelta(days=1)
+		)
+		posting3.save()
+
+		posting4 = new_job_posting(
+			poster=bob,
+			contractor=joseph
+		)
+		posting4.save()
 
 		emily = Contractor.objects.get(name="Emily")
 		self.assertEquals(
@@ -453,6 +498,7 @@ class JobSeekingAPITest(TestCase):
 	def test_get_jobs_with_skill_and_region(self):
 		bob = JobPoster.objects.get(name="Bob")
 		frank = JobPoster.objects.get(name="Frank")
+		joseph = Contractor.objects.get(name="Joseph")
 
 		posting1 = new_job_posting(poster=bob)
 		posting1.save()
@@ -470,6 +516,21 @@ class JobSeekingAPITest(TestCase):
 		posting4 = new_job_posting(poster=bob)
 		posting4.save()
 		posting4.jobskill_set.add(JobSkill(skill="ruby"))
+
+		posting5 = new_job_posting(
+			poster=bob,
+			creation_date=now() - timedelta(days=4),
+			bidding_deadline=now() - timedelta(days=1)
+		)
+		posting5.save()
+		posting5.jobskill_set.add(JobSkill(skill="python"))
+
+		posting6 = new_job_posting(
+			poster=bob,
+			contractor=joseph
+		)
+		posting6.save()
+		posting6.jobskill_set.add(JobSkill(skill="django"))
 
 		emily = Contractor.objects.get(name="Emily")
 		self.assertEquals(

@@ -38,14 +38,23 @@ def get_rating(contractor):
 
 def get_jobs(contractor, skills=None, region=None):
 	if skills:
-		return {skill.job for
-				skill in
-				JobSkill.objects.filter(skill__in=skills)
-				if (not region) or (skill.job.poster.region == region)}
+		return {skill.job
+				for skill
+				in JobSkill.objects.filter(skill__in=skills)
+				if ((not region) or (skill.job.poster.region == region))
+				and skill.job.contractor is None
+				and skill.job.bidding_deadline > now()}
 	elif region:
-		return JobPosting.objects.filter(poster__region=region)
+		return JobPosting.objects.filter(
+			poster__region=region,
+			contractor=None,
+			bidding_deadline__gt=now()
+		)
 	else:
-		return JobPosting.objects.all()
+		return JobPosting.objects.filter(
+			contractor=None,
+			bidding_deadline__gt=now()
+		)
 
 def get_job_poster(contractor, poster_id):
 	return get_object_or_404(JobPoster, pk=poster_id)
