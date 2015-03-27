@@ -140,14 +140,14 @@ class JobPosting(Model):
 				"Bidding deadline must be after creation date."
 			)
 
-		if not self.bid_includes_compensation_amount \
+		if  self.bid_includes_compensation_amount \
 		   and self.compensation_amount is None:
 			raise ValidationError(
 				"Jobs for which the bid cannot include a compensation " +
 				"amount must include one in the job posting."
 			)
 
-		if not self.bid_includes_completion_date \
+		if  self.bid_includes_completion_date \
 		   and self.completion_date is None:
 			raise ValidationError(
 				"Jobs for which the bid cannot include a completion date " +

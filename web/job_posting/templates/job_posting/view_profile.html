@@ -7,6 +7,33 @@
 
 {% block body_block %}
 	<h1>Contractor info</h1>
+	{% if userInfo %}
+	 <!--TODO: Make this look nicer -->
+    Name:
+    {{userInfo.name}}
+    <br />
+    Description:
+    {{userInfo.description}}
+    <br />
+    Creation Date :
+    {{userInfo.creation_date}}
+    <br />
+    eMail :
+    {{userInfo.email}}
+    <br />
+    Phone Number:
+    {{userInfo.phone_number}}
+    <br />
+    Rating (Out Of 5):
+    {% if rating %}
+    	{{rating}} / 5
+    {% else %}
+    	None
+    {% endif %}
+    <br />
+  {% else %}
+    <p>Woops something went wrong , who is this guy ?!</p> 
+  {% endif %}
 {% endblock %}
 
 

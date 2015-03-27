@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% load staticfiles %}
@@ -6,24 +5,34 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block body_block %}
+<!--TODO: CAN format this nicer!-->
+{% if form.errors %}
+<div id="form-error">
+    <p>The operation could not be performed because one or more error(s) occurred.<br />Please resubmit the form after making the following changes:</p>
+    <ul>
+    {{ form.errors }}
+    </ul>
+</div>
+{% endif %}
 <h1>Profile</h1>
 <br>
 
-<form action="edit_my_profile_form/" method="post">
-{% csrf_token %}
-    Name: 
-    <input type="text" name="name" id="name" value="{{userInfo.name}}"/>
-    <br />
-    Description:
-    <input type="text" name="description" id="description" value="{{userInfo.description}}"  />
-    <br />
-    eMail:
-    <input type="text" name="email" id="email" value="{{userInfo.email}}"/>
-    <br />
-    Phone Number:
-    <input type="text" name="phone_number" id="phone_number" value="{{userInfo.phone_number}}"  />
-    <br />
-<input type="submit" value="Save!" />
+    <form id="edit_profile" method="post" action="/job_posting/edit_profile/">
+
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+            <br>
+            {% endfor %}
+
+            <input type="submit" name="submit" value="Save!" />
+    </form>
 <br>
 
 {% endblock %}

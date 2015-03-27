@@ -7,7 +7,7 @@
 
 
 {% block side_block %}
-  <li><a href="{% url 'job_posting:create_job' %}">Create Job</a></li>
+  <li><a href="{% url 'job_posting:post_job' %}">Create Job</a></li>
 {% endblock %}
 
 {% block body_block %}
@@ -26,28 +26,41 @@
       </style>
     </head>
 
-<table style="width:100%">
+<table id="jobsTable" style="width:100%">
   <tr>
+    <th>Select</th>
     <th>Poster</th>
     <th>Create Date</th>    
     <th>Short Description</th>
     <th>Bidding Deadline</th>
     <th>Bidding Confirm Date</th>
     <th>Contractor</th>
+    <th>Complete?</th>
   </tr>
       {% for job in jobList %}
       <tr>
-        <td>{{job.poster}}</td>
-        <td>{{job.creation_date}}</td>
-        <td>{{job.short_description}}</td>
+        <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
+        <td>{{job.poster}}</a> <br></td>
+        <td>{{job.creation_date}}</td>  
+        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.short_description}}</td>
         <td>{{job.bidding_deadline}}</td>
         <td>{{job.confirmation_deadline}}</td>
         <td>{{job.contractor}}</td>
+        <td>{{job.completed}}</td>
+      </tr>
       {% endfor %}
+</table>
+<br>
+    <div id="form_footer">
+                <button id="mark">Mark Complete </button>
+                <button id="delete"> Delete </button>
+    </div>
+
   {% else %}
     <p>You have never posted a Job!</p> 
   {% endif %}
-</table>
+
+
 {% endblock %}
 
 
