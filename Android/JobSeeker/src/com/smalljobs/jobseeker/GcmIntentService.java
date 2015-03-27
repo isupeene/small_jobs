@@ -11,6 +11,11 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.smalljobs.jobseeker.models.Contractor;
+import com.smalljobs.jobseeker.models.Notification;
 import com.smalljobs.jobseeker.views.MainActivity;
 
 public class GcmIntentService extends IntentService {
@@ -18,6 +23,8 @@ public class GcmIntentService extends IntentService {
     static final String TAG = "GCM";
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
+    
+    private Notification notification;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -49,17 +56,21 @@ public class GcmIntentService extends IntentService {
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
-                for (int i=0; i<5; i++) {
-                    Log.i(TAG, "Working... " + (i+1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
+                
+                String received = extras.toString().substring(7,extras.toString().length()-1);
+                System.out.println(received);
+                
+                Gson gson = new Gson();
+                JsonParser parser = new JsonParser();
+                JsonObject obj = parser.parse(received).getAsJsonObject();
+
+                notification = gson.fromJson( obj , Notification.class);
+                
+                
                 sendNotification("Received: " + extras.toString());
+                
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -76,14 +87,26 @@ public class GcmIntentService extends IntentService {
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
+        
+        String type = "Job Seeker Alert";
+        
+        switch(notification.getType()) {
+        case ("job_modified"):
+        	type = "A job you bid on was modified";
+        	break;
+        case ("job_deleted"):
+        	type = "A job you bid on was deleted";
+        	break;
+        
+        }
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-        .setSmallIcon(R.drawable.ic_launcher)
-        .setContentTitle("GCM Notification")
+        .setSmallIcon(R.drawable.ic_logo)
+        .setContentTitle(type)
         .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(msg))
-        .setContentText(msg);
+        .bigText(notification.getJob().getTitle()))
+        .setContentText(notification.getJob().getTitle());
 
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());

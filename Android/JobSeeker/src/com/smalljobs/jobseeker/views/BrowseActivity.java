@@ -62,7 +62,7 @@ public class BrowseActivity extends BaseActivity {
 				ViewPostingActivity.class);
 		detailIntent.putExtra("job", jobs.get(position));
 		startActivity(detailIntent);
-		overridePendingTransition(android.R.anim.fade_in, 0);
+		overridePendingTransition(0, 0);
 	}
 	
 	@Override

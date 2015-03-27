@@ -78,6 +78,7 @@ public class SettingsActivity extends PreferenceActivity {
 			// TODO: If Settings has multiple levels, Up should navigate up
 			// that hierarchy.
 			NavUtils.navigateUpFromSameTask(this);
+			overridePendingTransition(0, 0);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

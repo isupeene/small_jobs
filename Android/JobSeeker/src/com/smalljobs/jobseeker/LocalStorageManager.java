@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.smalljobs.jobseeker.models.Notification;
 
 public class LocalStorageManager {
 	private FileOutputStream os;
@@ -23,15 +24,15 @@ public class LocalStorageManager {
 		this.gson=new Gson();
 	}
 	
-	public void saveId(Context context, String id, String filename) {
+	public void saveNotification(Context context, Notification notification, String filename) {
 		try {
-			ArrayList<String> ids=getIds(context, filename);
-			ids.add(id);
+			ArrayList<Notification> notifications=getNotifications(context, filename);
+			notifications.add(notification);
 			deleteFile(context, filename);
 			OutputStreamWriter osw = new OutputStreamWriter(
 					context.openFileOutput(filename, Context.MODE_PRIVATE));
 			JsonWriter jw=new JsonWriter(osw);
-			gson.toJson(ids,new TypeToken<ArrayList<String>>(){}.getType(),jw);
+			gson.toJson(notifications,new TypeToken<ArrayList<String>>(){}.getType(),jw);
 			osw.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -40,20 +41,20 @@ public class LocalStorageManager {
 		}
 	}
 	
-	public ArrayList<String> getIds(Context context, String filename) {
+	public ArrayList<Notification> getNotifications(Context context, String filename) {
 		InputStreamReader in;
 		try {
 			in = new InputStreamReader(context.openFileInput(filename));
 			JsonReader reader=new JsonReader(in);
-			ArrayList<String> ids=gson.fromJson(reader, new TypeToken<ArrayList<String>>(){}.getType());
+			ArrayList<Notification> notifications=gson.fromJson(reader, new TypeToken<ArrayList<String>>(){}.getType());
 			in.close();
-			return ids;
+			return notifications;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<String>();
+		return new ArrayList<Notification>();
 	}
 	
 	public boolean deleteFile(Context context, String filename) {

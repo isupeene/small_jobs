@@ -51,7 +51,7 @@
             android:parentActivityName=".views.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.smalljobs.jobseeker.MainActivity" />
+                android:value="com.smalljobs.jobseeker.views.MainActivity" />
         </activity>
         <activity
             android:name=".views.BaseActivity"
@@ -77,7 +77,11 @@
         </activity>
         <activity
             android:name=".views.PosterProfileActivity"
-            android:label="@string/title_activity_poster_profile" >
+            android:label="@string/title_activity_poster_profile"
+            android:parentActivityName=".views.ViewPostingActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.smalljobs.jobseeker.views.ViewPostingActivity" />
         </activity>
         <activity
             android:name=".views.SignupActivity"
@@ -110,7 +114,7 @@
         <service android:name=".GcmIntentService" />
 
         <activity
-            android:name=".SplashScreen"
+            android:name="com.smalljobs.jobseeker.views.SplashScreen"
             android:label="@string/title_activity_splash_screen"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >

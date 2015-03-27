@@ -14,9 +14,15 @@
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
         	android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-        	android:gravity="center_horizontal"
+        	android:layout_centerHorizontal="true"
         	android:text="@string/hello_world" />
         
+        <fragment
+        android:id="@+id/content"
+        android:name="com.smalljobs.jobseeker.views.MainActivity$NotificationsListFragment"
+        android:layout_below="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     
 </RelativeLayout>
 

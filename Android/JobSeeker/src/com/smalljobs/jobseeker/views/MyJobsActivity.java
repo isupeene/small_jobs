@@ -2,14 +2,12 @@ package com.smalljobs.jobseeker.views;
 
 import java.util.Locale;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
+import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,17 +15,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.smalljobs.jobseeker.DataHolder;
 import com.smalljobs.jobseeker.JobsGetRequest;
 import com.smalljobs.jobseeker.PostingsListAdapter;
 import com.smalljobs.jobseeker.R;
@@ -145,10 +138,6 @@ public class MyJobsActivity extends BaseActivity {
 		String cacheKey = null;
 		PostingsListAdapter postingsViewAdapter;
 
-        /**
-         * Create a new instance of CountingFragment, providing "num"
-         * as an argument.
-         */
         static JobsListFragment newInstance(int num) {
             JobsListFragment fragment = new JobsListFragment();
 
@@ -208,20 +197,6 @@ public class MyJobsActivity extends BaseActivity {
             return v;
         }
 
-        @Override
-		public void onViewCreated(View view, Bundle savedInstanceState) {
-			// TODO Auto-generated method stub
-			super.onViewCreated(view, savedInstanceState);
-			System.out.println("onViewCreated " + getArguments().getInt("section_number"));
-		}
-
-		@Override
-		public void onResume() {
-			// TODO Auto-generated method stub
-			super.onResume();
-			System.out.println("onResume " + getArguments().getInt("section_number"));
-		}
-
 		@Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
@@ -243,6 +218,7 @@ public class MyJobsActivity extends BaseActivity {
 					ViewPostingActivity.class);
 			detailIntent.putExtra("job", jobs.get(position));
 			startActivity(detailIntent);
+			getActivity().overridePendingTransition(0, 0);
 		}
 		
 		public final class JobsRequestListener implements RequestListener< JobsListing > {

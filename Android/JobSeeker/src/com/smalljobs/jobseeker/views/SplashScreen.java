@@ -1,4 +1,4 @@
-package com.smalljobs.jobseeker;
+package com.smalljobs.jobseeker.views;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,7 +20,8 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.smalljobs.jobseeker.views.LoginActivity;
+import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.R.layout;
 
 public class SplashScreen extends Activity {
 
