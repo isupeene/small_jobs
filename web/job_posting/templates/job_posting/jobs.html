@@ -35,6 +35,7 @@
     <th>Bidding Deadline</th>
     <th>Bidding Confirm Date</th>
     <th>Contractor</th>
+    <th>Marked Complete By Contractor? </th>
     <th>Complete?</th>
   </tr>
       {% for job in jobList %}
@@ -46,6 +47,7 @@
         <td>{{job.bidding_deadline}}</td>
         <td>{{job.confirmation_deadline}}</td>
         <td>{{job.contractor}}</td>
+        <td>{{job.marked_completed_by_contractor}}</td>
         <td>{{job.completed}}</td>
       </tr>
       {% endfor %}

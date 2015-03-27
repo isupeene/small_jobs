@@ -158,10 +158,15 @@ def post_job(request):
     # Render the form with error messages (if any).
     return render_to_response('job_posting/create_job.html', {'form': form,'creating': creating, 'pk': jobPk}, context)
 
+def rate_contractor_form(request):
+	rating = request.POST['rating']
+	contractorPK = request.GET.get('contractor','')
+	rate_contractor(_get_job_poster(request), _get_contractor(contractorPK), rating)
+	return HttpResponsePermanentRedirect("/job_posting/jobs/")
+
 @csrf_exempt
 def js_message(request):
 	# Get the context from the request.
-	print "Hey bud"
 	JSONdata = request.POST.getlist('values[]')
 	action = request.POST.get('action')
 	payload = {'success':False}
