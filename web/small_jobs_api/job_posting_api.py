@@ -90,7 +90,6 @@ def accept_bid(job_poster, bid_id):
 
 def get_contractor_rating(contractor):
 	ratings = ContractorRating.objects.filter(contractor=contractor)
-	print len(ratings)
 	if len(ratings) == 0:
 		return None
 	else:
