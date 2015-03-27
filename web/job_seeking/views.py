@@ -88,6 +88,13 @@ class JobPosterView(APIView):
 		return get_job_poster(request.user, int(poster_id))
 
 
+class JobPosterRatingView(APIView):
+	def get(self, request, poster_id):
+		return Response(get_job_poster_rating(
+			request.user, int(poster_id)
+		))
+
+
 class BidView(APIView):
 	@serialize_response(default_serializer(Bid), status=201)
 	@deserialize_request(default_serializer(Bid))

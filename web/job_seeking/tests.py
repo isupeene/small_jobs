@@ -256,6 +256,31 @@ class JobSeekingAPITest(TestCase):
 		)
 		self.assertEquals(404, response.status_code)
 
+	def test_get_job_poster_rating(self):
+		emily = Contractor.objects.get(name="Emily")
+		joseph = Contractor.objects.get(name="Joseph")
+		bob = JobPoster.objects.get(name="Bob")
+
+		JobPosterRating(contractor=emily, poster=bob, rating=3).save()
+		JobPosterRating(contractor=joseph, poster=bob, rating=4).save()
+
+		response = self.client.get(get_url("job_seeking:job_poster_rating", kwargs={'poster_id' : bob.id}))
+		rating = float(response.content)
+
+		self.assertAlmostEquals(3.5, rating)
+
+	def test_get_job_poster_rating_no_ratings(self):
+		bob = JobPoster.objects.get(name="Bob")
+		emily = Contractor.objects.get(name="Emily")
+
+		response = self.client.get(get_url("job_seeking:job_poster_rating", kwargs={'poster_id' : bob.id}))
+
+		self.assertEquals("", response.content)
+
+	def test_get_job_poster_rating_does_not_exist(self):
+		response = self.client.get(get_url("job_seeking:job_poster_rating", kwargs={'poster_id' : 100}))
+		self.assertEquals(404, response.status_code)
+
 	def test_place_bid(self):
 		bob = JobPoster.objects.get(name="Bob")
 		posting = new_job_posting(poster=bob)
