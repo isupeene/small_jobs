@@ -1,7 +1,10 @@
 package com.smalljobs.jobseeker.views;
 
+import java.util.ArrayList;
+
 import android.app.ListFragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,17 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
-import com.smalljobs.jobseeker.JobsGetRequest;
-import com.smalljobs.jobseeker.PostingsListAdapter;
+import com.smalljobs.jobseeker.NotificationsListAdapter;
+import com.smalljobs.jobseeker.NotificationsManager;
 import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.models.JobsListing;
+import com.smalljobs.jobseeker.models.Notification;
 import com.smalljobs.jobseeker.models.User;
 
 public class MainActivity extends BaseActivity {
@@ -67,15 +66,21 @@ public class MainActivity extends BaseActivity {
 	public static class NotificationsListFragment extends ListFragment {
         String[] strings = {"Cheese", "Pepperoni", "Black Olives"};
         String[] strings1 = {};
-        JobsListing jobs = new JobsListing();
-        JobsGetRequest jobsRequest;
-		String cacheKey = null;
-		PostingsListAdapter postingsViewAdapter;
+        NotificationsManager nm;
+        ArrayList<Notification> notifications = new ArrayList<Notification>();
+		NotificationsListAdapter notificationsViewAdapter;
 
         @Override
-		public void onStart() {
-			super.onStart();
+		public void onResume() {
+			super.onResume();
 			
+			notifications = nm.getNotifications();
+
+			notificationsViewAdapter.clear();
+			if (notifications != null) {
+				notificationsViewAdapter.addAll(notifications);
+			}
+			notificationsViewAdapter.notifyDataSetChanged();	
         }
 
         @Override
@@ -90,42 +95,31 @@ public class MainActivity extends BaseActivity {
 		@Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            //postingsViewAdapter = new PostingsListAdapter(getActivity(),
-			//		R.layout.main_row_layout, jobs);
-            //setListAdapter(postingsViewAdapter);
-            setListAdapter(new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_list_item_1, strings1));
+
+            SharedPreferences credentials = getActivity().getSharedPreferences("credentials", 0);
+            nm = new NotificationsManager(getActivity(), credentials.getString("email", "default"));
+            notificationsViewAdapter = new NotificationsListAdapter(getActivity(),
+					R.layout.notification_row_layout, notifications);
+            setListAdapter(notificationsViewAdapter);
+            //setListAdapter(new ArrayAdapter<String>(getActivity(),
+            //        android.R.layout.simple_list_item_1, strings1));
         }
 
         @Override
         public void onListItemClick(ListView l, View v, int position, long id) {
             Log.i("FragmentList", "Item clicked: " + id);
-            //selectJob(position);
+            selectJob(position);
         }
         
 		public void selectJob(int position) {
 			Intent detailIntent = new Intent(getActivity(),
 					ViewPostingActivity.class);
-			detailIntent.putExtra("job", jobs.get(position));
+			Notification notification = notifications.get(position);
+			nm.deleteNotification(notification);
+			detailIntent.putExtra("job", notification.getJob());
 			startActivity(detailIntent);
 		}
 		
-		public final class JobsRequestListener implements RequestListener< JobsListing > {
-
-	        @Override
-	        public void onRequestFailure( SpiceException spiceException ) {
-	            Toast.makeText( getActivity(), "failure", Toast.LENGTH_SHORT ).show();
-	        }
-	        
-	        @Override																																																																																																																																																					 																
-	        public void onRequestSuccess( final JobsListing result ) {
-	            //Toast.makeText( mActivity, "success", Toast.LENGTH_SHORT ).show();
-	            jobs = result;
-				postingsViewAdapter.clear();
-				postingsViewAdapter.addAll(jobs);
-				postingsViewAdapter.notifyDataSetChanged();																																																																																																																																																					
-	        }
-	    }
     }
 
 }

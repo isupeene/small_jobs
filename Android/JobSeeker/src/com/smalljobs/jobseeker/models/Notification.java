@@ -31,6 +31,26 @@ public class Notification {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
+        Notification other = (Notification) obj;
+        if ( !type.equals(other.getType()) ) {
+            return false;
+        }
+        if (!job.equals(other.getJob())) {
+        	return false;
+        }
+        return true;
+    }
 	
 }

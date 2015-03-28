@@ -371,11 +371,26 @@ public class ViewPostingActivity extends Activity {
         	if (job.getBidIncludesCompletionDate()) {
         		dateSpecifier.setVisibility(View.VISIBLE);
         		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        		
         		try {
-					dateSpecifier.setMinDate(df1.parse(job.getCompletionDate()).getTime());
-				} catch (ParseException e) {
-					e.printStackTrace();
+					dateSpecifier.setMinDate(df1.parse(job.getBiddingConfirmationDeadline()).getTime());
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
+        		if (job.getCompletionDate() != null) {
+        			try {
+        				Calendar calendar = Calendar.getInstance();
+        				calendar.setTimeInMillis(df1.parse(job.getCompletionDate()).getTime());
+        				int year = calendar.get(Calendar.YEAR);
+        				int month = calendar.get(Calendar.MONTH);
+        				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+    					dateSpecifier.updateDate(year, month, dayOfMonth);
+    				} catch (ParseException e) {
+    					e.printStackTrace();
+    				}
+        		}
+        		
         		
         		((TextView) dialogView.findViewById(R.id.promptDate)).setVisibility(View.VISIBLE);
         		builder.setMessage(R.string.please_confirm_with_info);

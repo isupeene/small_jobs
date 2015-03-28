@@ -170,7 +170,7 @@ public class JobPosting implements Serializable {
             return false;
         }
         JobPosting other = (JobPosting) obj;
-        if ( !id.contentEquals(other.id) ) {
+        if ( !id.equals(other.getId()) ) {
             return false;
         }
         return true;
