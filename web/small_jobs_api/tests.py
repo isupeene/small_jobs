@@ -397,19 +397,21 @@ class JobSeekingAPITest(TestCase):
 
 	def test_update_contractor(self):
 		emily = Contractor.objects.get(name="Emily")
-		email = "emily@contractors.org"
-		emily.email = email
-		seek.update_contractor(emily)
+		data = {
+			"email" : "emily@contractors.org"
+		}
+		seek.update_contractor(emily, data)
 
 		emily = Contractor.objects.get(name="Emily")
-		self.assertEquals(email, emily.email)
+		self.assertEquals(data["email"], emily.email)
 
 	def test_update_contractor_field_too_long(self):
 		with self.assertRaises(SuspiciousOperation):
 			emily = Contractor.objects.get(name="Emily")
-			email = "toolong" * 50 + "@contractors.org"
-			emily.email = email
-			seek.update_contractor(emily)
+			data = {
+				"email" : "toolong" * 50 + "@contractors.org"
+			}
+			seek.update_contractor(emily, data)
 
 	def test_get_rating(self):
 		emily = Contractor.objects.get(name="Emily")

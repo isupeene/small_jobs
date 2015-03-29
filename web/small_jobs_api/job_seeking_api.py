@@ -21,8 +21,11 @@ from small_jobs_api import job_posting_api as post
 
 # Identity
 
-def update_contractor(contractor):
+def update_contractor(contractor, data):
 	try:
+		# YOLO: No idea if this can be used to hack the server.
+		for k, v in data.iteritems():
+			setattr(contractor, k, v)
 		contractor.save()
 	except (DataError, IntegrityError, ValidationError):
 		raise SuspiciousOperation
