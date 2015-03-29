@@ -65,10 +65,8 @@ class ProfileView(APIView):
 	def get(self, request):
 		return request.user
 
-	@deserialize_request(default_serializer(Contractor))
-	def post(self, request, contractor):
-		contractor.id = request.user.id
-		update_contractor(contractor)
+	def post(self, request):
+		update_contractor(request.user, request.data)
 		return Response("OK", status=201)
 
 
