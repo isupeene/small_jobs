@@ -71,10 +71,11 @@
     	android:textColor="@android:color/darker_gray" />
 
     <RatingBar
-        android:id="@+id/ratingBar1"
+        android:id="@+id/posterRatingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:isIndicator="true" />
 
 </RelativeLayout>

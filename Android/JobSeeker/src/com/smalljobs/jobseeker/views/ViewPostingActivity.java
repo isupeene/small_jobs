@@ -101,7 +101,7 @@ public class ViewPostingActivity extends Activity {
         setProgressBarIndeterminate( true );
         setProgressBarVisibility( true );
 
-        spiceManager.execute( profileRequest, "profile", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
+        spiceManager.execute( profileRequest, new ProfileRequestListener() );
 	}
 
 	@Override

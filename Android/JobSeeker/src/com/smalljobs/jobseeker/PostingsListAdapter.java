@@ -4,23 +4,19 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
-
-import com.smalljobs.jobseeker.models.JobPosting;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.provider.SyncStateContract.Constants;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.smalljobs.jobseeker.models.JobPosting;
 
 /**
  * This is a custom adapter for displaying a list of questions.
@@ -37,7 +33,6 @@ import android.widget.TextView;
 
 public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 
-	private ArrayList<String> ids;
 	private ArrayList<JobPosting> postings;
 	private Context context;
 	private int resId;

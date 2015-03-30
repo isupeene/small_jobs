@@ -3,13 +3,11 @@ package com.smalljobs.jobseeker.models;
 import java.io.Serializable;
 
 import com.google.api.client.util.Key;
-import com.google.gson.annotations.SerializedName;
 
 public class JobPoster implements Serializable {
 
-	@Key
-	private int openid;
-	
+	private static final long serialVersionUID = 1L;
+
 	@Key
 	private String name;
 	
@@ -22,15 +20,16 @@ public class JobPoster implements Serializable {
 	@Key
 	private String description;
 	
-	public int getOpenid() {
-		return openid;
+	@Key
+	private String id;
+	
+	public String getId() {
+		return id;
 	}
 
-
-	public void setOpenid(int openid) {
-		this.openid = openid;
+	public void setId(String id) {
+		this.id = id;
 	}
-
 
 	public String getEmail() {
 		return email;

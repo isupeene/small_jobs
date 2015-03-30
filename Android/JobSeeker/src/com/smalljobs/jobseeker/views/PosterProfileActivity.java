@@ -1,30 +1,30 @@
 package com.smalljobs.jobseeker.views;
 
-import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
-import com.octo.android.robospice.SpiceManager;
-import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.R.id;
-import com.smalljobs.jobseeker.R.layout;
-import com.smalljobs.jobseeker.R.menu;
-import com.smalljobs.jobseeker.models.JobPoster;
-import com.smalljobs.jobseeker.models.JobPosting;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
+import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.smalljobs.jobseeker.R;
+import com.smalljobs.jobseeker.RatingGetRequest;
+import com.smalljobs.jobseeker.models.JobPoster;
 
 public class PosterProfileActivity extends Activity {
 
 
 	private JobPoster jobPoster;
+	private RatingGetRequest getRatingRequest;
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
 	
 	
@@ -36,6 +36,12 @@ public class PosterProfileActivity extends Activity {
 		jobPoster = (JobPoster) getIntent().getSerializableExtra("poster");
 		
 		displayProfile();
+		
+		getRatingRequest = new RatingGetRequest(jobPoster.getId());
+		
+		spiceManager.start(this);
+		
+		spiceManager.execute(getRatingRequest, new RatingRequestListener());
 	}
 
 	@Override
@@ -73,6 +79,21 @@ public class PosterProfileActivity extends Activity {
         super.onBackPressed();
     }
 	
+    @Override
+    protected void onStop() {
+        spiceManager.shouldStop();
+        super.onStop();
+    }
+	
+	@Override
+    protected void onStart() {
+        super.onStart(); 
+        
+        if (!spiceManager.isStarted()) {
+        	spiceManager.start(this);
+        }
+    }
+	
 	public void displayProfile() {
 		
 		SpannableString ss;
@@ -91,4 +112,24 @@ public class PosterProfileActivity extends Activity {
 		((TextView) findViewById(R.id.descriptionTitle)).setVisibility(View.VISIBLE);
 		((TextView) findViewById(R.id.contactTitle)).setVisibility(View.VISIBLE);
 	}
+	
+    public final class RatingRequestListener implements RequestListener< String > {
+
+        @Override
+        public void onRequestFailure( SpiceException spiceException ) {
+        	setProgressBarVisibility( false );
+        	spiceException.printStackTrace();
+            Toast.makeText( PosterProfileActivity.this, "Could not fetch the rating.", Toast.LENGTH_SHORT ).show();
+        }
+
+        @Override
+        public void onRequestSuccess( final String result ) {
+        	setProgressBarVisibility( false );
+            //Toast.makeText( ViewPostingActivity.this, "success", Toast.LENGTH_SHORT ).show();
+        	System.out.println(result);
+        	if (!result.isEmpty()) {
+        		((RatingBar) findViewById(R.id.posterRatingBar)).setRating(Float.parseFloat(result));
+        	}
+        }
+    }
 }

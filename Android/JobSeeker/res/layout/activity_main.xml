@@ -14,12 +14,19 @@
         	android:layout_centerHorizontal="true"
         	android:text="@string/hello_world" />
         
+        <View 
+            android:id="@+id/divider"
+			android:layout_height="2dp"
+			android:layout_width="fill_parent"
+			android:layout_below="@+id/name"
+			android:background="#33b5e5" /> 
+        
         <fragment
-        android:id="@+id/content"
-        android:name="com.smalljobs.jobseeker.views.MainActivity$NotificationsListFragment"
-        android:layout_below="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+	        android:id="@+id/content"
+	        android:name="com.smalljobs.jobseeker.views.MainActivity$NotificationsListFragment"
+	        android:layout_below="@+id/divider"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent" />
     
 </RelativeLayout>
 

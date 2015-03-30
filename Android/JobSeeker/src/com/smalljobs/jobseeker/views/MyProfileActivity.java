@@ -129,7 +129,7 @@ public class MyProfileActivity extends BaseActivity implements TextWatcher {
         public void onRequestSuccess( final String result ) {
         	setProgressBarVisibility( false );
             //Toast.makeText( ViewPostingActivity.this, "success", Toast.LENGTH_SHORT ).show();
-        	textChanged = true;
+        	textChanged = false;
         	User.getInstance().setContractor(changedUser);
 			invalidateOptionsMenu();
             System.out.println(result);

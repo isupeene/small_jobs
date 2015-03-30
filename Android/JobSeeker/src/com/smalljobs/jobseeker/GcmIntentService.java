@@ -75,10 +75,10 @@ public class GcmIntentService extends IntentService {
                 
                 switch(notification.getType()) {
                 case ("job_modified"):
-                	type = "A job you bid on was modified";
+                	type = "Job modified";
                 	break;
                 case ("job_deleted"):
-                	type = "A job you bid on was deleted";
+                	type = "Job deleted";
                 	break;
                 case ("bid_accepted"):
                 	type = "Your bid was accepted";
