@@ -8,47 +8,44 @@ import roboguice.util.temp.Ln;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.api.client.http.json.JsonHttpContent;
+import com.google.api.client.json.jackson.JacksonFactory;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 import com.smalljobs.jobseeker.models.Contractor;
 import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.Server;
 import com.smalljobs.jobseeker.models.User;
 
-public class UserProfileRequest extends GoogleHttpClientSpiceRequest< Contractor > {
+public class UserProfilePostRequest extends GoogleHttpClientSpiceRequest< String > {
 
     private String baseUrl;
+    private Contractor contractor;
 
-    public UserProfileRequest() {
-        super( Contractor.class );
+    public UserProfilePostRequest(Contractor contractor) {
+        super( String.class );
+        this.contractor = contractor;
         this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/profile/";
     }
 
     @Override
-    public Contractor loadDataFromNetwork() throws IOException {
+    public String loadDataFromNetwork() throws IOException {
         Ln.d( "Call web service " + baseUrl );
+        
+        JsonHttpContent content = new JsonHttpContent(new JacksonFactory(), contractor);
+        
         HttpRequest request = getHttpRequestFactory()//
-                .buildGetRequest( new GenericUrl( baseUrl ) );
+                .buildPostRequest( new GenericUrl( baseUrl ), content );
         
         CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
         CookieHandler.setDefault(cookieManager);
-        
-        System.out.println("Profile request");
-        System.out.println(cookieManager.getCookieStore().getCookies().size());
-        
+                
         String result = request.execute().parseAsString();
-
-        Gson gson = new Gson();
-        JsonParser parser = new JsonParser();
-        JsonObject obj = parser.parse(result).getAsJsonObject();
         
-        Contractor contractor = gson.fromJson( obj , Contractor.class);
+        if (result.contains("OK")) {
+        	User.getInstance().setContractor(contractor);
+        }
         
-        User.getInstance().setContractor(contractor);
-        
-        return contractor;        
+        return result;        
     }
     
     

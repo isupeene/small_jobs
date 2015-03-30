@@ -29,6 +29,9 @@ public class BaseActivity extends Activity {
     private ActionBarDrawerToggle mDrawerToggle;
     private String[] navOptions = new String[] {"Home", 
         "Browse", "My Jobs", "My Profile", "Settings", "Logout"};
+    
+
+	private int backButtonCount;
 
     LogoutRequest logoutRequest;
     
@@ -48,6 +51,22 @@ public class BaseActivity extends Activity {
         super.onStart();
     }
 
+	@Override
+	public void onBackPressed() {
+		if(backButtonCount >= 1)
+	    {
+	        Intent intent = new Intent(Intent.ACTION_MAIN);
+	        intent.addCategory(Intent.CATEGORY_HOME);
+	        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	        startActivity(intent);
+	    }
+	    else
+	    {
+	        Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
+	        backButtonCount++;
+	    }
+	}
+    
     @Override
     public void setContentView(final int layoutResID) {
         DrawerLayout fullLayout= (DrawerLayout) getLayoutInflater()
@@ -165,7 +184,9 @@ public class BaseActivity extends Activity {
 		case 4:
 			//Settings
 			intent = new Intent(this, SettingsActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 			startActivity(intent);
+			//overridePendingTransition(0, 0);
 			break;
 		case 5:
 			//Logout

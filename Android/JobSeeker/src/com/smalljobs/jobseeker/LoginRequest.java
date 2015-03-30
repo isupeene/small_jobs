@@ -3,8 +3,6 @@ package com.smalljobs.jobseeker;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.HttpCookie;
-import java.util.List;
 
 import roboguice.util.temp.Ln;
 import android.content.Context;

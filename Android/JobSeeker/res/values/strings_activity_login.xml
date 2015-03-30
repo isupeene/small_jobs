@@ -1,7 +1,7 @@
 <resources>
 
     <string name="title_activity_signup">Sign up</string>
-    <string name="title_activity_login">JobSeeker</string>
+    <string name="title_activity_login">Job Seeker</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Your Email</string>

@@ -5,12 +5,20 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.smalljobs.jobseeker.models.Notification;
 import com.smalljobs.jobseeker.views.MainActivity;
 
 public class GcmIntentService extends IntentService {
@@ -18,6 +26,8 @@ public class GcmIntentService extends IntentService {
     static final String TAG = "GCM";
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
+    
+    private Notification notification;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -40,26 +50,58 @@ public class GcmIntentService extends IntentService {
              */
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification("Send error: " + extras.toString());
+                //sendNotification("Send error: " + extras.toString());
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification("Deleted messages on server: " +
-                        extras.toString());
+                //sendNotification("Deleted messages on server: " +
+                //        extras.toString());
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
-                for (int i=0; i<5; i++) {
-                    Log.i(TAG, "Working... " + (i+1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification("Received: " + extras.toString());
+                
+                String received = extras.toString().substring(7,extras.toString().length()-1);
+                System.out.println(received);
+                
+                Gson gson = new Gson();
+                JsonParser parser = new JsonParser();
+                JsonObject obj = parser.parse(received).getAsJsonObject();
+
+                notification = gson.fromJson( obj , Notification.class);
+                
+                String type = notification.getType();
+                
+                switch(notification.getType()) {
+                case ("job_modified"):
+                	type = "Job modified";
+                	break;
+                case ("job_deleted"):
+                	type = "Job deleted";
+                	break;
+                case ("bid_accepted"):
+                	type = "Your bid was accepted";
+                	break;
+                case ("bid_rejected"):
+                	type = "Your bid was rejected";
+                	break;
+                }
+                
+                notification.setType(type);
+                
+                SharedPreferences credentials = this.getSharedPreferences("credentials", 0);
+                
+                NotificationsManager nm = new NotificationsManager(this, credentials.getString("email", "default"));
+                nm.saveNotification(notification);
+                
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                boolean wantNotifications = sharedPref.getBoolean("notifications_new_message", false);
+                
+                if (wantNotifications) {
+                    sendNotification();
+                }
+                
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -70,7 +112,7 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String msg) {
+    private void sendNotification() {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -79,12 +121,21 @@ public class GcmIntentService extends IntentService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-        .setSmallIcon(R.drawable.ic_launcher)
-        .setContentTitle("GCM Notification")
+        .setSmallIcon(R.drawable.ic_logo)
+        .setContentTitle(notification.getType())
         .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(msg))
-        .setContentText(msg);
+        .bigText(notification.getJob().getTitle()))
+        .setContentText(notification.getJob().getTitle());
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        Uri soundUri =  Uri.parse(sharedPref.getString("notifications_new_message_ringtone", ""));
+        
+       	if (sharedPref.getBoolean("notifications_new_message", false)) {
+       		mBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
+       	}
+        
+        mBuilder.setSound(soundUri);
+        mBuilder.setAutoCancel(true);
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }

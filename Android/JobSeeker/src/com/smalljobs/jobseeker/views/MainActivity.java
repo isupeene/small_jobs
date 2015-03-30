@@ -1,26 +1,30 @@
 package com.smalljobs.jobseeker.views;
 
+import java.util.ArrayList;
+
+import android.app.ListFragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.octo.android.robospice.persistence.DurationInMillis;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
-import com.smalljobs.jobseeker.DataHolder;
-import com.smalljobs.jobseeker.JobsGetRequest;
+import com.smalljobs.jobseeker.NotificationsListAdapter;
+import com.smalljobs.jobseeker.NotificationsManager;
 import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.models.JobsListing;
+import com.smalljobs.jobseeker.models.Notification;
 import com.smalljobs.jobseeker.models.User;
 
 public class MainActivity extends BaseActivity {
 	
-	private TextView mLoremTextView;
-	private int backButtonCount;
-	
+
+	TextView mLoremTextView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +32,9 @@ public class MainActivity extends BaseActivity {
 		setContentView(R.layout.activity_main);
 		
 		//context = getApplicationContext();
-		
-		mLoremTextView = (TextView) findViewById( R.id.name );
+        mLoremTextView = (TextView) findViewById( R.id.name );
 		
         mLoremTextView.setText("Welcome " + User.getInstance().getContractor().getName() + "!");
-        
 		
 		
 	}
@@ -55,47 +57,69 @@ public class MainActivity extends BaseActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	@Override
-	public void onBackPressed() {
-		if(backButtonCount >= 1)
-	    {
-	        Intent intent = new Intent(Intent.ACTION_MAIN);
-	        intent.addCategory(Intent.CATEGORY_HOME);
-	        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	        startActivity(intent);
-	    }
-	    else
-	    {
-	        Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
-	        backButtonCount++;
-	    }
-	}
-	
-	
 	
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (DataHolder.getInstance().getPotentialJobs() == null) {
-			JobsGetRequest jobsRequest = new JobsGetRequest(this, "prospective_jobs");
-			getSpiceManager().execute( jobsRequest, "pros", DurationInMillis.ALWAYS_EXPIRED, new JobsRequestListener() );
-		}
 	}
 	
-    public final class JobsRequestListener implements RequestListener< JobsListing > {
+	public static class NotificationsListFragment extends ListFragment {
+        String[] strings = {"Cheese", "Pepperoni", "Black Olives"};
+        String[] strings1 = {};
+        NotificationsManager nm;
+        ArrayList<Notification> notifications = new ArrayList<Notification>();
+		NotificationsListAdapter notificationsViewAdapter;
 
         @Override
-        public void onRequestFailure( SpiceException spiceException ) {
-            Toast.makeText( MainActivity.this, "failure", Toast.LENGTH_SHORT ).show();
+		public void onResume() {
+			super.onResume();
+			
+			notifications = nm.getNotifications();
+
+			notificationsViewAdapter.clear();
+			if (notifications != null) {
+				notificationsViewAdapter.addAll(notifications);
+			}
+			notificationsViewAdapter.notifyDataSetChanged();	
         }
 
         @Override
-        public void onRequestSuccess( final JobsListing result ) {
-        	setProgressBarVisibility( false );
-            //Toast.makeText( MainActivity.this, "success", Toast.LENGTH_SHORT ).show();
-            DataHolder.getInstance().setPotentialJobs(result);
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+        	
+            View v = inflater.inflate(R.layout.fragment_notifications, container, false);
+            
+            return v;
         }
+
+		@Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+
+            SharedPreferences credentials = getActivity().getSharedPreferences("credentials", 0);
+            nm = new NotificationsManager(getActivity(), credentials.getString("email", "default"));
+            notificationsViewAdapter = new NotificationsListAdapter(getActivity(),
+					R.layout.notification_row_layout, notifications);
+            setListAdapter(notificationsViewAdapter);
+            //setListAdapter(new ArrayAdapter<String>(getActivity(),
+            //        android.R.layout.simple_list_item_1, strings1));
+        }
+
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            Log.i("FragmentList", "Item clicked: " + id);
+            selectJob(position);
+        }
+        
+		public void selectJob(int position) {
+			Intent detailIntent = new Intent(getActivity(),
+					ViewPostingActivity.class);
+			Notification notification = notifications.get(position);
+			nm.deleteNotification(notification);
+			detailIntent.putExtra("job", notification.getJob());
+			startActivity(detailIntent);
+		}
+		
     }
 
 }

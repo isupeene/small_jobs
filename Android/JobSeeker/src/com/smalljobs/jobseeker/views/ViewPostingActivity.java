@@ -37,7 +37,6 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.smalljobs.jobseeker.BidPostRequest;
-import com.smalljobs.jobseeker.DataHolder;
 import com.smalljobs.jobseeker.MarkCompleteRequest;
 import com.smalljobs.jobseeker.PosterProfileRequest;
 import com.smalljobs.jobseeker.R;
@@ -49,6 +48,7 @@ import com.smalljobs.jobseeker.models.User;
 public class ViewPostingActivity extends Activity {
 
 	public static final String PREFS_RATINGS = "ratings";
+	public static final String PREFS_BIDS = "bids";
 	
 	private Context context=this;
 	
@@ -70,6 +70,7 @@ public class ViewPostingActivity extends Activity {
 	private TextView completionDate;
 	
 	private SharedPreferences ratings;
+	private SharedPreferences bids;
 	
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
 	
@@ -100,7 +101,7 @@ public class ViewPostingActivity extends Activity {
         setProgressBarIndeterminate( true );
         setProgressBarVisibility( true );
 
-        spiceManager.execute( profileRequest, "profile", DurationInMillis.ONE_MINUTE, new ProfileRequestListener() );
+        spiceManager.execute( profileRequest, new ProfileRequestListener() );
 	}
 
 	@Override
@@ -109,10 +110,9 @@ public class ViewPostingActivity extends Activity {
 		if (job.getContractor() == null) {
 			getMenuInflater().inflate(R.menu.view_posting, menu);
 			menu.findItem(R.id.action_bid).setEnabled(true);
-			for (JobPosting each: DataHolder.getInstance().getPotentialJobs()) {
-				if(each.getId().contentEquals(job.getId())){
-					menu.findItem(R.id.action_bid).setEnabled(false);
-				}
+			bids = context.getSharedPreferences(User.getInstance().getContractor().getName() + PREFS_BIDS, 0);
+			if (bids.contains(job.getId())) {
+				menu.findItem(R.id.action_bid).setEnabled(false);
 			}
 		} else if (!job.getCompleted() && !job.getMarkedAsComplete()) {
 			getMenuInflater().inflate(R.menu.view_posting_in_progress, menu);
@@ -294,7 +294,9 @@ public class ViewPostingActivity extends Activity {
         public void onRequestSuccess( final String result ) {
         	setProgressBarVisibility( false );
             //Toast.makeText( ViewPostingActivity.this, "success", Toast.LENGTH_SHORT ).show();
-			DataHolder.getInstance().addPotentialJob(job);
+        	SharedPreferences.Editor editor = bids.edit();
+        	editor.putInt(job.getId(), 1);
+        	editor.commit();
 			invalidateOptionsMenu();
             System.out.println(result);
         }
@@ -369,11 +371,27 @@ public class ViewPostingActivity extends Activity {
         	if (job.getBidIncludesCompletionDate()) {
         		dateSpecifier.setVisibility(View.VISIBLE);
         		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        		
         		try {
-					dateSpecifier.setMinDate(df1.parse(job.getBiddingDeadline()).getTime());
-				} catch (ParseException e) {
-					e.printStackTrace();
+					dateSpecifier.setMinDate(df1.parse(job.getBiddingConfirmationDeadline()).getTime());
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
+        		if (job.getCompletionDate() != null) {
+        			try {
+        				Calendar calendar = Calendar.getInstance();
+        				calendar.setTimeInMillis(df1.parse(job.getCompletionDate()).getTime());
+        				int year = calendar.get(Calendar.YEAR);
+        				int month = calendar.get(Calendar.MONTH);
+        				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+    					dateSpecifier.updateDate(year, month, dayOfMonth);
+    				} catch (ParseException e) {
+    					e.printStackTrace();
+    				}
+        		}
+        		
+        		
         		((TextView) dialogView.findViewById(R.id.promptDate)).setVisibility(View.VISIBLE);
         		builder.setMessage(R.string.please_confirm_with_info);
         	}
