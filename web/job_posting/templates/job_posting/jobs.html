@@ -13,7 +13,7 @@
 {% block body_block %}
 <h1>Jobs</h1>
   {% if jobList %}
-    My Jobs Table:
+    Job Postings:
     <head>
       <style>
         table, th, td {
@@ -26,7 +26,8 @@
       </style>
     </head>
 
-<table id="jobsTable" style="width:100%">
+<table id="jobsTable" style="width:100%" class="display">
+  <thead>
   <tr>
     <th>Select</th>
     <th>Poster</th>
@@ -38,6 +39,8 @@
     <th>Marked Complete By Contractor? </th>
     <th>Complete?</th>
   </tr>
+</thead>
+<tbody>
       {% for job in jobList %}
       <tr>
         <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
@@ -51,6 +54,7 @@
         <td>{{job.completed}}</td>
       </tr>
       {% endfor %}
+</tbody>      
 </table>
 <br>
     <div id="form_footer">
@@ -59,10 +63,127 @@
     </div>
 
   {% else %}
-    <p>You have never posted a Job!</p> 
+    <p>No Job Postings!</p> 
   {% endif %}
 
+<br>
+<hr>
+<br>
 
+<h1>Active Jobs</h1>
+  {% if activeJobs %}
+    Job Postings:
+    <head>
+      <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 5px;
+        }
+      </style>
+    </head>
+
+<table id="activeJobsTable" style="width:100%" class="display">
+  <thead>
+  <tr>
+    <th>Select</th>
+    <th>Poster</th>
+    <th>Create Date</th>    
+    <th>Short Description</th>
+    <th>Bidding Deadline</th>
+    <th>Bidding Confirm Date</th>
+    <th>Contractor</th>
+    <th>Marked Complete By Contractor? </th>
+    <th>Complete?</th>
+  </tr>
+</thead>
+<tbody>
+      {% for job in activeJobs %}
+      <tr>
+        <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
+        <td>{{job.poster}}</a> <br></td>
+        <td>{{job.creation_date}}</td>  
+        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.short_description}}</td>
+        <td>{{job.bidding_deadline}}</td>
+        <td>{{job.confirmation_deadline}}</td>
+        <td>{{job.contractor}}</td>
+        <td>{{job.marked_completed_by_contractor}}</td>
+        <td>{{job.completed}}</td>
+      </tr>
+      {% endfor %}
+</tbody>      
+</table>
+<br>
+    <div id="form_footer">
+                <button id="mark_active">Mark Complete </button>
+                <button id="delete_active"> Delete </button>
+    </div>
+
+  {% else %}
+    <p>No Active Job Postings!</p> 
+  {% endif %}
+
+<br>
+<hr>
+<br>
+
+<h1>Completed Jobs</h1>
+  {% if completedJobs %}
+    Job Postings:
+    <head>
+      <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 5px;
+        }
+      </style>
+    </head>
+
+<table id="completedJobsTable" style="width:100%" class="display">
+  <thead>
+  <tr>
+    <th>Select</th>
+    <th>Poster</th>
+    <th>Create Date</th>    
+    <th>Short Description</th>
+    <th>Bidding Deadline</th>
+    <th>Bidding Confirm Date</th>
+    <th>Contractor</th>
+    <th>Marked Complete By Contractor? </th>
+    <th>Complete?</th>
+  </tr>
+</thead>
+<tbody>
+      {% for job in completedJobs %}
+      <tr>
+        <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
+        <td>{{job.poster}}</a> <br></td>
+        <td>{{job.creation_date}}</td>  
+        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?completed=True&pk={{job.pk}}">{{job.short_description}}</td>
+        <td>{{job.bidding_deadline}}</td>
+        <td>{{job.confirmation_deadline}}</td>
+        <td>{{job.contractor}}</td>
+        <td>{{job.marked_completed_by_contractor}}</td>
+        <td>{{job.completed}}</td>
+      </tr>
+      {% endfor %}
+</tbody>      
+</table>
+<br>
+    <div id="form_footer">
+                <button id="delete_complete"> Delete </button>
+    </div>
+
+  {% else %}
+    <p>No Completed Job Postings!</p> 
+  {% endif %}
+
+<hr>
 {% endblock %}
 
 

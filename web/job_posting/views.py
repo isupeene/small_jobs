@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt #quickfix
 import json
 
 
-# A sample view requiring OpenID authentication.
+
 @require_login
 def protected(request):
 	return HttpResponse("Hello, World!")
@@ -44,15 +44,20 @@ def edit_job(request):
 @require_login
 def job_details(request):
 	jobPk = request.GET.get('pk','')
+	complete_job = request.GET.get('completed','')
+	print complete_job
 	myJob = JobPosting.objects.get(pk= jobPk) #TODO Change this to use API
 	bidList = get_bids(_get_job_poster(request),myJob.pk)
-	context = {'myJob': myJob , 'bidList': bidList}
+	context = {'myJob': myJob , 'bidList': bidList, 'complete': complete_job}
 	return render(request,'job_posting/job_details.html',context)
 
 @require_login
 def jobs(request):
-	jobList = get_job_postings(_get_job_poster(request))
-	context = {'jobList': jobList}
+	poster = _get_job_poster(request)
+	jobList = get_job_postings(poster)
+	activeJobs = get_active_jobs(poster)
+	completedJobs = get_completed_jobs(poster)
+	context = {'jobList': jobList , 'activeJobs' : activeJobs , 'completedJobs' :completedJobs }
 	return render(request,'job_posting/jobs.html',context)
 
 @require_login
@@ -178,8 +183,10 @@ def js_message(request):
 		elif (action == 'mark'):    			
 			mark_complete(jobPoster,JobPosting.objects.get(pk=parsedJob['pk'] ))
 		elif (action == 'accept'):
+			print jobPoster
+			print parsedJob['pk']
 			accept_bid(jobPoster, parsedJob['pk'])
-	payload = {'success':True}
+	payload = {'success':'Success!'}
 	return HttpResponse(json.dumps(payload), content_type='application/json')
 
 # Helper Functions

@@ -6,7 +6,10 @@
 {% block title %}Job Details{% endblock %}
 
 {% block side_block %}
-  <li><a href="{% url 'job_posting:edit_job' %}?pk={{myJob.pk}}">Edit Job</a></li>
+  <!-- TODO this is not working-->
+  {% ifnotequal complete True %}
+   <li><a href="{% url 'job_posting:edit_job' %}?pk={{myJob.pk}}">Edit Job</a></li>
+  {% endifnotequal %}
 {% endblock %}
 
 {% block body_block %}
@@ -69,6 +72,7 @@
     </head>
 
 <table id="bidsTable" style="width:100%">
+  <thead>
   <tr>
     <th>Select</th>
     <th>Contractor</th>
@@ -77,9 +81,11 @@
     <th>Message</th>
     <th>ContractorID</th>
   </tr>
+  </thead>
+  <tbody>
       {% for bid in bidList %}
       <tr>
-        <td><input type="checkbox" name="item" value="{{bid.contractor.pk}}" ></td> 
+        <td><input type="checkbox" name="item" value="{{bid.pk}}" ></td> 
         <td><a href="http://127.0.0.1:8000/job_posting/view_profile/?contractor={{bid.contractor.pk}}">{{bid.contractor}}</td>
         <td>{{bid.compensation_amount}}</td>
         <td>{{bid.completion_date}}</td>
@@ -87,10 +93,13 @@
         <td>{{bid.contractor.pk}}</td>
       {% endfor %}
     <br>
+  </tbody>
 </table>
+    {% ifnotequal complete True %}
     <div id="form_footer">
                 <button id="accept">Accept</button>
     </div>
+    {% endifnotequal %}
   {% else %}
     <p>No bids on job!</p> 
   {% endif %}

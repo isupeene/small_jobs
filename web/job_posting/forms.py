@@ -24,9 +24,9 @@ class JobPostingForm(forms.ModelForm):
     short_description = forms.CharField(max_length=128)
     bidding_deadline = forms.DateField(widget=SelectDateWidget,initial=now())
     bidding_confirmation_deadline = forms.DateField(widget=SelectDateWidget,initial=now())
-    bid_includes_completion_date = forms.BooleanField()
+    bid_includes_completion_date = forms.BooleanField(required=False)
     completion_date = forms.DateField(widget=SelectDateWidget,required=False,initial=now())
-    bid_includes_compensation_amount = forms.BooleanField()
+    bid_includes_compensation_amount = forms.BooleanField(required=False)
     compensation_amount = forms.IntegerField(required=False)
     description = forms.CharField(widget=forms.Textarea)
     
