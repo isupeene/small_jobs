@@ -45,10 +45,13 @@ def edit_job(request):
 def job_details(request):
 	jobPk = request.GET.get('pk','')
 	complete_job = request.GET.get('completed','')
-	print complete_job
 	myJob = JobPosting.objects.get(pk= jobPk) #TODO Change this to use API
-	bidList = get_bids(_get_job_poster(request),myJob.pk)
+	poster = _get_job_poster(request)
+	bidList = get_bids(poster,myJob.pk)
 	context = {'myJob': myJob , 'bidList': bidList, 'complete': complete_job}
+	if myJob.marked_completed_by_contractor and myJob.completed :
+		rating = _get_old_rating(poster , myJob.contractor)
+		context['rating'] = rating
 	return render(request,'job_posting/job_details.html',context)
 
 @require_login
@@ -202,5 +205,15 @@ def _get_job_poster(request):
 def _get_contractor(contractorPK):
 	contractor = Contractor.objects.get(pk=contractorPK)
 	return contractor
+
+def _get_old_rating(job_poster , contractor):
+	try:
+		existing_rating = ContractorRating.objects.get(
+			contractor=contractor,
+			poster=job_poster
+		)
+		return existing_rating.rating
+	except ContractorRating.DoesNotExist:
+		return 3
 
 

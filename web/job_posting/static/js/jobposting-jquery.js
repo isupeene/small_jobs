@@ -7,7 +7,7 @@ $(document).ready(function() {
         $('#activeJobsTable').dataTable();
         $('#completedJobsTable').dataTable();
         $('#bidsTable').dataTable();
-        $("#input-id").rating();
+        // $("#rateJob").rating();
         // calls the server to delete the selected jobs
         $("#delete").click( function(event) {
         	var values = [];

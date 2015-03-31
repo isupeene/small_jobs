@@ -51,10 +51,10 @@
 <br>
 {% if myJob.marked_completed_by_contractor and myJob.completed %}
     <form action="rate_contractor_form/?contractor={{myJob.contractor.pk}}" method="post">
-      {% csrf_token %}
+    {% csrf_token %}
     Quality (between 1 and 5):
-    <input type="number" class="form-control" name="rating" min="0" max="5">
-    <input type="submit" value="Rate!">
+    <input type="number" id="rateJob" class="rating" name="rating" min="0" max="5" value="{{rating}}">
+    <input type="submit"  class="btn btn-success" value="Rate!">
 </form>
 {% endif %}
 <br>
