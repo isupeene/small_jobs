@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load staticfiles %}
+{% load crispy_forms_tags %}
 
 {% block title %}Create A Job{% endblock %}
 
@@ -30,9 +31,9 @@
             {% csrf_token %}
             
             <table>
-            {{ form.as_table }}
+            {{ form | crispy }}
             </table>
-            <input type="submit" name="submit" value="Save!" />
+            <input type="submit" class="btn btn-primary" name="submit" value="Save!" />
     </form>
 <br>
 

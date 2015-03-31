@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt #quickfix
 import json
 
 
-# A sample view requiring OpenID authentication.
+
 @require_login
 def protected(request):
 	return HttpResponse("Hello, World!")
@@ -44,15 +44,23 @@ def edit_job(request):
 @require_login
 def job_details(request):
 	jobPk = request.GET.get('pk','')
+	complete_job = request.GET.get('completed','')
 	myJob = JobPosting.objects.get(pk= jobPk) #TODO Change this to use API
-	bidList = get_bids(_get_job_poster(request),myJob.pk)
-	context = {'myJob': myJob , 'bidList': bidList}
+	poster = _get_job_poster(request)
+	bidList = get_bids(poster,myJob.pk)
+	context = {'myJob': myJob , 'bidList': bidList, 'complete': complete_job}
+	if myJob.marked_completed_by_contractor and myJob.completed :
+		rating = _get_old_rating(poster , myJob.contractor)
+		context['rating'] = rating
 	return render(request,'job_posting/job_details.html',context)
 
 @require_login
 def jobs(request):
-	jobList = get_job_postings(_get_job_poster(request))
-	context = {'jobList': jobList}
+	poster = _get_job_poster(request)
+	jobList = get_job_postings(poster)
+	activeJobs = get_active_jobs(poster)
+	completedJobs = get_completed_jobs(poster)
+	context = {'jobList': jobList , 'activeJobs' : activeJobs , 'completedJobs' :completedJobs }
 	return render(request,'job_posting/jobs.html',context)
 
 @require_login
@@ -108,11 +116,15 @@ def post_job(request):
     if request.method == 'POST':
         form = JobPostingForm(request.POST)
         # Have we been provided with a valid form?
+        print "valid?"
         if form.is_valid():
+			print "yeah"
 			description = form.cleaned_data['description']
 			short_description = form.cleaned_data['short_description']
 			bidding_deadline = form.cleaned_data['bidding_deadline']
+			print bidding_deadline
 			bidding_confirmation_deadline = form.cleaned_data['bidding_confirmation_deadline']
+			print bidding_confirmation_deadline
 			compensation_amount = form.cleaned_data['compensation_amount']
 			completion_date = form.cleaned_data['completion_date']
 			bid_includes_compensation_amount = form.cleaned_data['bid_includes_compensation_amount']
@@ -178,8 +190,10 @@ def js_message(request):
 		elif (action == 'mark'):    			
 			mark_complete(jobPoster,JobPosting.objects.get(pk=parsedJob['pk'] ))
 		elif (action == 'accept'):
+			print jobPoster
+			print parsedJob['pk']
 			accept_bid(jobPoster, parsedJob['pk'])
-	payload = {'success':True}
+	payload = {'success':'Success!'}
 	return HttpResponse(json.dumps(payload), content_type='application/json')
 
 # Helper Functions
@@ -191,5 +205,15 @@ def _get_job_poster(request):
 def _get_contractor(contractorPK):
 	contractor = Contractor.objects.get(pk=contractorPK)
 	return contractor
+
+def _get_old_rating(job_poster , contractor):
+	try:
+		existing_rating = ContractorRating.objects.get(
+			contractor=contractor,
+			poster=job_poster
+		)
+		return existing_rating.rating
+	except ContractorRating.DoesNotExist:
+		return 3
 
 

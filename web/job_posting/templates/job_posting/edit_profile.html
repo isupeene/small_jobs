@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load staticfiles %}
+{% load crispy_forms_tags %}
 
 {% block title %}Edit Profile{% endblock %}
 
@@ -20,18 +21,9 @@
     <form id="edit_profile" method="post" action="/job_posting/edit_profile/">
 
             {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
+            {{form | crispy}}
 
-            {% for field in form.visible_fields %}
-                {{ field.errors }}
-                {{ field.help_text }}
-                {{ field }}
-            <br>
-            {% endfor %}
-
-            <input type="submit" name="submit" value="Save!" />
+            <input type="submit" class="btn btn-default" name="submit" value="Save!" />
     </form>
 <br>
 

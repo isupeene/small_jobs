@@ -24,9 +24,9 @@
     Phone Number:
     {{userInfo.phone_number}}
     <br />
-    Rating (Out Of 5):
+    Rating:
     {% if rating %}
-    	{{rating}} / 5
+    	<input type="number" id="rateJob" class="rating" name="rating" min="0" max="5" readonly="true" value="{{rating}}">
     {% else %}
     	None
     {% endif %}
