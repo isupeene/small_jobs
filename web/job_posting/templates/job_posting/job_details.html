@@ -39,7 +39,12 @@
     {{myJob.completed}}
     <br />
     Current Contractor :
-    {{myJob.contractor}}
+    {% if myJob.contractor %}
+    <a href="http://127.0.0.1:8000/job_posting/view_profile/?contractor={{myJob.contractor.pk}}">{{myJob.contractor}}</a>
+    {% else %}
+      None  
+    {% endif %}
+    
     <br/>
     Marked Complete By Contractor :
     {{myJob.marked_completed_by_contractor}}
@@ -88,7 +93,7 @@
       {% for bid in bidList %}
       <tr>
         <td><input type="checkbox" name="item" value="{{bid.pk}}" ></td> 
-        <td><a href="http://127.0.0.1:8000/job_posting/view_profile/?contractor={{bid.contractor.pk}}">{{bid.contractor}}</td>
+        <td><a href="http://127.0.0.1:8000/job_posting/view_profile/?contractor={{bid.contractor.pk}}">{{bid.contractor}}</a></td>
         <td>{{bid.compensation_amount}}</td>
         <td>{{bid.completion_date}}</td>
         <td>{{bid.message}}</td>

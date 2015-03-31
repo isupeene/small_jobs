@@ -48,7 +48,7 @@
       <tr>
         <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
         <td>{{job.creation_date}}</td>  
-        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.short_description}}</td>
+        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.short_description}}</a></td>
         <td>{{job.compensation_amount}}</td>
         <td>{{job.bidding_deadline}}</td>
         <td>{{job.confirmation_deadline}}</td>
@@ -107,11 +107,11 @@
       <tr>
         <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
         <td>{{job.creation_date}}</td>  
-        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.short_description}}</td>
+        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.short_description}}</a></td>
         <td>{{job.compensation_amount}}</td>
         <td>{{job.bidding_deadline}}</td>
         <td>{{job.confirmation_deadline}}</td>
-        <td>{{job.contractor}}</td>
+        <td><a href="http://127.0.0.1:8000/job_posting/view_profile/?contractor={{job.contractor.pk}}">{{job.contractor}}</a></td>
         <td>{{job.marked_completed_by_contractor}}</td>
         <td>{{job.completion_date}}</td>
       </tr>
@@ -163,8 +163,8 @@
       <tr>
         <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
         <td>{{job.creation_date}}</td>  
-        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?completed=True&pk={{job.pk}}">{{job.short_description}}</td>
-        <td>{{job.contractor}}</td>
+        <td><a href="http://127.0.0.1:8000/job_posting/job_details/?completed=True&pk={{job.pk}}">{{job.short_description}}</a></td>
+        <td><a href="http://127.0.0.1:8000/job_posting/view_profile/?contractor={{job.contractor.pk}}">{{job.contractor}}</a></td>
         <td>{{job.compensation_amount}}</td>
         <td>{{job.date_completed}}</td>
       </tr>
