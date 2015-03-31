@@ -157,6 +157,8 @@ def post_job(request):
         else:
             # The supplied form contained errors - just print them to the terminal.
             print form.errors
+            if jobPk != '': 
+				creating = False
     else:
     	# TODO better to specify in urls and have parameters
 		if jobPk != '': 
