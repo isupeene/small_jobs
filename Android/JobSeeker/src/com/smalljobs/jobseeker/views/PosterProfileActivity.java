@@ -129,6 +129,8 @@ public class PosterProfileActivity extends Activity {
         	System.out.println(result);
         	if (!result.isEmpty()) {
         		((RatingBar) findViewById(R.id.posterRatingBar)).setRating(Float.parseFloat(result));
+        	} else {
+        		((TextView) findViewById(R.id.noRating)).setVisibility(View.VISIBLE);
         	}
         }
     }

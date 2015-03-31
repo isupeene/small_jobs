@@ -114,7 +114,7 @@ public class ViewPostingActivity extends Activity {
 			if (bids.contains(job.getId())) {
 				menu.findItem(R.id.action_bid).setEnabled(false);
 			}
-		} else if (!job.getCompleted() && !job.getMarkedAsComplete()) {
+		} else if (!job.getCompleted() && !job.getMarkedAsComplete() && job.getContractor().equals(User.getInstance().getContractor().getId())) {
 			getMenuInflater().inflate(R.menu.view_posting_in_progress, menu);
 		} else {
 			getMenuInflater().inflate(R.menu.view_posting_completed, menu);

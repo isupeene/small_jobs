@@ -2,5 +2,5 @@ package com.smalljobs.jobseeker.models;
 
 public class Server {
 
-	public final static String ipaddress = "172.28.154.0";
+	public final static String ipaddress = "192.168.1.76";
 }
