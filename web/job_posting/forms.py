@@ -27,7 +27,7 @@ class JobPostingForm(forms.ModelForm):
     bid_includes_completion_date = forms.BooleanField(required=False)
     completion_date = forms.DateField(widget=SelectDateWidget,required=False,initial=now())
     bid_includes_compensation_amount = forms.BooleanField(required=False)
-    compensation_amount = forms.IntegerField(required=False)
+    compensation_amount = forms.DecimalField(required=False)
     description = forms.CharField(widget=forms.Textarea)
     
     class Meta:
