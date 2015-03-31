@@ -8,7 +8,9 @@
 {% block side_block %}
   <!-- TODO this is not working-->
   {% ifnotequal complete True %}
+  <ul class="nav nav-sidebar">
    <li><a href="{% url 'job_posting:edit_job' %}?pk={{myJob.pk}}">Edit Job</a></li>
+  </ul>
   {% endifnotequal %}
 {% endblock %}
 
@@ -43,15 +45,15 @@
     {{myJob.marked_completed_by_contractor}}
     <br/>
     Description: <br/>
-    <textarea rows="5" cols="100" readonly="true">{{myJob.description}}</textarea>
+    <textarea  class="form-control" rows="10" cols="100" readonly="true">{{myJob.description}}</textarea>
     <br />
 <br>
 <br>
 {% if myJob.marked_completed_by_contractor and myJob.completed %}
     <form action="rate_contractor_form/?contractor={{myJob.contractor.pk}}" method="post">
       {% csrf_token %}
-      Quantity (between 1 and 5):
-    <input type="number" name="rating" min="0" max="5">
+    Quality (between 1 and 5):
+    <input type="number" class="form-control" name="rating" min="0" max="5">
     <input type="submit" value="Rate!">
 </form>
 {% endif %}
@@ -97,7 +99,7 @@
 </table>
     {% ifnotequal complete True %}
     <div id="form_footer">
-                <button id="accept">Accept</button>
+                <button id="accept" class="btn btn-success">Accept</button>
     </div>
     {% endifnotequal %}
   {% else %}

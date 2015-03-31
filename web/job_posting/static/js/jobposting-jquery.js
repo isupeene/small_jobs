@@ -7,7 +7,7 @@ $(document).ready(function() {
         $('#activeJobsTable').dataTable();
         $('#completedJobsTable').dataTable();
         $('#bidsTable').dataTable();
-
+        $("#input-id").rating();
         // calls the server to delete the selected jobs
         $("#delete").click( function(event) {
         	var values = [];
@@ -48,17 +48,6 @@ $(document).ready(function() {
         });
 
         // calls the server to mark the selected jobs
-    	$("#mark").click( function(event) {
-        	var values = [];
-            	$('#jobsTable').find("input[type=checkbox]:checked").each(function () {
-            			var row = $(this);
-            			// alert($(this).val());
-            			values.push(JSON.stringify({
-            				pk : $(this).val()
-            			}));
-    			});
-    			sendMsgToServer('mark', values)
-    	});
 
         // calls the server to mark the selected active jobs
         $("#mark_active").click( function(event) {

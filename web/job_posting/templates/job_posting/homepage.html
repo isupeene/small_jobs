@@ -4,10 +4,11 @@
 {% load staticfiles %}
 
 {% block title %}Home Page {% endblock %}
+{% load crispy_forms_tags %}
 
 {% block body_block %}
 <h1>Small Jobs</h1>
 <form action="login/" method="post">
 {% csrf_token %}
-<input type="submit" value="Login" />
+<input type="submit" class="btn btn-primary" value="Login" />
 {% endblock %}

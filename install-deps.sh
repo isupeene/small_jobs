@@ -4,7 +4,7 @@ easy_install "Django==1.6.5"
 apt-get install python-pip
 pip install djangorestframework
 pip install phonenumbers
-
+pip install --upgrade django-crispy-forms
 
 cd $(dirname $0)/..
 

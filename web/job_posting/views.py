@@ -113,11 +113,15 @@ def post_job(request):
     if request.method == 'POST':
         form = JobPostingForm(request.POST)
         # Have we been provided with a valid form?
+        print "valid?"
         if form.is_valid():
+			print "yeah"
 			description = form.cleaned_data['description']
 			short_description = form.cleaned_data['short_description']
 			bidding_deadline = form.cleaned_data['bidding_deadline']
+			print bidding_deadline
 			bidding_confirmation_deadline = form.cleaned_data['bidding_confirmation_deadline']
+			print bidding_confirmation_deadline
 			compensation_amount = form.cleaned_data['compensation_amount']
 			completion_date = form.cleaned_data['completion_date']
 			bid_includes_compensation_amount = form.cleaned_data['bid_includes_compensation_amount']

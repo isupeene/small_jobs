@@ -7,7 +7,9 @@
 
 
 {% block side_block %}
-  <li><a href="{% url 'job_posting:post_job' %}">Create Job</a></li>
+  <ul class="nav nav-sidebar">
+   <li><a href="{% url 'job_posting:post_job' %}">Create Job</a></li>
+  </ul>
 {% endblock %}
 
 {% block body_block %}
@@ -30,36 +32,37 @@
   <thead>
   <tr>
     <th>Select</th>
-    <th>Poster</th>
-    <th>Create Date</th>    
+    <th>Creation Date</th>    
     <th>Short Description</th>
+    <th>Compensation Amount</th>
     <th>Bidding Deadline</th>
-    <th>Bidding Confirm Date</th>
-    <th>Contractor</th>
-    <th>Marked Complete By Contractor? </th>
-    <th>Complete?</th>
+    <th>Bidding Confirmation Deadline</th>
+    <th>Completion Date</th>
+    <th>Bid Includes Compensation Amount</th>
+    <th>Bid Includes Completion Date</th>th>
+    
   </tr>
 </thead>
 <tbody>
       {% for job in jobList %}
       <tr>
         <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
-        <td>{{job.poster}}</a> <br></td>
         <td>{{job.creation_date}}</td>  
         <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.short_description}}</td>
+        <td>{{job.compensation_amount}}</td>
         <td>{{job.bidding_deadline}}</td>
         <td>{{job.confirmation_deadline}}</td>
-        <td>{{job.contractor}}</td>
-        <td>{{job.marked_completed_by_contractor}}</td>
-        <td>{{job.completed}}</td>
+        <td>{{job.completion_date}}</td>
+        <td>{{job.bid_includes_compensation_amount}}</td>
+        <td>{{job.bid_includes_completion_date}}</td>
+        
       </tr>
       {% endfor %}
 </tbody>      
 </table>
 <br>
-    <div id="form_footer">
-                <button id="mark">Mark Complete </button>
-                <button id="delete"> Delete </button>
+    <div id="form_footer"> 
+                <button id="delete" class="btn btn-danger"> Delete </button>
     </div>
 
   {% else %}
@@ -89,36 +92,36 @@
   <thead>
   <tr>
     <th>Select</th>
-    <th>Poster</th>
-    <th>Create Date</th>    
+    <th>Creation Date</th>    
     <th>Short Description</th>
+    <th>Compensation Amount</th>
     <th>Bidding Deadline</th>
-    <th>Bidding Confirm Date</th>
+    <th>Bidding Confirmation Deadline</th>
     <th>Contractor</th>
     <th>Marked Complete By Contractor? </th>
-    <th>Complete?</th>
+    <th>Completion Date</th>
   </tr>
 </thead>
 <tbody>
       {% for job in activeJobs %}
       <tr>
         <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
-        <td>{{job.poster}}</a> <br></td>
         <td>{{job.creation_date}}</td>  
         <td><a href="http://127.0.0.1:8000/job_posting/job_details/?pk={{job.pk}}">{{job.short_description}}</td>
+        <td>{{job.compensation_amount}}</td>
         <td>{{job.bidding_deadline}}</td>
         <td>{{job.confirmation_deadline}}</td>
         <td>{{job.contractor}}</td>
         <td>{{job.marked_completed_by_contractor}}</td>
-        <td>{{job.completed}}</td>
+        <td>{{job.completion_date}}</td>
       </tr>
       {% endfor %}
 </tbody>      
 </table>
 <br>
     <div id="form_footer">
-                <button id="mark_active">Mark Complete </button>
-                <button id="delete_active"> Delete </button>
+                <button id="mark_active" class="btn btn-success">Mark Complete </button>
+                <button id="delete_active" class="btn btn-danger"> Delete </button>
     </div>
 
   {% else %}
@@ -148,35 +151,29 @@
   <thead>
   <tr>
     <th>Select</th>
-    <th>Poster</th>
-    <th>Create Date</th>    
+    <th>Creation Date</th>    
     <th>Short Description</th>
-    <th>Bidding Deadline</th>
-    <th>Bidding Confirm Date</th>
     <th>Contractor</th>
-    <th>Marked Complete By Contractor? </th>
-    <th>Complete?</th>
+    <th>Compensation_amount</th>
+    <th>Date Completed</th>
   </tr>
 </thead>
 <tbody>
       {% for job in completedJobs %}
       <tr>
         <td><input type="checkbox" name="item" value="{{job.pk}}" ></td> 
-        <td>{{job.poster}}</a> <br></td>
         <td>{{job.creation_date}}</td>  
         <td><a href="http://127.0.0.1:8000/job_posting/job_details/?completed=True&pk={{job.pk}}">{{job.short_description}}</td>
-        <td>{{job.bidding_deadline}}</td>
-        <td>{{job.confirmation_deadline}}</td>
         <td>{{job.contractor}}</td>
-        <td>{{job.marked_completed_by_contractor}}</td>
-        <td>{{job.completed}}</td>
+        <td>{{job.compensation_amount}}</td>
+        <td>{{job.date_completed}}</td>
       </tr>
       {% endfor %}
 </tbody>      
 </table>
 <br>
     <div id="form_footer">
-                <button id="delete_complete"> Delete </button>
+                <button id="delete_complete" class="btn btn-danger"> Delete </button>
     </div>
 
   {% else %}
