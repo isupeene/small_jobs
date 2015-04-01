@@ -81,15 +81,14 @@ def login(request):
 
 @require_login
 def edit_profile(request):
-    # Get the context from the request.
-    context = RequestContext(request)
-
-    # A HTTP POST?
-    if request.method == 'POST':
-        form = JobPosterForm(request.POST)
+	# Get the context from the request.
+	context = RequestContext(request)
+	# A HTTP POST?
+	if request.method == 'POST':
+		form = JobPosterForm(request.POST)
 
         # Have we been provided with a valid form?
-        if form.is_valid():
+		if form.is_valid():
 			jobposter = _get_job_poster(request)
 			jobposter.description = form.cleaned_data['description']
 			jobposter.email = form.cleaned_data['email']
@@ -97,16 +96,19 @@ def edit_profile(request):
 			jobposter.region = form.cleaned_data['region']
 			update_job_poster(jobposter)
 			return jobs(request)
-        else:
-            # The supplied form contained errors - just print them to the terminal.
-            print form.errors
-    else:
-        # If the request was not a POST, display the form to enter details.
+		else:
+			# The supplied form contained errors - just print them to the terminal.
+			print form.errors
+	else:
+		# If the request was not a POST, display the form to enter details.
 		form = JobPosterForm(instance= _get_job_poster(request))
-
+		ctx = {'form' : form}
+		myRating = get_rating(_get_job_poster(request))
+		if myRating != None:
+			ctx['myRating'] = myRating
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
-    return render_to_response('job_posting/edit_profile.html', {'form': form}, context)
+	return render_to_response('job_posting/edit_profile.html', ctx, context)
 
 @require_login
 def post_job(request):
