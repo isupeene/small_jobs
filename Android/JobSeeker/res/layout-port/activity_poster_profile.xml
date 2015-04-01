@@ -14,6 +14,7 @@
     	android:layout_height="wrap_content"
     	android:textSize="20sp"
     	android:text="Title"
+    	android:textStyle="bold"
     	android:layout_alignParentLeft="true">
     </TextView>
    
@@ -30,17 +31,22 @@
     	android:visibility="invisible">
     </TextView>
     
-    <TextView
-        android:id="@+id/posterDescription"
-	    android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:paddingTop="5dp"
-    	android:textSize="15sp"
-    	android:text="Description"
-    	android:textColor="@android:color/darker_gray"
-    	android:layout_below="@id/descriptionTitle"
-    	android:layout_alignParentLeft="true">
-    </TextView>
+    <ScrollView 
+        android:id="@+id/ScrollView01" 
+        android:layout_height="150dp"
+        android:layout_below="@id/descriptionTitle" 
+	   	android:paddingTop="5dp"
+        android:layout_width="fill_parent">
+        
+	    <TextView
+	        android:id="@+id/posterDescription"
+		    android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:textSize="15sp"
+	    	android:textColor="@android:color/darker_gray">
+	    </TextView>
+	    
+    </ScrollView>
 
     <TextView
         android:id="@+id/contactTitle"
@@ -50,7 +56,7 @@
     	android:textSize="17sp"
     	android:text="Contact:"
     	android:textColor="@color/sysDkGray"
-    	android:layout_below="@id/posterDescription"
+    	android:layout_below="@id/ScrollView01"
     	android:layout_alignParentLeft="true"
     	android:visibility="invisible">
     </TextView>
@@ -74,8 +80,18 @@
         android:id="@+id/posterRatingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_above="@+id/noRating"
         android:isIndicator="true" />
+    
+    <TextView
+        android:id="@+id/noRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:text="@string/no_rating"
+    	android:textColor="@android:color/darker_gray"
+    	android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

@@ -63,23 +63,25 @@ public class SplashScreen extends Activity {
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
 		
-		new Handler().postDelayed(new Runnable() {
-			 
-            @Override
-            public void run() {
-                Intent i = new Intent(SplashScreen.this, LoginActivity.class);
-                startActivity(i);
-                overridePendingTransition(0, 0);
-                finish();
-            }
-        }, SPLASH_TIME_OUT);
-		
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo ni = cm.getActiveNetworkInfo();
 		if (ni == null) {
 			Toast.makeText( SplashScreen.this, "Please check your internet connection.", Toast.LENGTH_LONG ).show();
 			finish();
+		} else {
+			
+			new Handler().postDelayed(new Runnable() {
+				 
+	            @Override
+	            public void run() {
+	                Intent i = new Intent(SplashScreen.this, LoginActivity.class);
+	                startActivity(i);
+	                overridePendingTransition(0, 0);
+	                finish();
+	            }
+	        }, SPLASH_TIME_OUT);
 		}
+		
 	}
 	
 	@Override

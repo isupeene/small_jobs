@@ -214,7 +214,7 @@ public class BaseActivity extends Activity {
 
         @Override
         public void onRequestSuccess( final String result ) {
-            Toast.makeText( BaseActivity.this, result, Toast.LENGTH_SHORT ).show();
+            //Toast.makeText( BaseActivity.this, result, Toast.LENGTH_SHORT ).show();
             Intent intent = new Intent(getBaseContext(), LoginActivity.class);
 			startActivity(intent);
 			overridePendingTransition(0, 0);

@@ -23,6 +23,9 @@ public class JobPoster implements Serializable {
 	@Key
 	private String id;
 	
+	@Key
+	private String region;
+	
 	public String getId() {
 		return id;
 	}
@@ -69,6 +72,14 @@ public class JobPoster implements Serializable {
 		this.name = name;
 	}
 
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
 
 	@Override
     public String toString() {

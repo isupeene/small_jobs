@@ -119,11 +119,11 @@ public class MyJobsActivity extends BaseActivity {
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.title_section1).toUpperCase(l);
+				return getString(R.string.title_section3).toUpperCase(l);
 			case 1:
 				return getString(R.string.title_section2).toUpperCase(l);
 			case 2:
-				return getString(R.string.title_section3).toUpperCase(l);
+				return getString(R.string.title_section1).toUpperCase(l);
 			}
 			return null;
 		}
@@ -166,7 +166,7 @@ public class MyJobsActivity extends BaseActivity {
 			System.out.println("onStart " + getArguments().getInt("section_number"));
 			
 			switch (section_number) {
-			case 1:
+			case 3:
 				jobsRequest = new JobsGetRequest(getActivity(), "completed_jobs");
 				cacheKey = "comp";
 				break;
@@ -174,7 +174,7 @@ public class MyJobsActivity extends BaseActivity {
 				jobsRequest = new JobsGetRequest(getActivity(), "current_jobs");
 				cacheKey = "curr";
 				break;
-			case 3:
+			case 1:
 				jobsRequest = new JobsGetRequest(getActivity(), "prospective_jobs");
 				cacheKey = "pros";
 				//jobs = DataHolder.getInstance().getPotentialJobs();

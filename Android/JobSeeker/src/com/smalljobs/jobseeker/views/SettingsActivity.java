@@ -80,6 +80,12 @@ public class SettingsActivity extends PreferenceActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();
+		overridePendingTransition(0, 0);
+    }
 
 	/** {@inheritDoc} */
 	@Override
