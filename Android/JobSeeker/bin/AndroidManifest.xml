@@ -94,7 +94,7 @@
             android:name=".views.LoginActivity"
             android:label="@string/title_activity_login"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+            android:theme="@android:style/Theme.Black.NoTitleBar"
             android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
 
@@ -118,7 +118,7 @@
             android:name="com.smalljobs.jobseeker.views.SplashScreen"
             android:label="@string/title_activity_splash_screen"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
  

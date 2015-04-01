@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -19,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.smalljobs.jobseeker.models.Notification;
-import com.smalljobs.jobseeker.views.MainActivity;
+import com.smalljobs.jobseeker.views.LoginActivity;
 
 public class GcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
@@ -117,7 +116,7 @@ public class GcmIntentService extends IntentService {
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+                new Intent(this, LoginActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -128,12 +127,12 @@ public class GcmIntentService extends IntentService {
         .setContentText(notification.getJob().getTitle());
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        Uri soundUri =  Uri.parse(sharedPref.getString("notifications_new_message_ringtone", ""));
         
        	if (sharedPref.getBoolean("notifications_new_message", false)) {
        		mBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
        	}
         
+       	Uri soundUri =  Uri.parse(sharedPref.getString("notifications_new_message_ringtone", ""));
         mBuilder.setSound(soundUri);
         mBuilder.setAutoCancel(true);
         mBuilder.setContentIntent(contentIntent);
