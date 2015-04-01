@@ -121,7 +121,6 @@ public class MyProfileActivity extends BaseActivity implements TextWatcher {
         @Override
         public void onRequestFailure( SpiceException spiceException ) {
         	setProgressBarVisibility( false );
-        	spiceException.printStackTrace();
             Toast.makeText( MyProfileActivity.this, "Could not save profile.", Toast.LENGTH_SHORT ).show();
         }
 

@@ -1,8 +1,12 @@
 package com.smalljobs.jobseeker.views;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpStatus;
+
+import roboguice.util.temp.Ln;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -26,8 +30,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.api.client.http.HttpResponseException;
 import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.exception.NetworkException;
+import com.octo.android.robospice.exception.RequestCancelledException;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -86,7 +93,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			
 			showProgress(true);
 			loginRequest = new LoginRequest(context, email);
-			spiceManager.execute( loginRequest, "json", DurationInMillis.ONE_MINUTE, new AuthenticationRequestListener() );
+			spiceManager.execute( loginRequest,	new AuthenticationRequestListener() );
 		}
 		
 	}
@@ -104,7 +111,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	@Override
     protected void onStop() {
         spiceManager.shouldStop();
-        super.onStop();
+        super.onStop();																																																																																																																																																	 
     }
 	
 	public void showSignupDialog(View v) {
@@ -283,14 +290,27 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         @Override
         public void onRequestFailure( SpiceException spiceException ) {
-        	System.out.println(spiceException.getMessage());
-        	System.out.println(spiceException.toString());
-        	System.out.println(spiceException.getLocalizedMessage());
-            Toast.makeText( LoginActivity.this, "Could not sign in.", Toast.LENGTH_SHORT ).show();
-            showProgress(false);
-            mEmailView
-			.setError(getString(R.string.error_invalid_id));
-            mEmailView.requestFocus();
+        	
+        	showProgress(false);
+        	
+        	if(spiceException.getCause() instanceof ConnectException)
+            {
+        		Toast.makeText( LoginActivity.this, "Sorry, could not connect to the server.", Toast.LENGTH_SHORT ).show();
+            }
+            else if(spiceException.getCause() instanceof HttpResponseException)
+            {
+            	HttpResponseException exception = (HttpResponseException)spiceException.getCause();
+            	if (exception.getStatusCode() == HttpStatus.SC_FORBIDDEN) {
+            		mEmailView
+        			.setError(getString(R.string.error_invalid_id));
+                    mEmailView.requestFocus();
+            	}
+            }
+            else
+            {
+                Ln.d("Other exception");
+            }
+        	
             loginRequest = null;
         }
 

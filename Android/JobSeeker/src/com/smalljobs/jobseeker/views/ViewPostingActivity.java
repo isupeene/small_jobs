@@ -1,11 +1,15 @@
 package com.smalljobs.jobseeker.views;
 
+import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.http.HttpStatus;
+
+import roboguice.util.temp.Ln;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,6 +35,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.api.client.http.HttpResponseException;
 import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -290,8 +295,24 @@ public class ViewPostingActivity extends Activity {
 
         @Override
         public void onRequestFailure( SpiceException spiceException ) {
-        	spiceException.printStackTrace();
-            Toast.makeText( ViewPostingActivity.this, "Bidding failed", Toast.LENGTH_SHORT ).show();
+        	setProgressBarVisibility( false );
+        	if(spiceException.getCause() instanceof ConnectException)
+            {
+        		Toast.makeText( ViewPostingActivity.this, "Sorry, could not connect to the server.", Toast.LENGTH_SHORT ).show();
+            }
+            else if(spiceException.getCause() instanceof HttpResponseException)
+            {
+            	HttpResponseException exception = (HttpResponseException)spiceException.getCause();
+            	if (exception.getStatusCode() == HttpStatus.SC_FORBIDDEN) {
+            	}
+            	if (exception.getStatusCode() == HttpStatus.SC_BAD_REQUEST) {
+            		Toast.makeText( ViewPostingActivity.this, "You have already bid on this job.", Toast.LENGTH_SHORT ).show();
+            	}
+            }
+            else
+            {
+                Ln.d("Other exception");
+            }
         }
 
         @Override
@@ -311,7 +332,23 @@ public class ViewPostingActivity extends Activity {
         @Override
         public void onRequestFailure( SpiceException spiceException ) {
         	spiceException.printStackTrace();
-            Toast.makeText( ViewPostingActivity.this, "Could not mark the job as completed.", Toast.LENGTH_SHORT ).show();
+        	if(spiceException.getCause() instanceof ConnectException)
+            {
+        		Toast.makeText( ViewPostingActivity.this, "Sorry, could not connect to the server.", Toast.LENGTH_SHORT ).show();
+            }
+            else if(spiceException.getCause() instanceof HttpResponseException)
+            {
+            	HttpResponseException exception = (HttpResponseException)spiceException.getCause();
+            	if (exception.getStatusCode() == HttpStatus.SC_FORBIDDEN) {
+            	}
+            	if (exception.getStatusCode() == HttpStatus.SC_BAD_REQUEST) {
+            		Toast.makeText( ViewPostingActivity.this, "This job has already been marked as complete.", Toast.LENGTH_SHORT ).show();
+            	}
+            }
+            else
+            {
+                Ln.d("Other exception");
+            }
         }
 
         @Override
@@ -328,8 +365,24 @@ public class ViewPostingActivity extends Activity {
 
         @Override
         public void onRequestFailure( SpiceException spiceException ) {
-        	spiceException.printStackTrace();
-            Toast.makeText( ViewPostingActivity.this, "Could not rate the poster.", Toast.LENGTH_SHORT ).show();
+        	setProgressBarVisibility( false );
+        	if(spiceException.getCause() instanceof ConnectException)
+            {
+        		Toast.makeText( ViewPostingActivity.this, "Sorry, could not connect to the server.", Toast.LENGTH_SHORT ).show();
+            }
+            else if(spiceException.getCause() instanceof HttpResponseException)
+            {
+            	HttpResponseException exception = (HttpResponseException)spiceException.getCause();
+            	if (exception.getStatusCode() == HttpStatus.SC_FORBIDDEN) {
+            	}
+            	if (exception.getStatusCode() == HttpStatus.SC_BAD_REQUEST) {
+            		Toast.makeText( ViewPostingActivity.this, "You have already rated this poster.", Toast.LENGTH_SHORT ).show();
+            	}
+            }
+            else
+            {
+                Ln.d("Other exception");
+            }
             SharedPreferences.Editor editor = ratings.edit();
             editor.remove(job.getPosterID());
         	editor.commit();
