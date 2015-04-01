@@ -2,8 +2,6 @@
 <resources>
 
     <string name="app_name">Job Seeker</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_main">Home</string>
     <string name="title_activity_browse">Browse Jobs</string>
     <string name="hello_world">No new activity</string>
@@ -18,7 +16,7 @@
     <string name="please_confirm">Are you sure?</string>
     <string name="please_confirm_with_info">Please provide the required information:</string>
     <string name="prompt_date">Proposed completion date:</string>
-    <string name="prompt_amount">Proposed compensation amount:</string>
+    <string name="prompt_amount">Proposed compensation amount ($):</string>
     <string name="action_filter">Filter</string>
     <string name="action_bid">Bid</string>
     <string name="action_settings">Settings</string>

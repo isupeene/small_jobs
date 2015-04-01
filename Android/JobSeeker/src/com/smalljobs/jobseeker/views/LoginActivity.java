@@ -286,7 +286,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         	System.out.println(spiceException.getMessage());
         	System.out.println(spiceException.toString());
         	System.out.println(spiceException.getLocalizedMessage());
-            Toast.makeText( LoginActivity.this, "failure", Toast.LENGTH_SHORT ).show();
+            Toast.makeText( LoginActivity.this, "Could not sign in.", Toast.LENGTH_SHORT ).show();
             showProgress(false);
             mEmailView
 			.setError(getString(R.string.error_invalid_id));
@@ -297,7 +297,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         @Override
         public void onRequestSuccess( final String result ) {
         	showProgress(false);
-            Toast.makeText( LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT ).show();
+            //Toast.makeText( LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT ).show();
             Intent intent = new Intent(context, MainActivity.class);
 			startActivity(intent);
 			overridePendingTransition(0, 0);

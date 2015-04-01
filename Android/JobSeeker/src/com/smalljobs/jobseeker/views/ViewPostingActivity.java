@@ -68,6 +68,7 @@ public class ViewPostingActivity extends Activity {
 	private TextView bidConfDeadline;
 	private TextView compensationAmount;	
 	private TextView completionDate;
+	private TextView location;
 	
 	private SharedPreferences ratings;
 	private SharedPreferences bids;
@@ -90,6 +91,7 @@ public class ViewPostingActivity extends Activity {
 		jobTitle = (TextView) findViewById(R.id.jobTitle);
 		jobDescription = (TextView) findViewById(R.id.jobDescription);
 		jobPosterName = (TextView) findViewById(R.id.jobPoster);
+		location = (TextView) findViewById(R.id.location);
 		creationDate = (TextView) findViewById(R.id.creationDate);
 		biddingDeadline = (TextView) findViewById(R.id.biddingDeadline);
 		bidConfDeadline = (TextView) findViewById(R.id.bidConfDeadline);
@@ -196,6 +198,8 @@ public class ViewPostingActivity extends Activity {
 		jobTitle.setText(job.getTitle());
 		
 		jobPosterName.setText(jobPoster.getName());
+		
+		location.setText(jobPoster.getRegion());
 		
 		Date date = null;
 		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
