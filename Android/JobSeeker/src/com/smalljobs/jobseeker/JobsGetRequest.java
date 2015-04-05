@@ -6,7 +6,6 @@ import java.net.CookieManager;
 import java.util.Arrays;
 import java.util.List;
 
-import roboguice.util.temp.Ln;
 import android.content.Context;
 
 import com.google.api.client.http.GenericUrl;
@@ -24,17 +23,14 @@ import com.smalljobs.jobseeker.models.Server;
 public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > {
 
     private String baseUrl;
-    private Context context;
 
     public JobsGetRequest( Context context, String type ) {
         super( JobsListing.class );
-        this.context = context;
         this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type;
     }
     
     public JobsGetRequest( Context context, String type, String location, String skills ) {
         super( JobsListing.class );
-        this.context = context;
         
         String skillsQuery = null;
         if (!skills.isEmpty()) {
@@ -62,7 +58,7 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
 
     @Override
     public JobsListing loadDataFromNetwork() throws IOException {
-        Ln.d( "Call web service " + baseUrl );
+    	
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
 

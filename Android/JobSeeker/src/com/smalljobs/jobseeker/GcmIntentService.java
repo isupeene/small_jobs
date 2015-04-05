@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -21,6 +20,7 @@ import com.smalljobs.jobseeker.models.Notification;
 import com.smalljobs.jobseeker.views.LoginActivity;
 
 public class GcmIntentService extends IntentService {
+	
     public static final int NOTIFICATION_ID = 1;
     static final String TAG = "GCM";
     private NotificationManager mNotificationManager;
@@ -48,21 +48,10 @@ public class GcmIntentService extends IntentService {
              * recognize.
              */
             if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                //sendNotification("Send error: " + extras.toString());
-            } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_DELETED.equals(messageType)) {
-                //sendNotification("Deleted messages on server: " +
-                //        extras.toString());
-            // If it's a regular GCM message, do some work.
-            } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // This loop represents the service doing some work.
-                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
+            	
                 // Post notification of received message.
-                
                 String received = extras.toString().substring(7,extras.toString().length()-1);
-                System.out.println(received);
                 
                 Gson gson = new Gson();
                 JsonParser parser = new JsonParser();
@@ -109,8 +98,6 @@ public class GcmIntentService extends IntentService {
     }
 
     // Put the message into a notification and post it.
-    // This is just one simple example of what you might choose to do with
-    // a GCM message.
     private void sendNotification() {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);

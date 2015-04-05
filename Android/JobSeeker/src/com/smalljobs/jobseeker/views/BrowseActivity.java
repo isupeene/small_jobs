@@ -35,6 +35,8 @@ public class BrowseActivity extends BaseActivity {
 	private JobsListing jobs=new JobsListing();
 	private PostingsListAdapter postingsViewAdapter;
 	private DialogFragment fm;
+	private String location;
+	private String skills;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +126,9 @@ public class BrowseActivity extends BaseActivity {
 
 			locationSpecifier = (EditText) dialogView.findViewById(R.id.prompt_location);
 			skillsSpecifier = (EditText) dialogView.findViewById(R.id.prompt_skills);
+			
+			locationSpecifier.setText(location);
+			skillsSpecifier.setText(skills);
 
 			builder.setTitle(R.string.filter_title);
 			
@@ -155,8 +160,8 @@ public class BrowseActivity extends BaseActivity {
 					@Override
 					public void onClick(View v)
 					{
-						String location = locationSpecifier.getText().toString();
-						String skills = skillsSpecifier.getText().toString();
+						location = locationSpecifier.getText().toString();
+						skills = skillsSpecifier.getText().toString();
 						
 						setProgressBarIndeterminate( true );
 				        setProgressBarVisibility( true );

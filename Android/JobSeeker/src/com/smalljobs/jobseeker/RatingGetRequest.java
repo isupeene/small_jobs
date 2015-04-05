@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 
-import roboguice.util.temp.Ln;
-import android.content.Context;
-
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
@@ -25,9 +22,6 @@ public class RatingGetRequest extends GoogleHttpClientSpiceRequest< String > {
 
     @Override
     public String loadDataFromNetwork() throws IOException {
-        Ln.d( "Call web service " + baseUrl );
-        
-
         CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
         CookieHandler.setDefault(cookieManager);
         

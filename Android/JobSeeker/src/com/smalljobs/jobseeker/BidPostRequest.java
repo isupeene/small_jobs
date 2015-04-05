@@ -51,9 +51,7 @@ public class BidPostRequest extends GoogleHttpClientSpiceRequest< String > {
         
         HttpResponse response = request.execute();
         
-        String result = response.parseAsString();
-        
-		return result;
+		return response.parseAsString();
 	}
 
 }

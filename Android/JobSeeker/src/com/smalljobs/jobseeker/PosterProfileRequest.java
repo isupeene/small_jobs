@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 
-import roboguice.util.temp.Ln;
-
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.gson.Gson;
@@ -27,7 +25,6 @@ public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoste
 
     @Override
     public JobPoster loadDataFromNetwork() throws IOException {
-        Ln.d( "Call web service " + baseUrl );
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
         
