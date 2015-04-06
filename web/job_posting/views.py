@@ -48,10 +48,14 @@ def job_details(request):
 	myJob = JobPosting.objects.get(pk= jobPk) #TODO Change this to use API
 	poster = _get_job_poster(request)
 	bidList = get_bids(poster,myJob.pk)
+	jobSkills = _get_job_skills(myJob)
+	print jobSkills
 	context = {'myJob': myJob , 'bidList': bidList, 'complete': complete_job}
 	if myJob.marked_completed_by_contractor and myJob.completed :
 		rating = _get_old_rating(poster , myJob.contractor)
 		context['rating'] = rating
+	if  jobSkills:
+		context['skills'] = jobSkills	
 	return render(request,'job_posting/job_details.html',context)
 
 @require_login
@@ -115,12 +119,12 @@ def post_job(request):
     context = RequestContext(request)
     creating = True
     jobPk = request.GET.get('pk','')
+    skillsFormSet = get_jobskill_formset( extra=1, can_delete=True)
+    formset = skillsFormSet()
     if request.method == 'POST':
         form = JobPostingForm(request.POST)
         # Have we been provided with a valid form?
-        print "valid?"
         if form.is_valid():
-			print "yeah"
 			description = form.cleaned_data['description']
 			short_description = form.cleaned_data['short_description']
 			bidding_deadline = form.cleaned_data['bidding_deadline']
@@ -141,8 +145,10 @@ def post_job(request):
 				myJob.compensation_amount = compensation_amount
 				myJob.bid_includes_completion_date = bid_includes_completion_date
 				myJob.completion_date = completion_date
-				
-				update_job_posting(_get_job_poster(request), myJob)
+				skillsFormSet = skillsFormSet(request.POST,instance = myJob)
+				if skillsFormSet.is_valid():
+					update_job_posting(_get_job_poster(request), myJob)
+					skillsFormSet.save()
 			else:
 				myPosting = JobPosting(
 					description=description,
@@ -167,12 +173,14 @@ def post_job(request):
 			myJob = JobPosting.objects.get(pk= jobPk)
 			form = JobPostingForm(instance = myJob)
 			creating = False
+			myJobSkills = _get_job_skills(myJob)
+			formset = skillsFormSet(instance=myJob)
 		else:
 			form = JobPostingForm()
 
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
-    return render_to_response('job_posting/create_job.html', {'form': form,'creating': creating, 'pk': jobPk}, context)
+    return render_to_response('job_posting/create_job.html', {'form': form,'creating': creating, 'pk': jobPk , 'formset' : formset}, context)
 
 def rate_contractor_form(request):
 	rating = request.POST['rating']
@@ -219,5 +227,9 @@ def _get_old_rating(job_poster , contractor):
 		return existing_rating.rating
 	except ContractorRating.DoesNotExist:
 		return 3
+
+def _get_job_skills(job):
+	skills = JobSkill.objects.filter(job=job)
+	return skills.all()
 
 

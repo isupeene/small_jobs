@@ -33,6 +33,26 @@
             <table>
             {{ form | crispy }}
             </table>
+            <table id="id_orders_table" border="0" cellpadding="0" cellspacing="5">
+                <thead>
+                    <tr>
+                        <th scope="col">Skill</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form1 in formset.forms %}
+                    <tr id="{{ form1.prefix }}-row">
+                        <td style="text-align:center;">
+                            {% for fld in form1.hidden_fields %}{{ fld }}{% endfor %}
+                            {% if form1.instance.pk %}{{ form1.DELETE }}{% endif %}
+                            {{ form1.skill }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p>
+            {{ formset.management_form }}
             <input type="submit" class="btn btn-primary" name="submit" value="Save!" />
     </form>
 <br>
