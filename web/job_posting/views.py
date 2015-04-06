@@ -172,6 +172,7 @@ def post_job(request):
             print form.errors
             if jobPk != '': 
 				creating = False
+				myJob = JobPosting.objects.get(pk= jobPk)
 				formset = skillsFormSet(instance=myJob)
     else:
     	# TODO better to specify in urls and have parameters
