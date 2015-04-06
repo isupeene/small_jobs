@@ -45,12 +45,13 @@ def edit_job(request):
 def job_details(request):
 	jobPk = request.GET.get('pk','')
 	complete_job = request.GET.get('completed','')
+	active_job = request.GET.get('active','')
 	myJob = JobPosting.objects.get(pk= jobPk) #TODO Change this to use API
 	poster = _get_job_poster(request)
 	bidList = get_bids(poster,myJob.pk)
+	print active_job
 	jobSkills = _get_job_skills(myJob)
-	print jobSkills
-	context = {'myJob': myJob , 'bidList': bidList, 'complete': complete_job}
+	context = {'myJob': myJob , 'bidList': bidList, 'complete': complete_job, 'active' : active_job}
 	if myJob.marked_completed_by_contractor and myJob.completed :
 		rating = _get_old_rating(poster , myJob.contractor)
 		context['rating'] = rating
@@ -145,9 +146,9 @@ def post_job(request):
 				myJob.compensation_amount = compensation_amount
 				myJob.bid_includes_completion_date = bid_includes_completion_date
 				myJob.completion_date = completion_date
+				update_job_posting(_get_job_poster(request), myJob)
 				skillsFormSet = skillsFormSet(request.POST,instance = myJob)
 				if skillsFormSet.is_valid():
-					update_job_posting(_get_job_poster(request), myJob)
 					skillsFormSet.save()
 			else:
 				myPosting = JobPosting(
@@ -163,8 +164,7 @@ def post_job(request):
 				
 				create_job_posting(_get_job_poster(request), myPosting)
 				skillsFormSet = skillsFormSet(request.POST,instance = myPosting)
-				if skillsFormSet.is_valid():
-					
+				if skillsFormSet.is_valid():	
 					skillsFormSet.save()
 			return HttpResponsePermanentRedirect("/job_posting/jobs/")
         else:

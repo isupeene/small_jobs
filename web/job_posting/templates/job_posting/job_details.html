@@ -112,9 +112,11 @@
   </tbody>
 </table>
     {% ifnotequal complete True %}
-    <div id="form_footer">
+      {% ifequal active True %}
+        <div id="form_footer">
                 <button id="accept" class="btn btn-success">Accept</button>
-    </div>
+        </div>
+      {% endifequal %}
     {% endifnotequal %}
   {% else %}
     <p>No bids on job!</p> 
