@@ -160,13 +160,19 @@ def post_job(request):
 					bid_includes_completion_date = bid_includes_completion_date,
 					completion_date = completion_date,
 				)
+				
 				create_job_posting(_get_job_poster(request), myPosting)
+				skillsFormSet = skillsFormSet(request.POST,instance = myPosting)
+				if skillsFormSet.is_valid():
+					
+					skillsFormSet.save()
 			return HttpResponsePermanentRedirect("/job_posting/jobs/")
         else:
             # The supplied form contained errors - just print them to the terminal.
             print form.errors
             if jobPk != '': 
 				creating = False
+				formset = skillsFormSet(instance=myJob)
     else:
     	# TODO better to specify in urls and have parameters
 		if jobPk != '': 
