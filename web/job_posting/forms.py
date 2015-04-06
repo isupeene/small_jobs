@@ -1,9 +1,10 @@
 from django import forms
 from small_jobs_api.models import (
-    JobPosting, JobPoster
+    JobPosting, JobPoster , JobSkill
 )
 from django.utils.timezone import now
 from django.forms.extras.widgets import SelectDateWidget
+from django.forms import fields, models, formsets
 from django.forms.widgets import *
 
 
@@ -41,3 +42,14 @@ class JobPostingForm(forms.ModelForm):
         fields = ('short_description', 'bidding_deadline','bidding_confirmation_deadline' ,
         'bid_includes_completion_date' , 'completion_date', 'bid_includes_compensation_amount',
          'compensation_amount' , 'description')
+
+class JobSkillForm(forms.ModelForm):
+    skill = forms.CharField(max_length=128, help_text="Skill",required=False)
+
+    class Meta:
+        model = JobSkill
+
+        fields = ('skill',)
+
+def get_jobskill_formset(formset=models.BaseInlineFormSet, **kwargs):
+    return models.inlineformset_factory(JobPosting, JobSkill, JobSkillForm , formset, **kwargs)

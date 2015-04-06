@@ -7,8 +7,19 @@ $(document).ready(function() {
         $('#activeJobsTable').dataTable();
         $('#completedJobsTable').dataTable();
         $('#bidsTable').dataTable();
-        // $("#rateJob").rating();
-        // calls the server to delete the selected jobs
+        $('#id_orders_table tbody tr').formset({
+            prefix: 'ordered_items'
+        })
+        $('[data-toggle=offcanvas]').click(function() {
+            $('.row-offcanvas').toggleClass('active');
+        });
+        /* activate sidebar */
+        $('#sidebarmenu').affix({
+          offset: {
+            top: 50
+          }
+        });
+        
         $("#delete").click( function(event) {
         	var values = [];
             	$('#jobsTable').find("input[type=checkbox]:checked").each(function () {

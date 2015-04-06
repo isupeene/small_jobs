@@ -49,6 +49,15 @@
     Marked Complete By Contractor :
     {{myJob.marked_completed_by_contractor}}
     <br/>
+    Job Skills: 
+    {% if skills %}
+      {% for skill in skills %}
+        {{skill.skill}} , 
+      {% endfor%}
+    {% else %}
+      None  
+    {% endif %}
+    <br>
     Description: <br/>
     <textarea  class="form-control" rows="10" cols="100" readonly="true">{{myJob.description}}</textarea>
     <br />
