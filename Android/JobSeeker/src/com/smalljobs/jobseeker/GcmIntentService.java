@@ -19,6 +19,15 @@ import com.google.gson.JsonParser;
 import com.smalljobs.jobseeker.models.Notification;
 import com.smalljobs.jobseeker.views.LoginActivity;
 
+/**
+ * Intent Service for receiving a GCM message
+ * 
+ * Requirements Specifications Reference:
+ * 3.2.2.3.2 Raise a notification when important events occur
+ * 3.2.2.3.2.1 When a bid of theirs has been accepted or rejected, 
+ *             or when a job on which they have bid is modified.
+ */
+
 public class GcmIntentService extends IntentService {
 	
     public static final int NOTIFICATION_ID = 1;
@@ -41,12 +50,6 @@ public class GcmIntentService extends IntentService {
         String messageType = gcm.getMessageType(intent);
 
         if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
-            /*
-             * Filter messages based on message type. Since it is likely that GCM
-             * will be extended in the future with new message types, just ignore
-             * any message types you're not interested in, or that you don't
-             * recognize.
-             */
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             	

@@ -51,7 +51,7 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
         	this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type + "/?region=" + location;
         } else {
         	
-        	this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type + "/?region=" + location + skillsQuery;
+        	this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type + skillsQuery + "&region=" + location;
         }
         
     }

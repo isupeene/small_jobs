@@ -30,7 +30,12 @@ import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.models.Contractor;
 
 /**
- * A login screen that offers login via email/password.
+ * A sign up screen that allows user to create an account
+ * 
+ * Requirements Specifications Reference:
+ * 3.2.2.1.1 Allow the user to create an account with our service.
+ * 
+ *
  */
 public class SignupActivity extends Activity {
 

@@ -16,6 +16,14 @@ import com.smalljobs.jobseeker.UserProfilePostRequest;
 import com.smalljobs.jobseeker.models.Contractor;
 import com.smalljobs.jobseeker.models.User;
 
+/**
+ * A screen that displays user's profile and allows to update it
+ * 
+ * Requirements Specifications Reference:
+ * 3.2.2.1.4 Permit the user to update their profile with relevant
+ * information including Skills and contact information (name, email, phone number).
+ */
+
 public class MyProfileActivity extends BaseActivity implements TextWatcher {
 
 	EditText nameField;

@@ -51,6 +51,18 @@ import com.smalljobs.jobseeker.models.JobPoster;
 import com.smalljobs.jobseeker.models.JobPosting;
 import com.smalljobs.jobseeker.models.User;
 
+
+/**
+ * A screen that displays a job posting.
+ * 
+ * Requirements specifications reference:
+ * 3.2.2.3.1 Permit the users to bid on available jobs.
+ * 3.2.2.3.1.1 Bids shall include a Compensation Amount and a Completion Date, if required by the Job Posting
+ * 3.2.2.4.1 Allow users to provide a rating for Job Posters who have accepted a bid from them.
+ * 3.2.2.4.2 Allow users to mark a job as complete.
+ * 
+ */
+
 public class ViewPostingActivity extends Activity {
 
 	public static final String PREFS_RATINGS = "ratings";
@@ -253,8 +265,8 @@ public class ViewPostingActivity extends Activity {
 		try {
 			date = df1.parse(dateString);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return Calendar.getInstance().getTime();
 		}
 		
 		return date;
@@ -438,12 +450,11 @@ public class ViewPostingActivity extends Activity {
         	}
         	if (job.getBidIncludesCompletionDate()) {
         		dateSpecifier.setVisibility(View.VISIBLE);
-        		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.CANADA);
         		
         		try {
 					dateSpecifier.setMinDate(df1.parse(job.getBiddingConfirmationDeadline()).getTime());
 				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
         		if (job.getCompletionDate() != null) {
@@ -505,7 +516,7 @@ public class ViewPostingActivity extends Activity {
 
         					Date pickedDate = calendar.getTime();
         					
-        					DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        					DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
         				    completionDate = df.format(pickedDate);
         				}
         				

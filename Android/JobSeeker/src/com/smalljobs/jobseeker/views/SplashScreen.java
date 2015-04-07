@@ -22,6 +22,17 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.smalljobs.jobseeker.R;
 
+/**
+ * Initial loading screen which checks for an internet connection
+ * and checks if the app is registered with Google Cloud Messaging
+ * for push notifications
+ * 
+ * Requirements Specifications Reference:
+ * 3.2.2.3.2 Raise a notification when important events occur
+ * 3.2.2.3.2.1 When a bid of theirs has been accepted or rejected, 
+ *             or when a job on which they have bid is modified.
+ */
+
 public class SplashScreen extends Activity {
 
 	private static int SPLASH_TIME_OUT = 5000;

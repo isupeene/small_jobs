@@ -27,6 +27,15 @@ import com.smalljobs.jobseeker.PostingsListAdapter;
 import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.models.JobsListing;
 
+/**
+ * A screen that displays a list of job postings and allows the user to filter them.
+ * 
+ * Requirements specifications reference:
+ * 3.2.2.2.1 Permit users to browse available jobs, organized/filtered by Skills.
+ * 3.2.2.2.2 Permit users to organize/filter jobs by region.
+ * 
+ */
+
 public class BrowseActivity extends BaseActivity {
 
 	private Context context=this;

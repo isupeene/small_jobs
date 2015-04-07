@@ -27,11 +27,13 @@ import com.smalljobs.jobseeker.R;
  * handset devices, settings are presented as a single list. On tablets,
  * settings are split by category, with category headers shown to the left of
  * the list of settings.
- * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
+ * 
+ * Requirements Specifications Reference:
+ * 3.2.2.3.2 Raise a notification when important events occur
+ * 3.2.2.3.2.1 When a bid of theirs has been accepted or rejected, 
+ *             or when a job on which they have bid is modified.
+ * 3.2.2.3.2.2 The user shall be able to disable notifications.
+ *
  */
 public class SettingsActivity extends PreferenceActivity {
 	/**

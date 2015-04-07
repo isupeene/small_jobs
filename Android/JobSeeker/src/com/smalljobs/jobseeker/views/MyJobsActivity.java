@@ -27,6 +27,15 @@ import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.models.JobsListing;
 import com.smalljobs.jobseeker.models.User;
 
+/**
+ * A screen that displays jobs that a user bid on
+ * 
+ * Requirements Specifications Reference:
+ * 
+ * 3.2.2.3.3 Allow users to view all the jobs that they have successfully bid on,
+ *  filterable by whether or not they have been completed.
+ */
+
 public class MyJobsActivity extends BaseActivity {
 
 	/**
@@ -100,11 +109,7 @@ public class MyJobsActivity extends BaseActivity {
 		}
 
 		@Override
-		public Fragment getItem(int position) {
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a PlaceholderFragment (defined as a static inner class
-			// below).
-			
+		public Fragment getItem(int position) {			
 			return JobsListFragment.newInstance(position);
 		}
 
@@ -141,7 +146,6 @@ public class MyJobsActivity extends BaseActivity {
         static JobsListFragment newInstance(int num) {
             JobsListFragment fragment = new JobsListFragment();
 
-            // Supply num input as an argument.
             Bundle args = new Bundle();
 			args.putInt("section_number", num+1);
 			fragment.setArguments(args);
@@ -149,9 +153,6 @@ public class MyJobsActivity extends BaseActivity {
             return fragment;
         }
 
-        /**
-         * When creating, retrieve this instance's number from its arguments.
-         */
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -184,10 +185,6 @@ public class MyJobsActivity extends BaseActivity {
 			((BaseActivity) getActivity()).getSpiceManager().execute( jobsRequest, User.getInstance().getContractor().getId()+cacheKey, DurationInMillis.ALWAYS_EXPIRED, new JobsRequestListener() );
 		}
 
-		/**
-         * The Fragment's UI is just a simple text view showing its
-         * instance number.
-         */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {

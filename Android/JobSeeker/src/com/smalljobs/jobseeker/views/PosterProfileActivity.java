@@ -20,14 +20,20 @@ import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.RatingGetRequest;
 import com.smalljobs.jobseeker.models.JobPoster;
 
-public class PosterProfileActivity extends Activity {
+/**
+ * A screen that displays a job poster's profile.
+ * 
+ * Requirements specifications reference:
+ * 3.2.2.2.3 Allow the user to view the profile of the job poster including their rating
+ * 
+ */
 
+public class PosterProfileActivity extends Activity {
 
 	private JobPoster jobPoster;
 	private RatingGetRequest getRatingRequest;
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
-	
-	
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,13 +67,6 @@ public class PosterProfileActivity extends Activity {
 			return true;
 		}
 		if (id == android.R.id.home) {
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
 			onBackPressed();
 			return true;
 		}
