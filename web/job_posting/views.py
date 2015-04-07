@@ -104,6 +104,7 @@ def edit_profile(request):
 		else:
 			# The supplied form contained errors - just print them to the terminal.
 			print form.errors
+			ctx = {'form' : form}
 	else:
 		# If the request was not a POST, display the form to enter details.
 		form = JobPosterForm(instance= _get_job_poster(request))
