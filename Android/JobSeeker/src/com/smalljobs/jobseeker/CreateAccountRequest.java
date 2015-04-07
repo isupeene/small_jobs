@@ -11,7 +11,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
@@ -23,10 +22,13 @@ import com.google.gson.JsonParser;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 import com.smalljobs.jobseeker.models.Contractor;
 import com.smalljobs.jobseeker.models.CookieManagerSingleton;
-import com.smalljobs.jobseeker.models.JobPoster;
 import com.smalljobs.jobseeker.models.Server;
 import com.smalljobs.jobseeker.models.User;
-import com.smalljobs.jobseeker.views.MainActivity;
+
+/**
+* Requirements Specifications Reference:
+* 3.2.2.1.1 Allow the user to create an account with our service.
+*/
 
 public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contractor > {
 
@@ -63,8 +65,6 @@ public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contract
         HttpResponse response = request.execute();
         
         String result = response.parseAsString();
-        
-        System.out.println(result);
         
         Gson gson = new Gson();
         JsonParser parser = new JsonParser();

@@ -27,6 +27,15 @@ import com.smalljobs.jobseeker.PostingsListAdapter;
 import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.models.JobsListing;
 
+/**
+ * A screen that displays a list of job postings and allows the user to filter them.
+ * 
+ * Requirements specifications reference:
+ * 3.2.2.2.1 Permit users to browse available jobs, organized/filtered by Skills.
+ * 3.2.2.2.2 Permit users to organize/filter jobs by region.
+ * 
+ */
+
 public class BrowseActivity extends BaseActivity {
 
 	private Context context=this;
@@ -35,6 +44,8 @@ public class BrowseActivity extends BaseActivity {
 	private JobsListing jobs=new JobsListing();
 	private PostingsListAdapter postingsViewAdapter;
 	private DialogFragment fm;
+	private String location;
+	private String skills;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +135,9 @@ public class BrowseActivity extends BaseActivity {
 
 			locationSpecifier = (EditText) dialogView.findViewById(R.id.prompt_location);
 			skillsSpecifier = (EditText) dialogView.findViewById(R.id.prompt_skills);
+			
+			locationSpecifier.setText(location);
+			skillsSpecifier.setText(skills);
 
 			builder.setTitle(R.string.filter_title);
 			
@@ -155,8 +169,8 @@ public class BrowseActivity extends BaseActivity {
 					@Override
 					public void onClick(View v)
 					{
-						String location = locationSpecifier.getText().toString();
-						String skills = skillsSpecifier.getText().toString();
+						location = locationSpecifier.getText().toString();
+						skills = skillsSpecifier.getText().toString();
 						
 						setProgressBarIndeterminate( true );
 				        setProgressBarVisibility( true );

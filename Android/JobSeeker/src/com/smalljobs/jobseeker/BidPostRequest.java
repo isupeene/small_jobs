@@ -16,6 +16,11 @@ import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.Server;
 import com.smalljobs.jobseeker.models.User;
 
+/**
+ * Requirements specifications reference:
+ * 3.2.2.3.1 Permit the users to bid on available jobs.
+ * 3.2.2.3.1.1 Bids shall include a Compensation Amount and a Completion Date, if required by the Job Posting
+ */
 
 public class BidPostRequest extends GoogleHttpClientSpiceRequest< String > {
 
@@ -51,9 +56,7 @@ public class BidPostRequest extends GoogleHttpClientSpiceRequest< String > {
         
         HttpResponse response = request.execute();
         
-        String result = response.parseAsString();
-        
-		return result;
+		return response.parseAsString();
 	}
 
 }

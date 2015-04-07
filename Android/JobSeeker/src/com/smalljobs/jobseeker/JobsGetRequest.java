@@ -6,7 +6,6 @@ import java.net.CookieManager;
 import java.util.Arrays;
 import java.util.List;
 
-import roboguice.util.temp.Ln;
 import android.content.Context;
 
 import com.google.api.client.http.GenericUrl;
@@ -21,20 +20,25 @@ import com.smalljobs.jobseeker.models.JobPosting;
 import com.smalljobs.jobseeker.models.JobsListing;
 import com.smalljobs.jobseeker.models.Server;
 
+/**
+* Requirements Specifications Reference: 
+* 3.2.2.3.3 Allow users to view all the jobs that they have successfully bid on,
+*  filterable by whether or not they have been completed.
+* 3.2.2.2.1 Permit users to browse available jobs, organized/filtered by Skills.
+* 3.2.2.2.2 Permit users to organize/filter jobs by region.
+*/
+
 public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > {
 
     private String baseUrl;
-    private Context context;
 
     public JobsGetRequest( Context context, String type ) {
         super( JobsListing.class );
-        this.context = context;
         this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type;
     }
     
     public JobsGetRequest( Context context, String type, String location, String skills ) {
         super( JobsListing.class );
-        this.context = context;
         
         String skillsQuery = null;
         if (!skills.isEmpty()) {
@@ -55,14 +59,14 @@ public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > 
         	this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type + "/?region=" + location;
         } else {
         	
-        	this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type + "/?region=" + location + skillsQuery;
+        	this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/" + type + skillsQuery + "&region=" + location;
         }
         
     }
 
     @Override
     public JobsListing loadDataFromNetwork() throws IOException {
-        Ln.d( "Call web service " + baseUrl );
+    	
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
 

@@ -1,8 +1,6 @@
 package com.smalljobs.jobseeker.views;
 
 import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.http.HttpStatus;
 
@@ -11,21 +9,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -33,19 +24,22 @@ import android.widget.Toast;
 import com.google.api.client.http.HttpResponseException;
 import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.exception.NetworkException;
-import com.octo.android.robospice.exception.RequestCancelledException;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.smalljobs.jobseeker.LoginRequest;
 import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.models.Contractor;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via email.
+ * 
+ * Requirements Specifications Reference:
+ * 3.2.2.1.2 Allow the user to login with any account they have created
+ * 3.2.2.1.3 Permit the user to remain logged in indefinitely (i.e. across multiple sessions).
+ *
  */
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
+
+public class LoginActivity extends Activity {
 	
 	Context context = this;
 	
@@ -74,7 +68,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         
 		// Set up the login form.
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.loginEmail);
-		populateAutoComplete();
 
 
 		Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
@@ -117,10 +110,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	public void showSignupDialog(View v) {
 		Intent intent = new Intent(context, SignupActivity.class);
 		startActivityForResult(intent, 0);
-	}
-	
-	private void populateAutoComplete() {
-		getLoaderManager().initLoader(0, null, this);
 	}
 
 	/**
@@ -176,11 +165,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	    }
 	}
 
-	private boolean isPasswordValid(String password) {
-		// TODO: Replace this with your own logic
-		return password.length() > 4;
-	}
-
 	/**
 	 * Shows the progress UI and hides the login form.
 	 */
@@ -232,60 +216,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			finish();
 		}
 	}
-	
-	@Override
-	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-		return new CursorLoader(this,
-				// Retrieve data rows for the device user's 'profile' contact.
-				Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-						ContactsContract.Contacts.Data.CONTENT_DIRECTORY),
-				ProfileQuery.PROJECTION,
 
-				// Select only email addresses.
-				ContactsContract.Contacts.Data.MIMETYPE + " = ?",
-				new String[] { ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE },
 
-				// Show primary email addresses first. Note that there won't be
-				// a primary email address if the user hasn't specified one.
-				ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-		List<String> emails = new ArrayList<String>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			emails.add(cursor.getString(ProfileQuery.ADDRESS));
-			cursor.moveToNext();
-		}
-
-		addEmailsToAutoComplete(emails);
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-	}
-
-	private interface ProfileQuery {
-		String[] PROJECTION = { ContactsContract.CommonDataKinds.Email.ADDRESS,
-				ContactsContract.CommonDataKinds.Email.IS_PRIMARY, };
-
-		int ADDRESS = 0;
-		int IS_PRIMARY = 1;
-	}
-
-	private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-		// Create adapter to tell the AutoCompleteTextView what to show in its
-		// dropdown list.
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-				LoginActivity.this,
-				android.R.layout.simple_dropdown_item_1line,
-				emailAddressCollection);
-
-		mEmailView.setAdapter(adapter);
-	}
-	
 	public final class AuthenticationRequestListener implements RequestListener< String > {
 
         @Override
@@ -324,23 +256,4 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			finish();
         }
     }
-	
-    public final class ProfileRequestListener implements RequestListener< Contractor > {
-
-        @Override
-        public void onRequestFailure( SpiceException spiceException ) {
-            Toast.makeText( LoginActivity.this, "failure", Toast.LENGTH_SHORT ).show();
-        }
-
-        @Override
-        public void onRequestSuccess( final Contractor result ) {
-        	showProgress(false);
-            //Toast.makeText( LoginActivity.this, "success", Toast.LENGTH_SHORT ).show();
-            Intent intent = new Intent(context, MainActivity.class);
-			startActivity(intent);
-			overridePendingTransition(0, 0);
-			finish();
-        }
-    }
-
 }

@@ -7,6 +7,8 @@ import com.google.api.client.util.Key;
 
 public class JobPosting implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	@Key
 	private String id;
 	

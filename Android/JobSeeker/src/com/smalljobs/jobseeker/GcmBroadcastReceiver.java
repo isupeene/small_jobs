@@ -6,6 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
+/**
+ * Broadcast receiver for receiving a GCM message
+ * 
+ * Requirements Specifications Reference:
+ * 3.2.2.3.2 Raise a notification when important events occur
+ * 3.2.2.3.2.1 When a bid of theirs has been accepted or rejected, 
+ *             or when a job on which they have bid is modified.
+ */
+
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

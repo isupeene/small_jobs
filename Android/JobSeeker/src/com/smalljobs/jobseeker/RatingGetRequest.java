@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 
-import roboguice.util.temp.Ln;
-import android.content.Context;
-
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.Server;
+
+/** 
+* Requirements specifications reference:
+* 3.2.2.2.3 Allow the user to view the profile of the job poster including their rating
+* 
+*/
 
 public class RatingGetRequest extends GoogleHttpClientSpiceRequest< String > {
 	
@@ -25,9 +28,6 @@ public class RatingGetRequest extends GoogleHttpClientSpiceRequest< String > {
 
     @Override
     public String loadDataFromNetwork() throws IOException {
-        Ln.d( "Call web service " + baseUrl );
-        
-
         CookieManager cookieManager = CookieManagerSingleton.getCookieManager();
         CookieHandler.setDefault(cookieManager);
         

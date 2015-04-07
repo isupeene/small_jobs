@@ -21,22 +21,28 @@ import com.smalljobs.jobseeker.R;
 import com.smalljobs.jobseeker.models.Notification;
 import com.smalljobs.jobseeker.models.User;
 
+/**
+ * Home screen that displays list of unread notifications
+ * 
+ * Requirements Specifications Reference:
+ * 3.2.2.3.2 Raise a notification when important events occur
+ * 3.2.2.3.2.1 When a bid of theirs has been accepted or rejected, 
+ *             or when a job on which they have bid is modified.
+ */
+
 public class MainActivity extends BaseActivity {
 	
 
-	TextView mLoremTextView;
+	TextView welcomeTextView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		//context = getApplicationContext();
-        mLoremTextView = (TextView) findViewById( R.id.name );
+        welcomeTextView = (TextView) findViewById( R.id.name );
 		
-        mLoremTextView.setText("Welcome " + User.getInstance().getContractor().getName() + "!");
-		
-		
+        welcomeTextView.setText("Welcome " + User.getInstance().getContractor().getName() + "!");
 	}
 
 	@Override
@@ -101,8 +107,6 @@ public class MainActivity extends BaseActivity {
             notificationsViewAdapter = new NotificationsListAdapter(getActivity(),
 					R.layout.notification_row_layout, notifications);
             setListAdapter(notificationsViewAdapter);
-            //setListAdapter(new ArrayAdapter<String>(getActivity(),
-            //        android.R.layout.simple_list_item_1, strings1));
         }
 
         @Override

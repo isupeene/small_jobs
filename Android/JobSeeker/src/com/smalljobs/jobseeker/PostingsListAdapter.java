@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -18,18 +19,10 @@ import android.widget.TextView;
 
 import com.smalljobs.jobseeker.models.JobPosting;
 
-/**
- * This is a custom adapter for displaying a list of questions.
- * 
- * It is used in the MainActivity for the main list of questions
- * and in the UserThreadsActivity to display locally stored questions
- * with a few changes.
- *
- * This class extends ArrayAdapter<QuestionThread> and uses an ArrayList
- * of QuestionThread objects to display the summary of a list of questions using
- * a custom layout.
- *
- */
+/** 
+* Requirements specifications reference:
+* 3.2.2.2.1 Permit users to browse available jobs
+*/
 
 public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 
@@ -44,11 +37,9 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 		this.context = context;
 		this.resId=layoutResourceId;
 	}
-	
-	
-	
+		
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
+	public View getView(int position, View convertView, ViewGroup parent) {
 
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -60,31 +51,20 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 		TextView compensationAmount = (TextView) convertView.findViewById(R.id.compensationAmountMain);
 		TextView completionDate = (TextView) convertView.findViewById(R.id.completionDateMain);
 		
-		final JobPosting job = postings.get(position);
+		JobPosting job = postings.get(position);
 				
 		SpannableString ss;
 		
 		title.setText(job.getTitle());
-		
-		
+				
 		Date date = null;
-		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		try {
-			date = df1.parse(job.getBiddingDeadline());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ss =  new SpannableString("Bidding Deadline: \n" + date);
-		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 17, 0);
-		biddingDeadline.setText(ss);
 		
-		date = null;
-		try {
-			date = df1.parse(job.getBiddingConfirmationDeadline());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (job.getContractor() == null) {
+			date = parseDate(job.getBiddingDeadline());
+			ss =  new SpannableString("Bidding Deadline: \n" + date);
+			ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 17, 0);
+			biddingDeadline.setVisibility(View.VISIBLE);
+			biddingDeadline.setText(ss);			
 		}
 		
 		if (job.getCompensationAmount() != null) {
@@ -95,13 +75,9 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 20, 0);
 		compensationAmount.setText(ss);
 		
+		date = null;
 		if (job.getCompletionDate() != null) {
-			try {
-				date = df1.parse(job.getCompletionDate());
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			date = parseDate(job.getCompletionDate());
 			ss =  new SpannableString("Completion Date: " + date);
 		} else {
 			ss =  new SpannableString("Completion Date: Not specified");
@@ -113,10 +89,19 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 		return convertView;
 	}
 	
-	public void refresh(ArrayList<JobPosting> postings)
-    {
-        this.postings = postings;
-        notifyDataSetChanged();
-    } 
+	private Date parseDate(String dateString) {
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.CANADA);
+		
+		Date date = null;
+		
+		try {
+			date = df1.parse(dateString);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return date;
+	}
 
 }

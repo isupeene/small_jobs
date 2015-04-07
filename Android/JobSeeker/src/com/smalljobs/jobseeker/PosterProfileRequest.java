@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 
-import roboguice.util.temp.Ln;
-
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.gson.Gson;
@@ -15,6 +13,11 @@ import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpice
 import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.JobPoster;
 import com.smalljobs.jobseeker.models.Server;
+
+/** 
+* Requirements specifications reference:
+* 3.2.2.2.3 Allow the user to view the profile of the job poster including their rating
+*/
 
 public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoster > {
 
@@ -27,7 +30,6 @@ public class PosterProfileRequest extends GoogleHttpClientSpiceRequest< JobPoste
 
     @Override
     public JobPoster loadDataFromNetwork() throws IOException {
-        Ln.d( "Call web service " + baseUrl );
         HttpRequest request = getHttpRequestFactory()//
                 .buildGetRequest( new GenericUrl( baseUrl ) );
         

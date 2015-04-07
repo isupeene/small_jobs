@@ -21,7 +21,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.smalljobs.jobseeker.R;
-import com.smalljobs.jobseeker.R.layout;
+
+/**
+ * Initial loading screen which checks for an internet connection
+ * and checks if the app is registered with Google Cloud Messaging
+ * for push notifications
+ * 
+ * Requirements Specifications Reference:
+ * 3.2.2.3.2 Raise a notification when important events occur
+ * 3.2.2.3.2.1 When a bid of theirs has been accepted or rejected, 
+ *             or when a job on which they have bid is modified.
+ */
 
 public class SplashScreen extends Activity {
 
@@ -90,7 +100,6 @@ public class SplashScreen extends Activity {
 	    checkPlayServices();
 	}
 	
-
 	/**
 	 * Gets the current registration ID for application on GCM service.
 	 * <p>
@@ -182,18 +191,9 @@ public class SplashScreen extends Activity {
 	                regid = gcm.register(SENDER_ID);
 	                msg = "Device registered, registration ID=" + regid;
 
-	                // You should send the registration ID to your server over HTTP,
-	                // so it can use GCM/HTTP or CCS to send messages to your app.
-	                // The request to your server should be authenticated if your app
-	                // is using accounts.
-	                sendRegistrationIdToBackend();
-
-	                // For this demo: we don't need to send it because the device
-	                // will send upstream messages to a server that echo back the
-	                // message using the 'from' address in the message.
-
 	                // Persist the registration ID - no need to register again.
 	                storeRegistrationId(context, regid);
+	                
 	            } catch (IOException ex) {
 	                msg = "Error :" + ex.getMessage();
 	                // If there is an error, don't just keep trying to register.
@@ -211,16 +211,6 @@ public class SplashScreen extends Activity {
 
 	    }.execute(null, null, null);
 	    
-	}
-	
-	/**
-	 * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP
-	 * or CCS to send messages to your app. Not needed for this demo since the
-	 * device sends upstream messages to a server that echoes back the message
-	 * using the 'from' address in the message.
-	 */
-	private void sendRegistrationIdToBackend() {
-	    // Your implementation here.
 	}
 	
 	/**
