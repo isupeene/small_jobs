@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +21,9 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.smalljobs.jobseeker.LogoutRequest;
 import com.smalljobs.jobseeker.R;
+
+
+//android:background="@drawable/abc_item_background_holo_light" 
 
 public class BaseActivity extends Activity {
 	
@@ -90,6 +93,7 @@ public class BaseActivity extends Activity {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
+                R.drawable.ic_drawer,
                 R.string.hello_world,
                 R.string.app_name
         ) {
