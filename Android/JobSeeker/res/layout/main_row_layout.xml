@@ -46,7 +46,8 @@
     	android:textColor="@android:color/darker_gray"
     	android:layout_below="@id/completionDateMain"
     	android:layout_alignParentLeft="true"
-    	android:layout_alignParentStart="true">
+    	android:layout_alignParentStart="true"
+    	android:visibility="gone">
     </TextView>
     
 </RelativeLayout>

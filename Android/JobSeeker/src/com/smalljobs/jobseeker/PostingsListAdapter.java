@@ -63,6 +63,7 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 			date = parseDate(job.getBiddingDeadline());
 			ss =  new SpannableString("Bidding Deadline: \n" + date);
 			ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 17, 0);
+			biddingDeadline.setVisibility(View.VISIBLE);
 			biddingDeadline.setText(ss);			
 		}
 		
