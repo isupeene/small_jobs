@@ -15,6 +15,13 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.smalljobs.jobseeker.models.Notification;
 
+/** 
+* Requirements Specifications Reference:
+* 3.2.2.3.2 Raise a notification when important events occur
+* 3.2.2.3.2.1 When a bid of theirs has been accepted or rejected, 
+*             or when a job on which they have bid is modified.
+*/
+
 public class NotificationsManager {
 	private Gson gson;
 	private Context context;

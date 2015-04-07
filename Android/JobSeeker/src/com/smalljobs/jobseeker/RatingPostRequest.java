@@ -17,6 +17,11 @@ import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.Rating;
 import com.smalljobs.jobseeker.models.Server;
 
+/**
+ * Requirements specifications reference:
+ * 3.2.2.4.1 Allow users to provide a rating for Job Posters who have accepted a bid from them.
+ */
+
 public class RatingPostRequest extends GoogleHttpClientSpiceRequest< String > {
 	
     private String baseUrl;

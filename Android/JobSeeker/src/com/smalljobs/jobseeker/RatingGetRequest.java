@@ -11,6 +11,12 @@ import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpice
 import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.Server;
 
+/** 
+* Requirements specifications reference:
+* 3.2.2.2.3 Allow the user to view the profile of the job poster including their rating
+* 
+*/
+
 public class RatingGetRequest extends GoogleHttpClientSpiceRequest< String > {
 	
     private String baseUrl;

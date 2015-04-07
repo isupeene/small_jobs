@@ -19,6 +19,10 @@ import android.widget.TextView;
 
 import com.smalljobs.jobseeker.models.JobPosting;
 
+/** 
+* Requirements specifications reference:
+* 3.2.2.2.1 Permit users to browse available jobs
+*/
 
 public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 

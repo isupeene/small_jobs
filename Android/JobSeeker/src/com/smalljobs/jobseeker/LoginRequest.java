@@ -21,6 +21,13 @@ import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.Server;
 import com.smalljobs.jobseeker.models.User;
 
+/** 
+* Requirements Specifications Reference:
+* 3.2.2.1.2 Allow the user to login with any account they have created
+* 3.2.2.1.3 Permit the user to remain logged in indefinitely (i.e. across multiple sessions).
+*
+*/
+
 public class LoginRequest extends GoogleHttpClientSpiceRequest< String > {
 
 	public static final String PREFS_NAME = "Credentials";

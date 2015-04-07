@@ -16,6 +16,12 @@ import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.Server;
 import com.smalljobs.jobseeker.models.User;
 
+/**
+ * Requirements Specifications Reference:
+ * 3.2.2.1.4 Permit the user to update their profile with relevant
+ * information including Skills and contact information (name, email, phone number).
+ */
+
 public class UserProfilePostRequest extends GoogleHttpClientSpiceRequest< String > {
 
     private String baseUrl;

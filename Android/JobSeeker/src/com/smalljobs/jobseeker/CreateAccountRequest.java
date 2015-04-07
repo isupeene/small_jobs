@@ -25,6 +25,11 @@ import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.Server;
 import com.smalljobs.jobseeker.models.User;
 
+/**
+* Requirements Specifications Reference:
+* 3.2.2.1.1 Allow the user to create an account with our service.
+*/
+
 public class CreateAccountRequest extends GoogleHttpClientSpiceRequest< Contractor > {
 
     private String baseUrl;

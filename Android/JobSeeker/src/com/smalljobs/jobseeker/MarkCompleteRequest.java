@@ -16,6 +16,11 @@ import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpice
 import com.smalljobs.jobseeker.models.CookieManagerSingleton;
 import com.smalljobs.jobseeker.models.Server;
 
+/** 
+* Requirements specifications reference:
+* 3.2.2.4.2 Allow users to mark a job as complete.
+*/
+
 public class MarkCompleteRequest extends GoogleHttpClientSpiceRequest< String > {
 	
     private String baseUrl;

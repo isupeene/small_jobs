@@ -11,18 +11,12 @@ import android.widget.TextView;
 
 import com.smalljobs.jobseeker.models.Notification;
 
-/**
- * This is a custom adapter for displaying a list of questions.
- * 
- * It is used in the MainActivity for the main list of questions
- * and in the UserThreadsActivity to display locally stored questions
- * with a few changes.
- *
- * This class extends ArrayAdapter<QuestionThread> and uses an ArrayList
- * of QuestionThread objects to display the summary of a list of questions using
- * a custom layout.
- *
- */
+/** 
+* Requirements Specifications Reference:
+* 3.2.2.3.2 Raise a notification when important events occur
+* 3.2.2.3.2.1 When a bid of theirs has been accepted or rejected, 
+*             or when a job on which they have bid is modified.
+*/
 
 public class NotificationsListAdapter extends ArrayAdapter<Notification> {
 
@@ -60,10 +54,4 @@ public class NotificationsListAdapter extends ArrayAdapter<Notification> {
 		return convertView;
 	}
 	
-	public void refresh(ArrayList<Notification> notifications)
-    {
-        this.notifications = notifications;
-        notifyDataSetChanged();
-    } 
-
 }

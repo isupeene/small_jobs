@@ -20,7 +20,7 @@ import com.smalljobs.jobseeker.models.Notification;
 import com.smalljobs.jobseeker.views.LoginActivity;
 
 /**
- * Intent Service for receiving a GCM message
+ * Intent Service for processing a GCM message
  * 
  * Requirements Specifications Reference:
  * 3.2.2.3.2 Raise a notification when important events occur

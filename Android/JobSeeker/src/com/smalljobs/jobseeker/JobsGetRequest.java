@@ -20,6 +20,14 @@ import com.smalljobs.jobseeker.models.JobPosting;
 import com.smalljobs.jobseeker.models.JobsListing;
 import com.smalljobs.jobseeker.models.Server;
 
+/**
+* Requirements Specifications Reference: 
+* 3.2.2.3.3 Allow users to view all the jobs that they have successfully bid on,
+*  filterable by whether or not they have been completed.
+* 3.2.2.2.1 Permit users to browse available jobs, organized/filtered by Skills.
+* 3.2.2.2.2 Permit users to organize/filter jobs by region.
+*/
+
 public class JobsGetRequest extends GoogleHttpClientSpiceRequest< JobsListing > {
 
     private String baseUrl;
