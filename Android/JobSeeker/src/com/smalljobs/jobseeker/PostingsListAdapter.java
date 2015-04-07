@@ -37,9 +37,7 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 		this.context = context;
 		this.resId=layoutResourceId;
 	}
-	
-	
-	
+		
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -61,10 +59,12 @@ public class PostingsListAdapter extends ArrayAdapter<JobPosting> {
 				
 		Date date = null;
 		
-		date = parseDate(job.getBiddingDeadline());
-		ss =  new SpannableString("Bidding Deadline: \n" + date);
-		ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 17, 0);
-		biddingDeadline.setText(ss);
+		if (job.getContractor() == null) {
+			date = parseDate(job.getBiddingDeadline());
+			ss =  new SpannableString("Bidding Deadline: \n" + date);
+			ss.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, 17, 0);
+			biddingDeadline.setText(ss);			
+		}
 		
 		if (job.getCompensationAmount() != null) {
 			ss =  new SpannableString("Compensation Amount: $" + job.getCompensationAmount());			
