@@ -2,8 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="${relativePackage}.${activityClass}"
-    android:background="@drawable/abc_item_background_holo_light" >
+    tools:context="${relativePackage}.${activityClass}" >
  
     <ImageView
         android:id="@+id/imgLogo"
@@ -13,7 +12,7 @@
         android:src="@drawable/ic_logo" />
  
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="fill_parent"																																																						
         android:layout_height="wrap_content"
         android:layout_below="@+id/imgLogo"
         android:textColor="#33b5e5"
