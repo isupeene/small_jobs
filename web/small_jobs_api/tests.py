@@ -301,6 +301,7 @@ class JobPostingAPITest(TestCase):
 		post.accept_bid(bob, bid1.pk)
 
 		self.assertEquals(bob.jobposting_set.get().contractor, emily)
+		self.assertEquals(0, len(posting.bid_set.all()))
 
 	def test_accept_bid_updates_job_posting(self):
 		bob = JobPoster.objects.get(name="Bob")
