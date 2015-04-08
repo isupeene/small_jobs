@@ -1,3 +1,5 @@
+# Requirement 3.2.2.3.2
+
 from django.conf import settings
 
 from gcm import GCM

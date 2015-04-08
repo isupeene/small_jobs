@@ -1,3 +1,5 @@
+# Requirement 3.2
+
 """
 WSGI config for small_jobs project.
 

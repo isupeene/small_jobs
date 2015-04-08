@@ -1,3 +1,5 @@
+# Tests requirement 3.2.2
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse as get_url
 from django.utils.timezone import now
