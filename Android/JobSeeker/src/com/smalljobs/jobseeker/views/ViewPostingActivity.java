@@ -91,6 +91,8 @@ public class ViewPostingActivity extends Activity {
 	private SharedPreferences ratings;
 	private SharedPreferences bids;
 	
+	private boolean fromNotifications;
+	
 	private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
 	
 	@Override
@@ -101,6 +103,8 @@ public class ViewPostingActivity extends Activity {
 		setContentView(R.layout.activity_view_posting);
 		
 		job = (JobPosting) getIntent().getSerializableExtra("job");
+		
+		fromNotifications = getIntent().getBooleanExtra("notification", false);
 		
 		invalidateOptionsMenu();
 		
@@ -146,6 +150,10 @@ public class ViewPostingActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+		if (fromNotifications) {
+			getMenuInflater().inflate(R.menu.view_posting_notification, menu);
+			return true;
+		}
 		if (job.getContractor() == null) {
 			getMenuInflater().inflate(R.menu.view_posting, menu);
 			menu.findItem(R.id.action_bid).setEnabled(true);
@@ -282,8 +290,8 @@ public class ViewPostingActivity extends Activity {
 		spiceManager.execute(ratingPostRequest, new RatingRequestListener());
     }
     
-    private void bidOnJob(String date, String amount) {
-		bidPostRequest = new BidPostRequest(job.getId(), amount, date);
+    private void bidOnJob(String date, String amount, String message) {
+		bidPostRequest = new BidPostRequest(job.getId(), amount, date, message);
 		spiceManager.execute(bidPostRequest, "bid", DurationInMillis.ALWAYS_EXPIRED, new BidPostRequestListener());    	
     }
     
@@ -426,6 +434,7 @@ public class ViewPostingActivity extends Activity {
     	
 		EditText moneySpecifier;
     	DatePicker dateSpecifier;
+    	EditText message;
     	
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -440,14 +449,14 @@ public class ViewPostingActivity extends Activity {
         	
         	moneySpecifier = (EditText) dialogView.findViewById(R.id.specifyCompensationAmount);
         	dateSpecifier = (DatePicker) dialogView.findViewById(R.id.datePicker);
+        	message = (EditText) dialogView.findViewById(R.id.message);
         	
-        	builder.setMessage(R.string.please_confirm);
         	
         	if (job.getBidIncludesCompensationAmount()) {
         		moneySpecifier.setVisibility(View.VISIBLE);
         		((TextView) dialogView.findViewById(R.id.promptAmount)).setVisibility(View.VISIBLE);
-        		builder.setMessage(R.string.please_confirm_with_info);
-        	}
+        	} 
+        	
         	if (job.getBidIncludesCompletionDate()) {
         		dateSpecifier.setVisibility(View.VISIBLE);
         		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.CANADA);
@@ -472,7 +481,9 @@ public class ViewPostingActivity extends Activity {
         		
         		
         		((TextView) dialogView.findViewById(R.id.promptDate)).setVisibility(View.VISIBLE);
-        		builder.setMessage(R.string.please_confirm_with_info);
+        	}
+        	if ((moneySpecifier.getVisibility() == View.GONE) && (dateSpecifier.getVisibility() == View.GONE)) {
+            	builder.setMessage(R.string.please_confirm);        		
         	}
         	
         	
@@ -507,6 +518,7 @@ public class ViewPostingActivity extends Activity {
         				
         				String compensationAmount = null;
         				String completionDate = null;
+        				String messageText = null;
         				
         				if (dateSpecifier.getVisibility() == View.VISIBLE) {
         					Calendar calendar = Calendar.getInstance();
@@ -527,11 +539,13 @@ public class ViewPostingActivity extends Activity {
         						wantToCloseDialog = false;
         					}
         				}
+        				messageText = message.getText().toString();
+        				
         				if(wantToCloseDialog) {
         					setProgressBarIndeterminate( true );
         			        setProgressBarVisibility( true );
         			        
-        			        bidOnJob(completionDate, compensationAmount);
+        			        bidOnJob(completionDate, compensationAmount, messageText);
         					dismiss();
         				}
         			}

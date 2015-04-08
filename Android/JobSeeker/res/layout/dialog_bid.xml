@@ -13,6 +13,8 @@
 			
 			<TextView android:id="@+id/promptDate"
 				android:layout_width="wrap_content"
+				android:textStyle="bold"
+				android:layout_marginTop="1dp"
 				android:layout_height="wrap_content" android:layout_gravity="center"
 				android:text="@string/prompt_date" android:visibility="gone" />
 	
@@ -23,16 +25,38 @@
 	
 			<TextView android:id="@+id/promptAmount"
 				android:layout_width="wrap_content"
+				android:textStyle="bold"
 				android:layout_height="wrap_content" android:layout_gravity="center"
 				android:layout_marginTop="1dp" android:text="@string/prompt_amount"
 				android:visibility="gone" />
 	
 			<EditText android:id="@+id/specifyCompensationAmount"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content" android:layout_marginTop="1dp"
-				android:layout_marginBottom="2dp" android:ems="10"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="1dp"
+				android:layout_marginBottom="2dp"
+				android:ems="10"
+				android:hint="Compensation amount ($)"
 				android:visibility="gone" android:inputType="number">
-				<requestFocus />
+			</EditText>
+			
+			<TextView android:id="@+id/promptMessage"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginTop="1dp"
+				android:textStyle="bold"
+				android:text="@string/prompt_message" />
+			
+			<EditText android:id="@+id/message"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:maxLines="3"
+				android:lines="3"
+				android:hint="Your message here"
+				android:layout_marginBottom="2dp"
+				android:ems="10"
+				android:inputType="textMultiLine">
 			</EditText>
 	
 	

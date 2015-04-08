@@ -121,6 +121,7 @@ public class MainActivity extends BaseActivity {
 			Notification notification = notifications.get(position);
 			nm.deleteNotification(notification);
 			detailIntent.putExtra("job", notification.getJob());
+			detailIntent.putExtra("notification", true);
 			startActivity(detailIntent);
 		}
 		
