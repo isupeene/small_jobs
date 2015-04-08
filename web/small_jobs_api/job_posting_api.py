@@ -42,9 +42,6 @@ def create_job_posting(job_poster, job_posting):
 
 # Reviewing Postings and Bids
 
-# TODO: Notify Contractors who have bid on a modified or deleted job posting.
-# TODO: Notify all bidders when a bid has been accepted.
-
 def get_job_postings(job_poster):
 	return JobPosting.objects.filter(poster=job_poster, contractor=None)
 
@@ -89,6 +86,7 @@ def accept_bid(job_poster, bid_id):
 	bid.job.save()
 
 	notify.bid_accepted(bid)
+	bid.job.bid_set.all().delete()
 
 def get_contractor_rating(contractor):
 	ratings = ContractorRating.objects.filter(contractor=contractor)
