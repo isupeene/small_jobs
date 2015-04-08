@@ -1,3 +1,5 @@
+# Not needed for specific requirements.  Valuable for manual testing and administrative functions.
+
 from django.contrib import admin
 from nested_inlines.admin import NestedModelAdmin, NestedStackedInline
 from small_jobs_api.models import (

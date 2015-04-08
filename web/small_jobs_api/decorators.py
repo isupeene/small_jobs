@@ -1,3 +1,5 @@
+# Requirement 3.2.1.1.1
+
 from small_jobs_api.views import begin_openid_login, finish_openid_login
 
 def require_login(handler):

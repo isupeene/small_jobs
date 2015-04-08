@@ -1,3 +1,5 @@
+# Requirement 3.2.2
+
 from django.conf.urls import patterns, url
 from job_seeking.views import *
 

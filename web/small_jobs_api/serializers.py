@@ -1,3 +1,5 @@
+# Requirement 3.2.2
+
 from rest_framework.serializers import ModelSerializer
 
 from small_jobs_api.models import *

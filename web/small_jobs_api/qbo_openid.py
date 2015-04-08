@@ -1,3 +1,5 @@
+# Requirement 3.2.1.1.1
+
 from openid.store.sqlstore import PostgreSQLStore
 from openid.consumer.consumer import Consumer
 

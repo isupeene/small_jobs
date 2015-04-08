@@ -1,3 +1,5 @@
+# Tests requirement 3.2
+
 from django.test import TestCase
 from django.utils.timezone import now
 from django.core.exceptions import (

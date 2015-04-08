@@ -1,3 +1,5 @@
+# Requirement 3.2.1.1.1
+
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied

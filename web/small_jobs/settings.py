@@ -1,3 +1,5 @@
+# Requirement 3.2
+
 """
 Django settings for small_jobs project.
 
