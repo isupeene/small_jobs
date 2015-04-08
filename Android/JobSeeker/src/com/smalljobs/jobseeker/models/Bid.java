@@ -15,6 +15,9 @@ public class Bid {
 	
 	@Key
 	private String completion_date;
+	
+	@Key
+	private String message;
 
 	public Bid(String job, String contractor) {
 		super();
@@ -52,6 +55,14 @@ public class Bid {
 
 	public void setCompletionDate(String completion_date) {
 		this.completion_date = completion_date;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	
 	

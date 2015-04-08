@@ -28,7 +28,7 @@ public class BidPostRequest extends GoogleHttpClientSpiceRequest< String > {
     private Bid bid;
     
 	
-	public BidPostRequest(String job, String compensationAmount, String completionDate) {
+	public BidPostRequest(String job, String compensationAmount, String completionDate, String message) {
 		super(String.class);
 		bid = new Bid(job, User.getInstance().getContractor().getId());
 		if(compensationAmount != null) {
@@ -37,6 +37,7 @@ public class BidPostRequest extends GoogleHttpClientSpiceRequest< String > {
 		if(completionDate != null) {
 			bid.setCompletionDate(completionDate);
 		}
+		bid.setMessage(message);
         this.baseUrl = "http://"+ Server.ipaddress +":8000/job_seeking/bid/";
 	}
 	
