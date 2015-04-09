@@ -7,7 +7,7 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.forms import fields, models, formsets
 from django.forms.widgets import *
 
-
+# Requirment 3.2.1.1.2
 class JobPosterForm(forms.ModelForm):
     name = forms.CharField(max_length=128, help_text="Name")
     description = forms.CharField(max_length=128, help_text="Description")
@@ -21,6 +21,7 @@ class JobPosterForm(forms.ModelForm):
         model = JobPoster
         fields = ('name', 'description', 'email', 'phone_number' , 'region')
 
+# Requirement 3.2.1.2
 class JobPostingForm(forms.ModelForm):
     short_description = forms.CharField(max_length=128)
     bidding_deadline = forms.DateField(widget=SelectDateWidget,initial=now())
@@ -43,6 +44,7 @@ class JobPostingForm(forms.ModelForm):
         'bid_includes_completion_date' , 'completion_date', 'bid_includes_compensation_amount',
          'compensation_amount' , 'description')
 
+# Requirement 3.2.2.1.4
 class JobSkillForm(forms.ModelForm):
     skill = forms.CharField(max_length=128, help_text="Skill",required=False)
 

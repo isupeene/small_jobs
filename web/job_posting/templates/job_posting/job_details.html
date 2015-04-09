@@ -1,4 +1,4 @@
-
+ <!--Requirement 3.2.1.3-->
 {% extends 'base.html' %}
 
 {% load staticfiles %}
@@ -6,7 +6,7 @@
 {% block title %}Job Details{% endblock %}
 
 {% block side_block %}
-  <!-- TODO this is not working-->
+ 
   {% ifnotequal complete True %}
   <ul class="nav nav-sidebar">
    <li><a href="{% url 'job_posting:edit_job' %}?pk={{myJob.pk}}">Edit Job</a></li>
