@@ -622,9 +622,6 @@ class JobSeekingAPITest(TestCase):
 			bid = Bid(job_id=0)
 			seek.place_bid(emily, bid)
 
-	# TODO: Test bid with invalid fields, or bid that specifies
-	# completion date and compensation amount when it's not supposed to.
-
 	def test_get_current_jobs(self):
 		bob = JobPoster.objects.get(name="Bob")
 		emily = Contractor.objects.get(name="Emily")
