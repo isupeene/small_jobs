@@ -1,3 +1,4 @@
+# Requirements 3.2.1
 from django.shortcuts import *
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
@@ -21,6 +22,7 @@ import json
 def protected(request):
 	return HttpResponse("Hello, World!")
 
+# Requirement 3.2.1.1
 @require_login
 def homepage(request):
 	return render(request,'job_posting/homepage.html')
@@ -41,6 +43,7 @@ def edit_job(request):
 	context = {'myJob': myJob }
 	return render(request,'job_posting/edit_job.html',context)
 
+# Requirement 3.2.1.3.4
 @require_login
 def job_details(request):
 	jobPk = request.GET.get('pk','')
@@ -59,6 +62,7 @@ def job_details(request):
 		context['skills'] = jobSkills	
 	return render(request,'job_posting/job_details.html',context)
 
+# Requirement 3.2.1.3.1
 @require_login
 def jobs(request):
 	poster = _get_job_poster(request)
@@ -68,6 +72,7 @@ def jobs(request):
 	context = {'jobList': jobList , 'activeJobs' : activeJobs , 'completedJobs' :completedJobs }
 	return render(request,'job_posting/jobs.html',context)
 
+# Requirement 3.2.1.3.4.1
 @require_login
 def view_profile(request):
 	contractorPK = request.GET.get('contractor','')
@@ -78,12 +83,9 @@ def view_profile(request):
 		context = context = {'userInfo': _get_contractor(contractorPK) }
 	return render(request,'job_posting/view_profile.html',context)
 
-@require_login
-def login(request):
-	return mainpage(request)
-
 # form stuff
 
+# Requirement 3.2.1.1.2
 @require_login
 def edit_profile(request):
 	# Get the context from the request.
@@ -116,6 +118,7 @@ def edit_profile(request):
     # Render the form with error messages (if any).
 	return render_to_response('job_posting/edit_profile.html', ctx, context)
 
+# Requirements 3.2.1.2 , 3.2.1.3.3
 @require_login
 def post_job(request):
     context = RequestContext(request)
@@ -190,12 +193,14 @@ def post_job(request):
     # Render the form with error messages (if any).
     return render_to_response('job_posting/create_job.html', {'form': form,'creating': creating, 'pk': jobPk , 'formset' : formset}, context)
 
+# Requirement 3.2.1.4
 def rate_contractor_form(request):
 	rating = request.POST['rating']
 	contractorPK = request.GET.get('contractor','')
 	rate_contractor(_get_job_poster(request), _get_contractor(contractorPK), rating)
 	return HttpResponsePermanentRedirect("/job_posting/jobs/")
 
+# Requirements 3.2.1.4.2 , 3.2.1.3.5 , 3.2.1.3.2
 @csrf_exempt
 def js_message(request):
 	# Get the context from the request.

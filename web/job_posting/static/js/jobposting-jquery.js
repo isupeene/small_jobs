@@ -1,15 +1,18 @@
+// Requirements 3.2.1
 $(document).ready(function() {
-        // TODO: Lots of Repitition think about if we can parameterize or something
-        // (Or just use one table )
 
-        // JQuery code to be added in here.
+        // make these look nice
         $('#jobsTable').dataTable();
         $('#activeJobsTable').dataTable();
         $('#completedJobsTable').dataTable();
         $('#bidsTable').dataTable();
+
+        // model form stuff 
         $('#id_orders_table tbody tr').formset({
             prefix: 'ordered_items'
         })
+
+        // mobile display stuff
         $('[data-toggle=offcanvas]').click(function() {
             $('.row-offcanvas').toggleClass('active');
         });
