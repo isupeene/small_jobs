@@ -130,9 +130,6 @@ def mark_complete(job_poster, job_posting):
 
 # Helper Functions
 
-# TODO: Make sure it's really impossible for someone to delete
-# or modify someone else's job.
-
 def _check_job_owner(job_poster, job_posting):
 	if job_posting.poster != job_poster:
 		raise PermissionDenied
