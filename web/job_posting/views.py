@@ -83,6 +83,11 @@ def view_profile(request):
 		context = context = {'userInfo': _get_contractor(contractorPK) }
 	return render(request,'job_posting/view_profile.html',context)
 
+@require_login
+def login(request):
+	return mainpage(request)
+
+
 # form stuff
 
 # Requirement 3.2.1.1.2
